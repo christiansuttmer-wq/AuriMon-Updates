@@ -11,3 +11,5 @@ Retest portrait after removing forced landscape overlay
 Stable v1.4.27 browser QA, deterministic independent arena/quest tests
 
 QA landscape right navigation and frame height fix
+
+Landscape frame hit-test diagnostics
