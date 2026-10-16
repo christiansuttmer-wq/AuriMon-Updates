@@ -19,10 +19,9 @@
   turnNotice.style.cssText = 'display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:#09263a;color:white;padding:24px;text-align:center;font:600 16px system-ui';
   document.body.appendChild(turnNotice);
   const checkOrientation=()=>{
-    // AuriMon now has a real phone-portrait world camera. No forced rotation
-    // overlay may cover the map, profile picker, buttons or touch controls.
-    turnNotice.style.display = 'none';
-    turnNotice.style.pointerEvents = 'none';
+    // AuriMon is played in landscape only, also when opened in a browser.
+    turnNotice.style.display = innerWidth<innerHeight ? 'flex' : 'none';
+    turnNotice.style.pointerEvents = innerWidth<innerHeight ? 'auto' : 'none';
     keepVersion();
   };
   checkOrientation();
