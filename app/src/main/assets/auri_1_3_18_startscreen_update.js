@@ -11,7 +11,7 @@
 
   function syncVersion() {
     const brand = document.querySelector('.brand span');
-    const value = '10 ORTE · 151 AURIMON · VERSION ' + CURRENT;
+    const value = '10 REGIONEN · 50 EBENEN · 151 AURIMON · VERSION ' + CURRENT;
     if (brand && brand.textContent !== value) brand.textContent = value;
     if (window.AriMons && window.AriMons.version !== CURRENT) window.AriMons.version = CURRENT;
   }
