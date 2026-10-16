@@ -8,7 +8,7 @@ from contextlib import suppress
 import json,shutil,sys,time,traceback
 
 root=Path("browser-dist").resolve()
-html=root/"AuriMon_v1.4.24_BROWSER_OFFLINE.html"
+html=root/"AuriMon_v1.4.25_BROWSER_OFFLINE.html"
 if not html.is_file():raise SystemExit("Offline HTML missing")
 from playwright.sync_api import sync_playwright
 class QuietHandler(SimpleHTTPRequestHandler):
