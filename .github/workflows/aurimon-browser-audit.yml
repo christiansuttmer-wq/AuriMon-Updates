@@ -76,3 +76,27 @@ jobs:
             browser-dist/REGIONEN_10_KARTENVORSCHAU.png
             browser-dist/REGION_*.png
 
+      - name: Gepruefte Browserfassung und alle 10 Regionenbilder als Release bereitstellen
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="v1.4.26"
+          gh release view "$tag" --json tagName --jq .tagName | grep -Fx "$tag"
+          for file in browser-dist/AuriMon_v1.4.26_BROWSER_OFFLINE.html browser-dist/AuriMon_v1.4.26_BROWSER_KOMPLETT.zip browser-dist/REGIONEN_50_PRUEFUNG.md browser-dist/REGIONEN_50_PRUEFUNG.json browser-dist/REGIONEN_10_KARTENVORSCHAU.png; do
+            test -s "$file"
+          done
+          gh release upload "$tag" \
+            browser-dist/AuriMon_v1.4.26_BROWSER_OFFLINE.html \
+            browser-dist/AuriMon_v1.4.26_BROWSER_KOMPLETT.zip \
+            browser-dist/PRUEFBERICHT.md \
+            browser-dist/PRUEFBERICHT.json \
+            browser-dist/BROWSER_E2E.json \
+            browser-dist/browser_build.json \
+            browser-dist/REGIONEN_50_PRUEFUNG.md \
+            browser-dist/REGIONEN_50_PRUEFUNG.json \
+            browser-dist/REGIONEN_10_KARTENVORSCHAU.png \
+            browser-dist/REGION_*.png \
+            browser-dist/QA_*.png \
+            --clobber
