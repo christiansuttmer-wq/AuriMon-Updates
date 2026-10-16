@@ -37,6 +37,17 @@ for(let stage=0;stage<50;stage++){
  const grid=api.getMap(stage),events=api.getFeatures(stage),key=grid.map(row=>row.join('')).join('/');
  assert(!identities.has(key),'Duplicate terrain layout: levels '+(identities.get(key)+1)+' and '+(stage+1));
  identities.set(key,stage);
+ // Distinct interactables are essential: two people on one tile cannot both be spoken to.
+ const occupied=new Map();
+ for(const n of [...events.npcs.map(q=>({...q,kind:'NPC: '+q.kind})),...events.runes.map(q=>({...q,kind:'Rune'}))]){
+  const k=n.x+','+n.y;
+  assert(!occupied.has(k),'Stage '+(stage+1)+': '+n.kind+' covers '+occupied.get(k)+' at '+k);
+  occupied.set(k,n.kind);
+ }
+ for(const b of events.buildings){
+  const k=b.step.join(',');
+  assert(!occupied.has(k),'Stage '+(stage+1)+': '+occupied.get(k)+' blocks '+b.kind+' entrance at '+k);
+ }
  const blocked=new Set(events.npcs.map(n=>n.x+','+n.y));
  const queue=[stage===0?[9,9]:[1,6]],seen=new Set();
  while(queue.length){
