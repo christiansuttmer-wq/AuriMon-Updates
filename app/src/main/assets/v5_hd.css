@@ -1,0 +1,64 @@
+/* AuriMon 5.0.0 — HD Pixel Visual Design; Regeln/Spielstände unverändert */
+:root{--bg:#0c1626;--base:#1d334b;--panel:#173c53;--panel2:#274d65;--line:#4e8593;--gold:#ffe29a;--mint:#85f3c9;--text:#f8f6e9;--muted:#c0dce4}
+html,body{background:#071522}
+#app{background:radial-gradient(ellipse 90% 55% at 30% 0%,#286181 0%,transparent 70%),linear-gradient(165deg,#102b46,#102438 65%,#081827);box-shadow:0 0 0 1px #8dc5c81f,0 15px 80px #0008}
+.header{background:linear-gradient(95deg,#0d2b42,#1b4560);border-bottom:2px solid #7eb8b474;box-shadow:0 4px 14px #0018276b}
+.logo{background:linear-gradient(150deg,#fff0a7,#f1b94b);border:2px solid #fff5be;box-shadow:0 3px 0 #9d6a30,0 0 17px #ffe1a42d}
+.brand span{letter-spacing:1.1px}
+.hero{background:linear-gradient(110deg,#275b65,#26395a 85%);border:1px solid #a1d4bc88;box-shadow:inset 0 1px 0 #ffffff1e,0 8px 20px #00122060;border-radius:16px}
+.hero h1{color:#fef6d5;text-shadow:0 2px #0003;letter-spacing:-.55px}
+.badgecounter{border-left:1px solid #d9f0ee40;padding-left:12px}
+.world-hud span{background:#132e46ee!important;border-color:#508b9b!important;color:#e7f6f2!important;box-shadow:inset 0 1px #ffffff17}
+.maptop{color:#f7efd9;letter-spacing:.2px}
+.mapwrap{background:#142f47;padding:8px;border:2px solid #d0ad6a;border-radius:17px;box-shadow:0 6px 0 #061925,0 12px 29px #0006,inset 0 0 0 2px #2b6a73}
+.map{position:relative;isolation:isolate;background:#5da06a;border-radius:10px;image-rendering:pixelated;box-shadow:inset 0 0 0 2px #071c28;overflow:hidden}
+/* Invisible HTML buttons continue handling keyboard/touch and accessible tile navigation. */
+.map.hd-render .cell{opacity:0;cursor:pointer;z-index:1;background:transparent!important}
+.map.hd-render .cell.player{z-index:1}
+.map.hd-render .cell:focus-visible{opacity:.32;outline:3px solid #fff0aa;outline-offset:-3px}
+.hd-map-canvas{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:fill;image-rendering:pixelated;pointer-events:none;z-index:4}
+.mapkey{background:#102d40;border-radius:0 0 10px 10px;margin-top:6px;color:#cce5db}
+.task{background:linear-gradient(145deg,#1d425b,#19334c);border-color:#729ca5;box-shadow:0 3px 0 #0b2639}
+.task strong{color:#fff0b8}
+.v4-shortcuts button,.quick{background:linear-gradient(#2c6581,#1a3e59)!important;border-color:#5f9cb3!important;color:#f5f8eb!important;box-shadow:0 3px 0 #0a283c!important}
+.dpad button{background:linear-gradient(#416a85,#1a435a);border-color:#90b9ca;box-shadow:0 3px 0 #072234}
+.dpad .actionkey{background:linear-gradient(#ffebad,#f2b94c);border:2px solid #fff8cd;color:#283c48}
+.dpad button:active,.v4-shortcuts button:active,.quick:active{transform:translateY(2px);box-shadow:none!important}
+.tabs{background:linear-gradient(#142e42,#0a1c2b);border-top:2px solid #5c8e9b}
+.tabs button.selected{background:linear-gradient(#326684,#21465d);color:#fff5cf;box-shadow:inset 0 0 0 1px #87b5b5}
+.subhead{background:linear-gradient(130deg,#22546e,#333b5d);border-color:#89bba7}
+.card,.bag-entry,.boxpoke,.dexcell,.travelcard{box-shadow:inset 0 1px #ffffff10,0 3px 8px #0003}
+.dialog,.battlebox{border:2px solid #e4c38e;box-shadow:0 22px 75px #000c,inset 0 1px #ffffff30;background:linear-gradient(155deg,#28576d,#122b43)}
+.starter{border-color:#a1c6b2;background:linear-gradient(#1e5b73,#17344d)}
+.player-picker-overlay{background:radial-gradient(ellipse at 50% -20%,#387c89 0%,transparent 60%),linear-gradient(140deg,#0a192a,#193b57,#0a182e)}
+.player-picker-heading h1{color:#fff2c6;text-shadow:0 3px 0 #112d3c}
+.profile-big-button{box-shadow:0 6px #0007,0 10px 25px #0005}
+/* Fight screen: layered arena, animated opponents, impact flashes. */
+.v5-battle .arena{background:linear-gradient(180deg,#5a97b8 0%,#9bd4de 42%,#cee7cd 55%,#74ad80 56%,#4a8667 83%,#285c55 100%);border:2px solid #e9d69b;box-shadow:inset 0 0 0 2px #fff8d544,0 5px #09293d;isolation:isolate}
+.v5-battle .arena::before{content:"";position:absolute;inset:0;opacity:.33;z-index:0;pointer-events:none;background:radial-gradient(ellipse 22% 10% at 79% 48%,#2b645c 0%,transparent 100%),radial-gradient(ellipse 28% 12% at 20% 91%,#234e59 0%,transparent 100%),linear-gradient(110deg,transparent 20%,#ffffff1b 35%,transparent 57%)}
+.v5-battle .arena::after{background:radial-gradient(ellipse at center,#a6d0a4,#5b9777 70%);bottom:-34%;z-index:0}
+.v5-battle .enemyart,.v5-battle .allyart{transition:transform .18s,filter .18s;filter:drop-shadow(0 12px 4px #20494f77);animation:v5breathe 2.1s ease-in-out infinite;will-change:transform}
+.v5-battle .allyart{animation-duration:2.7s;animation-delay:-.8s}
+.v5-battle .battlemon{background:#112f44ed;border-color:#e6cd91;box-shadow:0 3px 11px #0006}
+.v5-battle .hpbar span{transition:width .4s ease}
+.v5-battle .battlelog{border-color:#9cb5b3;background:linear-gradient(120deg,#163c54,#1a425c);border-left:4px solid #f5c873}
+.v5-battle .movebtn{min-height:61px;background:linear-gradient(#345e79,#193b53);border:1px solid #94b8c7;box-shadow:0 3px #0b293c}
+.v5-battle .movebtn.attack{background:linear-gradient(#c55b65,#8d394a);border-color:#f0a2a8}
+.v5-battle .movebtn.special{background:linear-gradient(#bb905c,#805c36);border-color:#eed19b}
+.v5-battle .arena{--v5-move-color:#ffe4a4}
+.v5-strike .arena{animation:v5quake .35s steps(3)}
+.v5-strike .arena::before{z-index:4;background:radial-gradient(circle at 76% 36%,var(--v5-move-color,#ffe4a4) 0%,transparent 39%);animation:v5hit .55s ease-out forwards;opacity:0}
+.v5-strike .enemyart{animation:v5damage .4s steps(3) forwards}
+@keyframes v5breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes v5damage{0%{transform:translateX(0);filter:brightness(1)}25%{transform:translateX(-11px);filter:brightness(2)}55%{transform:translateX(8px)}100%{transform:translateX(0);filter:brightness(1)}}
+@keyframes v5quake{0%,100%{transform:translate(0)}25%{transform:translate(-2px,1px)}50%{transform:translate(2px,-1px)}75%{transform:translate(-1px,2px)}}
+@keyframes v5hit{0%{opacity:0;transform:scale(.3)}25%{opacity:.75;transform:scale(1)}100%{opacity:0;transform:scale(1.4)}}
+@media (prefers-reduced-motion:reduce){.v5-battle .enemyart,.v5-battle .allyart,.v5-strike .arena,.v5-strike .enemyart{animation:none!important}}
+@media (min-width:800px){.mapwrap{padding:10px}.v5-battle .arena{height:275px}.battlebox{max-width:620px}.v5-battle .enemyart{width:160px;height:160px}.v5-battle .allyart{width:150px;height:150px}}
+@media (max-height:520px) and (orientation:landscape){.mapwrap{padding:4px;border-width:1px}}
+
+/* Sonnenwiese 2.5D: smoothly scaled Canvas; classic zones retain pixel art. */
+.map.hd-render.sun-25d .hd-map-canvas{image-rendering:auto}
+.map.hd-render.sun-25d{background:#75b86d}
+
+body.aurimon-sun25 .maptop b::after{content:" · Sonnenwiese 2,5D";color:#ffeba4;font-size:.76em}

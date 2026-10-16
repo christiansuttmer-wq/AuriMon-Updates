@@ -1,0 +1,139 @@
+name: AuriMon Autopilot – Build und sicheres Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'release/next-release.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: aurimon-release
+  cancel-in-progress: false
+
+jobs:
+  build-sign-verify-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Projekt auschecken
+        uses: actions/checkout@v4
+      - name: Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Android Plattform 35 und Build Tools
+        run: sdkmanager --install 'platforms;android-35' 'build-tools;35.0.0'
+      - name: Gradle Cache
+        uses: gradle/actions/setup-gradle@v4
+      - name: Vorbedingungen pruefen (noch kein Release)
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f app/build.gradle.kts
+          requested="$(tr -d '\r\n ' < release/next-release.txt)"
+          version="$(sed -nE 's/.*versionName[[:space:]]*=[[:space:]]*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/p' app/build.gradle.kts)"
+          code="$(sed -nE 's/.*versionCode[[:space:]]*=[[:space:]]*([0-9]+).*/\1/p' app/build.gradle.kts)"
+          test -n "$version" && test -n "$code"
+          test "$requested" = "v$version" || { echo 'Version im Marker und Projekt unterschiedlich'; exit 1; }
+          previous="$(gh api repos/${{ github.repository }}/releases/latest --jq .tag_name)"
+          test "$requested" != "$previous" || { echo 'Dieses Release existiert bereits'; exit 1; }
+          # These are only metadata, never secrets
+          echo "tag=$requested" >> "$GITHUB_OUTPUT"
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          echo "previous=$previous" >> "$GITHUB_OUTPUT"
+      - name: Signaturschluessel aus verschluesselten Secrets laden
+        env:
+          KEYSTORE_B64: ${{ secrets.AURIMON_KEYSTORE_B64 }}
+          STORE_PASS: ${{ secrets.AURIMON_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.AURIMON_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.AURIMON_KEY_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$KEYSTORE_B64" && test -n "$STORE_PASS" && test -n "$KEY_ALIAS" && test -n "$KEY_PASS" || {
+            echo 'Signatur-Secrets fehlen: zuerst AURIMON_AUTOPILOT_EINRICHTEN.cmd ausfuehren.'; exit 1;
+          }
+          mkdir -p "$RUNNER_TEMP/aurimon-signing"
+          printf '%s' "$KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/aurimon-signing/release-key.jks"
+          test -s "$RUNNER_TEMP/aurimon-signing/release-key.jks"
+      - name: Signiertes Android-Release bauen
+        env:
+          AURIMON_CI_STORE_PATH: ${{ runner.temp }}/aurimon-signing/release-key.jks
+          AURIMON_CI_STORE_PASSWORD: ${{ secrets.AURIMON_STORE_PASSWORD }}
+          AURIMON_CI_KEY_ALIAS: ${{ secrets.AURIMON_KEY_ALIAS }}
+          AURIMON_CI_KEY_PASSWORD: ${{ secrets.AURIMON_KEY_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x ./gradlew
+          ./gradlew :app:assembleRelease --no-daemon
+      - name: Paketkennung, Version und Signatur mit vorherigem Release vergleichen
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PREVIOUS_TAG: ${{ steps.check.outputs.previous }}
+          NEXT_TAG: ${{ steps.check.outputs.tag }}
+          NEXT_CODE: ${{ steps.check.outputs.code }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/previous" "$RUNNER_TEMP/release"
+          gh release download "$PREVIOUS_TAG" -p 'AuriMon-release.apk' -D "$RUNNER_TEMP/previous"
+          old="$RUNNER_TEMP/previous/AuriMon-release.apk"
+          new="app/build/outputs/apk/release/app-release.apk"
+          test -s "$old" && test -s "$new"
+          aapt="$ANDROID_HOME/build-tools/35.0.0/aapt"
+          signer="$ANDROID_HOME/build-tools/35.0.0/apksigner"
+          get_info() {
+            "$aapt" dump badging "$1" | sed -nE "s/^package: name='([^']+)' versionCode='([0-9]+)' versionName='([^']+)'.*/\1|\2|\3/p"
+          }
+          get_cert() {
+            "$signer" verify --print-certs "$1" | sed -nE 's/^Signer #1 certificate SHA-256 digest:[[:space:]]*([[:xdigit:]:]+).*/\1/p' | tr -d ':' | tr 'A-F' 'a-f'
+          }
+          old_info="$(get_info "$old")"
+          new_info="$(get_info "$new")"
+          test -n "$old_info" && test -n "$new_info"
+          IFS='|' read -r old_package old_code old_version <<< "$old_info"
+          IFS='|' read -r new_package new_code new_version <<< "$new_info"
+          test "$old_package" = 'de.aurelio.pokemonabenteuer' && test "$new_package" = "$old_package" || { echo 'Falscher Paketname'; exit 1; }
+          test "$new_code" = "$NEXT_CODE" && (( new_code > old_code )) || { echo 'Versionscode nicht hoeher'; exit 1; }
+          test "v$new_version" = "$NEXT_TAG" || { echo 'APK-Version und Release-Tag verschieden'; exit 1; }
+          old_cert="$(get_cert "$old")"
+          new_cert="$(get_cert "$new")"
+          test -n "$old_cert" && test -n "$new_cert" && test "$old_cert" = "$new_cert" || {
+            echo 'SIGNATUR UNTERSCHIEDLICH: Keine Veroeffentlichung!'; exit 1;
+          }
+          cp "$new" "$RUNNER_TEMP/release/AuriMon-release.apk"
+          (cd "$RUNNER_TEMP/release" && sha256sum AuriMon-release.apk > AuriMon-release.apk.sha256)
+          echo "[OK] Update-Signatur passt zum bestehenden Release."
+      - name: GitHub Release nur nach erfolgreicher Pruefung veroeffentlichen
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEXT_TAG: ${{ steps.check.outputs.tag }}
+          NEXT_CODE: ${{ steps.check.outputs.code }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$NEXT_TAG" >/dev/null 2>&1; then
+            echo 'Release bereits vorhanden: Sicherheitsstopp.'; exit 1
+          fi
+          apk="$RUNNER_TEMP/release/AuriMon-release.apk"
+          checksum="$RUNNER_TEMP/release/AuriMon-release.apk.sha256"
+          test -s "$apk" && test -s "$checksum"
+          gh release create "$NEXT_TAG" "$apk" "$checksum" \
+            --title "AuriMon $NEXT_TAG" \
+            --notes "AuriMon $NEXT_TAG (Code $NEXT_CODE). Signatur entspricht dem vorherigen Release; SHA-256 im Release enthalten."
+          echo "Erfolgreich: $NEXT_TAG"
+      - name: Temporaeren Signaturschluessel loeschen
+        if: always()
+        shell: bash
+        run: rm -rf "$RUNNER_TEMP/aurimon-signing"

@@ -1,0 +1,228 @@
+/* AuriMon 1.3.0 – canonical landscape-only layout.
+ * Replaces older screen-layout patches; game rules and feature styles remain unchanged.
+ * Breakpoints are based on actual available LANDSCAPE dimensions.
+ */
+:root{color-scheme:light;--auri-outer:#061a2a;--auri-shell:#0e2b42;--auri-border:#315570;--auri-ink:#163851;--auri-muted:#4b6d83;--auri-light:#f7fbff;--auri-mist:#e8f2fa;--auri-gold:#ffd276}
+html,body{margin:0!important;width:100%!important;height:100%!important;overflow:hidden!important;background:var(--auri-outer)!important}
+body.auri130{font-family:system-ui,-apple-system,"Segoe UI",sans-serif!important;color:#eff7ff!important;touch-action:manipulation}
+body.auri130 *,body.auri130 *::before,body.auri130 *::after{box-sizing:border-box!important}
+body.auri130 button,body.auri130 input{font-family:inherit;touch-action:manipulation}
+body.auri130 button:focus-visible,body.auri130 input:focus-visible,body.auri130 summary:focus-visible{outline:3px solid #ffd06b!important;outline-offset:2px}
+body.auri130 #app{width:100%!important;max-width:none!important;margin:0!important;height:100dvh!important;min-height:0!important;padding:8px!important;gap:8px!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:58px minmax(0,1fr) 56px!important;background:radial-gradient(ellipse at 50% -40%,#1b4863 0%,#071b2c 68%)!important;box-shadow:none!important}
+body.auri130 #app .header{position:relative!important;display:flex!important;align-items:center!important;min-height:0!important;height:58px!important;padding:6px 13px!important;margin:0!important;gap:12px!important;border:1px solid var(--auri-border)!important;border-radius:15px!important;background:linear-gradient(115deg,#102f47,#0d263b)!important;color:#fff!important;box-shadow:none!important}
+body.auri130 .header .logo{height:44px!important;width:44px!important;flex:none;display:grid!important;place-items:center;overflow:hidden;border-radius:12px!important;background:#102c40!important;border:1px solid #4c829d!important;padding:0!important;box-shadow:none!important}
+body.auri130 .header .logo img{height:100%;width:100%;object-fit:cover}
+body.auri130 .header .brand{min-width:0;flex:1}
+body.auri130 .header .brand strong{color:#fff!important;font-size:23px!important;letter-spacing:.03em!important;line-height:1.08!important}
+body.auri130 .header .brand span{display:block;color:#85e0f6!important;font-size:10px!important;font-weight:850!important;letter-spacing:.06em!important;line-height:1.2!important}
+body.auri130 .header .resources{color:#fff!important;font-size:13px!important;gap:1px!important}
+body.auri130 .header .resources b{color:#ffe3a1!important}
+body.auri130 .header .resources small{color:#fec4bf!important;font-size:12px!important}
+body.auri130 #app .main{min-height:0!important;min-width:0!important;overflow:hidden!important;padding:0!important;background:transparent!important;display:block!important}
+body.auri130 #app .page{display:none!important;min-width:0!important;height:100%!important;max-height:100%!important;padding:8px!important;overflow:auto!important;overscroll-behavior:contain!important;scrollbar-color:#8aa9bf transparent;color:var(--auri-ink)!important;background:transparent!important}
+body.auri130 #app .page.active{display:block!important}
+body.auri130 #page-world.page.active{padding:0!important;overflow:hidden!important}
+
+/* World: fixed shell, map and controls are independently sized – no CSS transforms. */
+body.auri130 #page-world .aur-world-shell{display:grid!important;grid-template-rows:56px minmax(0,1fr)!important;width:100%!important;height:100%!important;gap:8px!important;min-height:0!important;min-width:0!important}
+body.auri130 #page-world .aur-world-top{display:flex!important;gap:8px!important;min-height:0!important;max-height:56px!important;overflow:hidden!important}
+body.auri130 #page-world .hero{display:flex!important;align-items:center!important;justify-content:space-between!important;flex:1 1 auto!important;gap:10px!important;margin:0!important;padding:7px 16px!important;height:56px!important;min-height:0!important;border:1px solid var(--auri-border)!important;border-radius:14px!important;background:linear-gradient(115deg,#13394f,#103047)!important;box-shadow:none!important;color:#f7fbff!important}
+body.auri130 #page-world .hero .eyebrow{color:#9cdef1!important;font-size:9px!important;letter-spacing:.08em!important;margin:0!important}
+body.auri130 #page-world .hero h1{color:white!important;margin:2px 0!important;line-height:1.08!important;font-size:21px!important}
+body.auri130 #page-world .hero p{display:none!important}
+body.auri130 #page-world .badgecounter{display:grid!important;grid-template-columns:auto auto;align-items:center;gap:0 6px}
+body.auri130 #page-world .badgecounter span{font-size:22px!important;grid-row:1/span 2}
+body.auri130 #page-world .badgecounter b{color:#ffe29d!important;font-size:13px!important}
+body.auri130 #page-world .badgecounter small{color:#c3d6e4!important;font-size:10px!important}
+body.auri130 #page-world .world-hud{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;flex:0 1 360px!important;min-width:0!important;margin:0!important}
+body.auri130 #page-world .world-hud span{display:flex!important;align-items:center!important;justify-content:center!important;min-width:0!important;max-width:none!important;padding:6px!important;font-size:11px!important;line-height:1.15!important;white-space:normal!important;text-align:center;color:#d6eaf3!important;background:#11384e!important;border:1px solid #2e5a70!important;border-radius:12px!important;box-shadow:none!important}
+body.auri130 #page-world .exploration-layout{display:grid!important;grid-template-columns:minmax(0,1fr) clamp(270px,29vw,370px)!important;grid-template-rows:minmax(0,1fr)!important;gap:8px!important;width:100%!important;height:100%!important;min-height:0!important;min-width:0!important;margin:0!important;align-items:stretch!important;justify-content:stretch!important;flex:none!important}
+body.auri130 #page-world .tablet-map-column{display:block!important;min-height:0!important;min-width:0!important;width:100%!important;height:100%!important;grid-column:auto!important;grid-row:auto!important;flex:none!important}
+body.auri130 #page-world .mapwrap{position:relative!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:6px!important;min-width:0!important;min-height:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;margin:0!important;padding:9px!important;overflow:hidden!important;flex:none!important;border-radius:18px!important;background:linear-gradient(155deg,#102d41,#0b2538)!important;border:1px solid #315b72!important;box-shadow:none!important;filter:none!important}
+body.auri130 #page-world .maptop{display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%!important;min-height:18px!important;max-height:18px!important;margin:0!important;padding:0 4px!important;background:transparent!important;color:#d6edf5!important;border:none!important;box-shadow:none!important;font-size:11px!important}
+body.auri130 #page-world .maptop b{font-size:11px!important;color:#8ce0f4!important;letter-spacing:.06em!important}
+body.auri130 #page-world .maptop span{font-size:10px!important;color:#c3d7e4!important}
+body.auri130 #page-world .aur-map-frame{position:relative!important;flex:0 1 auto!important;align-self:center!important;min-width:0!important;min-height:0!important;width:min(100%,calc((100dvh - 216px)*14/11))!important;height:auto!important;max-height:calc(100% - 60px)!important;aspect-ratio:14/11!important;overflow:hidden!important;margin:auto!important;border:2px solid #5da3aa!important;border-radius:13px!important;background:#9fdbc2!important;box-shadow:0 8px 18px #0004!important}
+body.auri130 #page-world #game-map{display:grid!important;grid-template-columns:repeat(14,minmax(0,1fr))!important;grid-template-rows:repeat(11,minmax(0,1fr))!important;aspect-ratio:14/11!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;border-radius:10px!important;overflow:hidden!important;box-shadow:none!important}
+body.auri130 #page-world #hd-map-canvas{width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;border-radius:10px!important}
+body.auri130 #page-world .mapkey{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;align-items:center!important;gap:5px!important;width:100%!important;min-height:24px!important;max-height:none!important;margin:0!important;padding:4px 8px!important;overflow:visible!important;border:1px solid #2a546c!important;border-radius:10px!important;background:#0c2a40!important;color:#e8f7ff!important;font-size:10px!important;box-shadow:none!important}
+body.auri130 #page-world .mapkey span{display:block!important;min-width:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;text-align:center!important;color:#e8f7ff!important;font-size:10px!important;line-height:1.4!important}
+
+/* Exactly two essential control groups + secondary actions. No forced 145px heights. */
+body.auri130 #page-world .tablet-controls{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;position:relative!important;min-height:0!important;min-width:0!important;width:100%!important;height:100%!important;max-width:none!important;margin:0!important;padding:10px!important;gap:9px!important;overflow:auto!important;overscroll-behavior:contain!important;grid-column:auto!important;grid-row:auto!important;flex:none!important;border:1px solid #33596f!important;border-radius:18px!important;background:linear-gradient(160deg,#143448,#0c2437)!important;box-shadow:none!important}
+body.auri130 #page-world .aur-control-title{display:flex!important;justify-content:space-between!important;align-items:center!important;width:100%!important;flex:0 0 auto!important;padding:0 1px 6px!important;border-bottom:1px solid #31566b!important}
+body.auri130 #page-world .aur-control-title small{display:block!important;color:#8de0f2!important;font-size:9px!important;letter-spacing:.07em!important;font-weight:900!important}
+body.auri130 #page-world .aur-control-title strong{display:block!important;margin-top:2px!important;color:#fff!important;font-size:15px!important}
+body.auri130 #page-world .aur-live-dot{width:9px;height:9px;border-radius:50%;background:#50deb4;box-shadow:0 0 0 4px #50deb422}
+body.auri130 #page-world .task{display:flex!important;align-items:flex-start!important;gap:7px!important;width:100%!important;min-height:0!important;max-height:none!important;flex:0 0 auto!important;margin:0!important;padding:9px!important;border-radius:12px!important;border:1px solid #376078!important;background:#1b435a!important;box-shadow:none!important}
+body.auri130 #page-world .task>div:nth-child(2){min-width:0!important;flex:1!important}
+body.auri130 #page-world .taskico{font-size:20px!important}
+body.auri130 #page-world .task strong{display:block;color:#f4fbff!important;font-size:12px!important;line-height:1.25!important}
+body.auri130 #page-world .task small{display:block;color:#bed5e3!important;font-size:10px!important;line-height:1.4!important}
+body.auri130 #page-world .task .mini{min-width:30px!important;background:#2a526a!important;color:#fff!important;border:1px solid #5c90a8!important;border-radius:8px!important}
+body.auri130 #page-world .playbar{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;grid-template-rows:auto!important;gap:10px!important;align-items:center!important;justify-content:center!important;position:static!important;flex-direction:row!important;width:100%!important;max-width:none!important;height:auto!important;min-height:0!important;max-height:none!important;flex:0 0 auto!important;margin:0!important;padding:10px!important;border-radius:13px!important;background:#081e2f!important;border:1px solid #33566b!important;box-shadow:none!important}
+body.auri130 #page-world .dpad{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-template-rows:repeat(3,36px)!important;gap:4px!important;width:100%!important;max-width:155px!important;min-width:0!important;height:auto!important;min-height:0!important;margin:auto!important;grid-area:auto!important;flex:none!important}
+body.auri130 #page-world .dpad i{pointer-events:none}
+body.auri130 #page-world .dpad button{display:grid!important;place-items:center!important;min-width:0!important;min-height:0!important;width:100%!important;height:100%!important;padding:0!important;margin:0!important;font-size:16px!important;border-radius:9px!important;background:linear-gradient(170deg,#37647d,#204259)!important;color:#fff!important;border:1px solid #628ca3!important;box-shadow:none!important}
+body.auri130 #page-world .v58-control-right{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:6px!important;align-items:center!important;justify-content:stretch!important;flex-direction:column!important;width:100%!important;max-width:none!important;min-width:0!important;margin:0!important}
+body.auri130 #page-world .v581-right-main,body.auri130 #page-world .v581-util{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;width:100%!important;max-width:none!important}
+body.auri130 #page-world .v581-right-main button,body.auri130 #page-world .v581-util button{width:100%!important;min-width:0!important;height:43px!important;min-height:43px!important;margin:0!important;padding:4px!important;border-radius:10px!important;border:1px solid #53788f!important;background:#2a526b!important;box-shadow:none!important;color:white!important;font-size:11px!important;font-weight:800!important;line-height:1.1!important;white-space:normal!important}
+body.auri130 #page-world .v581-right-main button[data-action="interact"]{background:#1ba486!important;border-color:#47e7bf!important;color:white!important;font-size:20px!important}
+body.auri130 #page-world .v581-right-main button[data-action="retro-back"]{background:#34536e!important;font-size:20px!important}
+body.auri130 #page-world .v581-util button[data-action="retro-menu"]{background:#2267a3!important}
+body.auri130 #page-world .v581-util button[data-action="stuck-center"]{background:#9d6230!important}
+body.auri130 #page-world .aur-more-toggle{display:none!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;width:100%!important;flex:0 0 auto!important;min-height:40px!important;padding:8px 12px!important;border:1px solid #4e7991!important;border-radius:11px!important;background:#24516e!important;color:#fff!important;font-size:12px!important;font-weight:800!important}
+body.auri130 #page-world .v4-shortcuts{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;align-content:start!important;width:100%!important;min-width:0!important;min-height:0!important;overflow:visible!important;flex:0 0 auto!important;margin:0!important;padding:0!important;background:transparent!important}
+body.auri130 #page-world .v4-shortcuts button{display:block!important;min-width:0!important;min-height:40px!important;max-height:none!important;width:100%!important;white-space:normal!important;overflow-wrap:anywhere!important;padding:7px 5px!important;border:1px solid #426d86!important;border-radius:9px!important;background:linear-gradient(175deg,#255271,#1a3b55)!important;color:#e9f6ff!important;font-size:11px!important;font-weight:750!important;line-height:1.22!important;text-align:center!important;box-shadow:none!important}
+body.auri130 #page-world .tablet-help{flex:0 0 auto!important;padding:0!important;margin:0!important;color:#acc7d6!important;background:transparent!important;border:0!important;font-size:10px!important;line-height:1.35!important}
+body.auri130 #page-world .retro-menu{display:block;position:absolute;top:5px;bottom:5px;right:5px;z-index:30;width:min(76%,265px);padding:9px;background:#f7fbff;border:2px solid #487c95;border-radius:12px;box-shadow:0 10px 20px #0006;overflow:auto;color:#163a54}
+body.auri130 #page-world .retro-menu[hidden]{display:none!important}
+body.auri130 #page-world .retro-menu-title{font-size:12px;font-weight:900;color:#194567;border-bottom:1px solid #c5d7e7;margin-bottom:8px;padding-bottom:8px}
+body.auri130 #page-world .retro-menu button{display:block;width:100%;min-height:38px;padding:7px 8px;background:none;border:0;border-radius:8px;color:#163a54;font-size:13px;font-weight:700;text-align:left}
+body.auri130 #page-world .retro-menu button.v58-selected,body.auri130 #page-world .retro-menu button:hover{background:#e3f0fb;color:#153550}
+
+/* Bottom navigation: fixed height, equal buttons, legible labels. */
+body.auri130 #app .tabs,body.auri130 #app:has(#page-world.active) .tabs{position:static!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:5px!important;min-height:0!important;height:56px!important;max-height:56px!important;margin:0!important;padding:5px!important;background:#0d2a40!important;border:1px solid #355b71!important;border-radius:15px!important;box-shadow:none!important}
+body.auri130 #app .tabs button{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;gap:6px!important;min-width:0!important;min-height:0!important;width:100%!important;height:44px!important;margin:0!important;padding:4px!important;border-radius:10px!important;border:1px solid transparent!important;background:transparent!important;color:#c4dae8!important;font-weight:780!important;font-size:12px!important;line-height:1.1!important;white-space:nowrap!important}
+body.auri130 #app .tabs button span{font-size:20px!important;line-height:1!important}
+body.auri130 #app .tabs button.selected{background:linear-gradient(160deg,#1e5978,#1b435e)!important;border-color:#417d9b!important;color:#fff!important;box-shadow:none!important}
+
+/* Secondary pages: dark outside, LIGHT panels, dark text and clearly visible buttons. */
+body.auri130 #app .page:not(#page-world){color:var(--auri-ink)!important}
+body.auri130 #app :is(.subhead,.card,.travelcard,.dexcell,.bag-entry,.boxpoke,.starter,.poke-row,.player-slot,.player-manage-item){background:linear-gradient(160deg,#fafdff,#e7f1f9)!important;color:var(--auri-ink)!important;border:1px solid #b3cddd!important;border-radius:16px!important;box-shadow:none!important}
+body.auri130 #app :is(.subhead,.card,.travelcard,.dexcell,.bag-entry,.boxpoke,.starter,.poke-row,.player-slot,.player-manage-item) :is(h1,h2,h3,h4,p,b,strong,label,li){color:var(--auri-ink)!important}
+body.auri130 #app :is(.subhead,.card,.travelcard,.dexcell,.bag-entry,.boxpoke,.starter,.poke-row,.player-slot,.player-manage-item) :is(small,.muted){color:var(--auri-muted)!important;opacity:1!important}
+body.auri130 #app .subhead{padding:14px 18px!important;margin:0 0 12px!important}
+body.auri130 #app .subhead h1{color:var(--auri-ink)!important;font-size:clamp(20px,3vw,30px)!important;margin:4px 0!important;line-height:1.16!important}
+body.auri130 #app .subhead small{color:#426c88!important;font-size:11px!important}
+body.auri130 #app .subhead p{color:#476981!important;font-size:13px!important;line-height:1.45!important}
+body.auri130 #app .section-title,body.auri130 #app .section-title small{color:#e8f6ff!important}
+body.auri130 #app .card{padding:14px!important;margin:10px 0!important}
+body.auri130 #app .card h2{color:#163a54!important;font-size:19px!important}
+body.auri130 #app .card p{color:#365976!important}
+body.auri130 #app .field{background:#fff!important;border:1px solid #95b7ce!important;color:#163a54!important;font-size:14px!important;border-radius:12px!important;padding:12px!important}
+body.auri130 #app .chips{display:flex;flex-wrap:wrap;gap:7px!important;margin-bottom:12px!important}
+body.auri130 #app :is(.btn,.smallbtn,.chips button:not(.chosen),.v4-travel-buttons button,.v55-actions button,.v55-shortcuts button,.ari04-atlas-button){background:linear-gradient(180deg,#245e85,#17446a)!important;border:1px solid #5d95b8!important;color:white!important;border-radius:11px!important;min-height:38px!important;padding:8px 10px!important;font-size:12px!important;line-height:1.25!important;font-weight:780!important;white-space:normal!important;text-align:center!important;box-shadow:none!important}
+body.auri130 #app :is(.btn.gold,.smallbtn.gold,.chips button.chosen){background:linear-gradient(180deg,#ffe8a8,#f2c75e)!important;color:#3b3819!important;border-color:#d09c42!important}
+body.auri130 #app .danger,body.auri130 #app .smallbtn.red{background:#903e58!important;color:#fff!important;border:1px solid #b46c85!important}
+body.auri130 #app .dexgrid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(142px,1fr))!important;gap:10px!important}
+body.auri130 #app .compact-grid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))!important;gap:10px!important}
+body.auri130 #app .travelgrid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(190px,1fr))!important;gap:10px!important}
+body.auri130 #app :is(.dexcell,.travelcard,.boxpoke){padding:10px!important;min-width:0!important;overflow:hidden!important}
+body.auri130 #app .dexcell strong,body.auri130 #app .boxpoke b{color:#153953!important;font-size:12px!important;white-space:normal!important;overflow-wrap:anywhere!important;text-align:center!important;line-height:1.25!important}
+body.auri130 #app .dexcell small,body.auri130 #app .boxpoke small{color:#466a82!important;font-size:11px!important;text-align:center!important}
+body.auri130 #app #bag-list,body.auri130 #app #team-list,body.auri130 #app #journal{display:grid!important;gap:10px!important}
+body.auri130 #app .bag-entry{display:flex!important;align-items:center!important;gap:10px!important;padding:12px!important;margin:0!important;flex-wrap:wrap!important}
+body.auri130 #app .bag-entry .meta{flex:1!important;min-width:150px!important}
+body.auri130 #app .bag-entry .meta b{color:#173a56!important;font-size:14px!important}
+body.auri130 #app .bag-entry .meta small{color:#476982!important;font-size:12px!important;line-height:1.35!important}
+body.auri130 #app .bag-entry .qty{color:#1b547a!important;background:#e0eef6!important;border-radius:8px!important;padding:5px 7px!important}
+body.auri130 #app .bag-entry .smallbtn{flex:0 0 auto!important;margin:0!important}
+body.auri130 #app .travelcard.locked{background:#e8eff4!important;opacity:1!important}
+body.auri130 #app .travelcard.locked :is(b,small){color:#57758a!important}
+body.auri130 #app .travelcard em{color:#417092!important}
+body.auri130 #app .travelcard.current{border:2px solid #d8a34d!important}
+body.auri130 #page-travel .arimons-regions{background:#f8fcff!important;color:#153a55!important;border-radius:14px!important}
+body.auri130 #page-travel .arimons-regions>summary{color:#153a55!important}
+body.auri130 #page-travel .arimons-journal-group{margin:0!important;overflow:hidden!important;border-radius:14px!important;background:#fff!important;border:1px solid #bfd5e4!important;box-shadow:none!important}
+body.auri130 #page-travel .arimons-journal-group > summary{position:relative!important;display:flex!important;flex-direction:column!important;min-height:0!important;padding:13px 45px 13px 14px!important;gap:5px!important;color:#163a54!important;background:#f3f9fd!important;line-height:1.35!important}
+body.auri130 #page-travel .arimons-journal-group > summary strong{color:#143d5a!important;font-size:15px!important;line-height:1.3!important;overflow-wrap:anywhere!important}
+body.auri130 #page-travel .arimons-journal-group > summary small{color:#4c6d85!important;font-size:12px!important;line-height:1.45!important;opacity:1!important;overflow-wrap:anywhere!important}
+body.auri130 #page-travel .arimons-journal-body{background:#fff!important;color:#173a54!important;padding:14px!important}
+body.auri130 #page-travel .arimons-journal-body > p{color:#173a54!important;font-size:14px!important;line-height:1.5!important}
+body.auri130 #page-travel :is(.v4-achievement,.v51-journal,.v52-report,.v53-report,.v54-travel-card,.v55-travel-card,.v55-travel-info,.ari04-travel-info,.v55-endgame-header,.v55-plus-info,.ari04-portrait){background:linear-gradient(160deg,#fff,#f2f8fc)!important;color:#163a54!important;border:1px solid #c1d5e4!important;border-radius:13px!important;margin:8px 0!important;padding:12px!important;box-shadow:none!important}
+body.auri130 #page-travel :is(.v4-achievement,.v51-journal,.v52-report,.v53-report,.v54-travel-card,.v55-travel-info,.ari04-travel-info,.v55-endgame-header,.v55-plus-info,.ari04-portrait) :is(h1,h2,h3,h4,p,small,strong,b,li,label){color:#173a54!important;opacity:1!important;line-height:1.45!important}
+body.auri130 #page-travel .ari04-portrait :is(small,p){color:#405f75!important}
+body.auri130 #page-travel .ari04-shadow-status{color:#475e77!important;font-size:13px!important;line-height:1.5!important}
+body.auri130 #page-travel .v55-actions,body.auri130 #page-travel .v4-travel-buttons{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(140px,1fr))!important;gap:8px!important;align-items:stretch!important}
+body.auri130 #page-travel .v55-actions button,body.auri130 #page-travel .v4-travel-buttons button{width:100%!important;min-width:0!important;min-height:43px!important;padding:9px 7px!important}
+
+/* Dialogs / battle in landscape: overlays may scroll INSIDE, never hide actions. */
+body.auri130 .overlay{position:fixed!important;inset:0!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:6px!important;overflow:hidden!important;background:#03111fd9!important;z-index:100!important}
+body.auri130 .overlay.hidden{display:none!important}
+body.auri130 .dialog,body.auri130 .battlebox{width:min(96vw,1050px)!important;max-width:min(96vw,1050px)!important;max-height:calc(100dvh - 12px)!important;overflow:auto!important;background:linear-gradient(155deg,#153c55,#0c2b42)!important;color:#f6fbff!important;border:1px solid #6a9cb6!important;border-radius:17px!important;box-shadow:0 20px 55px #0009!important;padding:12px!important}
+body.auri130 .dialog{max-width:min(96vw,780px)!important}
+body.auri130 .dialog h2{color:#fff!important;font-size:19px!important;margin:4px 0 10px!important}
+body.auri130 .dialog p,body.auri130 .dialog small,body.auri130 .dialog li{color:#e2f3ff!important;opacity:1!important;line-height:1.45!important}
+body.auri130 .dialog .btn{color:#fff!important}
+body.auri130 .battlebox{display:block!important}
+body.auri130 .battletop{color:#dceeff!important;font-size:11px!important;margin-bottom:5px!important}
+body.auri130 .arena{height:min(36dvh,280px)!important;min-height:120px!important;border:1px solid #8fd2d7!important;border-radius:14px!important}
+body.auri130 .battlemon{background:#092c42ea!important;color:#fff!important;border:1px solid #9fcedb!important}
+body.auri130 .battlemon :is(b,small,strong,span){color:#fff!important}
+body.auri130 .battlelog{margin:7px 0!important;padding:7px 10px!important;min-height:35px!important;background:#102f47!important;color:#fff0c8!important;border:1px solid #446981!important;border-radius:10px!important;font-size:12px!important;line-height:1.3!important}
+body.auri130 .battleactions{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important}
+body.auri130 .battleactions button{min-width:0!important;min-height:42px!important;padding:6px!important;background:#24546f!important;color:#fff!important;border:1px solid #578fa9!important;border-radius:10px!important;font-weight:800!important;font-size:12px!important;line-height:1.2!important;white-space:normal!important}
+body.auri130 .battleactions .attack{background:#9d4050!important;border-color:#cb7885!important}
+body.auri130 .battleactions .special{background:#9d7236!important;border-color:#d6ad6b!important}
+body.auri130 .battleactions button:disabled{opacity:.64!important}
+
+/* Mid-size tablet: make all actions a contained scrollable grid. */
+@media(max-width:1150px){
+ body.auri130 #page-world .exploration-layout{grid-template-columns:minmax(0,1fr) clamp(255px,32vw,310px)!important}
+ body.auri130 #page-world .world-hud{display:none!important}
+ body.auri130 #page-world .v4-shortcuts{overflow:auto!important;flex:1 1 auto!important;min-height:0!important}
+ body.auri130 #page-world .tablet-help{display:none!important}
+}
+/* Real smartphones in landscape. Map dominates, controller never scrolls off-screen. */
+@media(max-height:550px) and (orientation:landscape){
+ body.auri130 #app{grid-template-rows:44px minmax(0,1fr) 44px!important;padding:4px!important;gap:4px!important}
+ body.auri130 #app .header{height:44px!important;border-radius:10px!important;padding:3px 9px!important;gap:7px!important}
+ body.auri130 .header .logo{height:36px!important;width:36px!important;border-radius:9px!important}
+ body.auri130 .header .brand strong{font-size:17px!important}
+ body.auri130 .header .brand span{font-size:8px!important;letter-spacing:0!important}
+ body.auri130 .header .resources{font-size:11px!important}
+ body.auri130 .header .resources small{font-size:9px!important}
+ body.auri130 #app .tabs,body.auri130 #app:has(#page-world.active) .tabs{height:44px!important;min-height:44px!important;max-height:44px!important;padding:3px!important;gap:3px!important;border-radius:10px!important}
+ body.auri130 #app .tabs button{height:36px!important;gap:3px!important;font-size:10px!important;border-radius:8px!important}
+ body.auri130 #app .tabs button span{font-size:17px!important}
+ body.auri130 #app .page{padding:4px!important}
+ body.auri130 #page-world .aur-world-shell{grid-template-rows:minmax(0,1fr)!important;gap:0!important}
+ body.auri130 #page-world .aur-world-top{display:none!important}
+ body.auri130 #page-world .exploration-layout{grid-template-columns:minmax(0,1fr) clamp(190px,32vw,245px)!important;gap:5px!important}
+ body.auri130 #page-world .mapwrap{padding:4px!important;gap:2px!important;border-radius:10px!important}
+ body.auri130 #page-world .maptop{min-height:0!important;max-height:0!important;height:0!important;overflow:hidden!important}
+ body.auri130 #page-world .aur-map-frame{width:min(100%,calc((100dvh - 112px)*14/11))!important;max-height:calc(100% - 6px)!important;border-width:2px!important;border-radius:9px!important}
+ body.auri130 #page-world .mapkey{display:none!important}
+ body.auri130 #page-world .tablet-controls{padding:5px!important;gap:5px!important;border-radius:10px!important;overflow:hidden!important}
+ body.auri130 #page-world .aur-control-title,body.auri130 #page-world .tablet-help,body.auri130 #page-world .task{display:none!important}
+ body.auri130 #page-world .playbar{gap:5px!important;padding:5px!important;border-radius:8px!important}
+ body.auri130 #page-world .dpad{grid-template-rows:repeat(3,34px)!important;gap:3px!important;max-width:120px!important}
+ body.auri130 #page-world .dpad button{font-size:13px!important;border-radius:6px!important}
+ body.auri130 #page-world .v58-control-right{gap:4px!important}
+ body.auri130 #page-world .v581-right-main,body.auri130 #page-world .v581-util{gap:4px!important}
+ body.auri130 #page-world .v581-right-main button,body.auri130 #page-world .v581-util button{height:35px!important;min-height:35px!important;padding:2px!important;font-size:10px!important;border-radius:7px!important}
+ body.auri130 #page-world .v581-right-main button[data-action="interact"],body.auri130 #page-world .v581-right-main button[data-action="retro-back"]{font-size:18px!important}
+ body.auri130 #page-world .aur-more-toggle{display:flex!important;min-height:36px!important;font-size:11px!important}
+ body.auri130 #page-world .v4-shortcuts{display:none!important}
+ body.auri130 #page-world .tablet-controls.aur-shortcuts-open .v4-shortcuts{display:grid!important;position:fixed!important;left:auto!important;right:8px!important;top:51px!important;bottom:51px!important;width:min(400px,calc(100vw - 16px))!important;height:auto!important;max-height:none!important;overflow:auto!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;padding:44px 10px 10px!important;z-index:110!important;background:#0c2b41!important;border:1px solid #5b879f!important;border-radius:12px!important;box-shadow:0 6px 30px #000a!important}
+ body.auri130 #page-world .tablet-controls.aur-shortcuts-open .aur-more-toggle{position:fixed!important;top:55px!important;right:14px!important;width:min(380px,calc(100vw - 28px))!important;z-index:111!important;background:#316985!important}
+ body.auri130 #page-world .v4-shortcuts button{min-height:41px!important;font-size:12px!important}
+ body.auri130 .dialog,.auri130 .battlebox{padding:8px!important;max-height:calc(100dvh - 8px)!important;border-radius:10px!important}
+ body.auri130 .dialog h2{font-size:16px!important}
+ body.auri130 .dialog p{font-size:12px!important}
+ body.auri130 .arena{height:min(30dvh,128px)!important;min-height:95px!important}
+ body.auri130 .enemyart{width:110px!important;height:110px!important;top:10px!important}
+ body.auri130 .allyart{width:105px!important;height:105px!important}
+ body.auri130 .battlemon{padding:4px 7px!important;font-size:10px!important}
+ body.auri130 .battleactions{gap:5px!important}
+ body.auri130 .battleactions button{min-height:34px!important;font-size:10px!important;padding:4px!important}
+ body.auri130 .battlelog{min-height:0!important;font-size:11px!important;padding:5px 8px!important;margin:5px 0!important}
+}
+/* Very small phones: avoid a narrow readable button being split into tiny columns. */
+@media(max-width:720px) and (orientation:landscape){
+ body.auri130 #page-world .exploration-layout{grid-template-columns:minmax(0,1fr) 185px!important}
+ body.auri130 #page-world .dpad{max-width:110px!important;grid-template-rows:repeat(3,30px)!important}
+ body.auri130 #page-world .v581-right-main button,body.auri130 #page-world .v581-util button{height:31px!important;min-height:31px!important}
+ body.auri130 #app .tabs button{font-size:9px!important}
+}
+
+/* Contrast fixes where older feature styles had higher selector specificity. */
+body.auri130.auri121.v581-modern #app .header .brand strong{color:#ffffff!important;text-shadow:none!important}
+body.auri130.auri121.v581-modern #app .header .brand span{color:#89dcf2!important;text-shadow:none!important}
+body.auri130.auri121.v581-modern #app #page-world .tablet-controls .task strong{color:#f6fbff!important;text-shadow:none!important}
+body.auri130.auri121.v581-modern #app #page-world .tablet-controls .task small{color:#bfd7e4!important;text-shadow:none!important}
+body.auri130.auri121.v581-modern #app #page-travel .arimons-journal-group > summary strong{color:#143c55!important}
+body.auri130.auri121.v581-modern #app #page-travel .arimons-journal-group > summary small{color:#476c82!important}
+/* The bottom navigation replaces the duplicate legacy back-to-world strip. */
+body.auri130 #app .v58-back{display:none!important}

@@ -1,0 +1,243 @@
+/* AuriMon 1.0.1 – mobile landscape, fixed battle UI, smoother map edges, zoom lock. */
+html,body{
+  overscroll-behavior:none;
+  touch-action:manipulation;
+}
+body{
+  overflow:hidden;
+}
+#app{
+  width:100%;
+  max-width:100%;
+}
+.main{
+  overscroll-behavior:contain;
+}
+#battle-overlay,
+#modal-overlay{
+  padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));
+}
+#battle-overlay .battlebox{
+  width:min(1100px, calc(100vw - 16px)) !important;
+  max-height:calc(100dvh - 16px) !important;
+  overflow:auto !important;
+  padding:14px !important;
+  border-radius:24px !important;
+}
+#battle-overlay .battletop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:10px;
+}
+#battle-overlay .arena{
+  min-height:200px;
+  height:min(36dvh, 290px) !important;
+}
+#battle-overlay .battlelog{
+  margin:10px 0 !important;
+}
+#battle-overlay .battleactions{
+  display:grid !important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:8px !important;
+}
+#battle-overlay .battleactions button,
+#battle-overlay .movebtn{
+  min-height:52px !important;
+  font-size:14px !important;
+}
+#battle-overlay .movebtn small{
+  line-height:1.2;
+}
+#page-world .mapwrap{
+  overflow:hidden;
+}
+#page-world .map,
+#page-world #hd-map-canvas{
+  border-radius:14px !important;
+}
+@media (orientation:landscape) and (max-width:950px) and (max-height:560px){
+  .header{
+    height:54px !important;
+    padding:7px 10px !important;
+  }
+  .logo{
+    height:34px !important;
+    width:34px !important;
+    font-size:20px !important;
+  }
+  .brand span{font-size:8px !important}
+  .brand strong{font-size:15px !important}
+  .resources{font-size:12px !important}
+  .main{
+    overflow:hidden !important;
+    padding:7px !important;
+  }
+  #page-world.active{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) minmax(184px,32vw);
+    grid-template-rows:auto auto 1fr;
+    gap:6px;
+    height:100%;
+    align-content:start;
+  }
+  #page-world .hero{
+    grid-column:1 / -1;
+    margin:0;
+    padding:8px 10px !important;
+  }
+  #page-world .hero h1{font-size:18px !important}
+  #page-world .hero p{font-size:11px !important}
+  #page-world .badgecounter span{font-size:22px !important}
+  #page-world .world-hud{
+    grid-column:1 / -1;
+    margin:0;
+    gap:4px;
+  }
+  #page-world .world-hud span{
+    min-width:0;
+    padding:4px 4px !important;
+    font-size:10px !important;
+  }
+  #page-world .exploration-layout{
+    display:contents !important;
+  }
+  #page-world .tablet-map-column{
+    grid-column:1;
+    grid-row:3;
+    min-width:0;
+  }
+  #page-world .tablet-controls{
+    grid-column:2;
+    grid-row:3;
+    display:flex !important;
+    flex-direction:column;
+    gap:6px !important;
+    min-width:0;
+    padding-top:0 !important;
+    margin:0 !important;
+    overflow:hidden;
+  }
+  #page-world .maptop{
+    margin:0 0 4px 0 !important;
+    font-size:11px !important;
+  }
+  #page-world .maptop span{font-size:9px !important}
+  #page-world .mapwrap{
+    width:min(100%, calc((100dvh - 145px) * 1.2222)) !important;
+    max-width:none !important;
+    margin:0 auto !important;
+    padding:5px !important;
+    border-radius:12px !important;
+  }
+  #page-world .task{
+    margin:0 !important;
+    padding:6px 8px !important;
+    min-height:46px;
+    gap:7px !important;
+  }
+  #page-world .taskico{font-size:20px !important}
+  #page-world .task strong{font-size:12px !important}
+  #page-world .task small{font-size:10px !important;margin-top:1px !important}
+  #page-world .v4-shortcuts{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:4px !important;
+    margin:0 !important;
+  }
+  #page-world .v4-shortcuts button{
+    min-height:34px !important;
+    padding:4px 2px !important;
+    font-size:9px !important;
+    border-radius:8px !important;
+    box-shadow:none !important;
+  }
+  #page-world .playbar{
+    position:static !important;
+    bottom:auto !important;
+    margin:0 !important;
+    padding:6px !important;
+    gap:5px !important;
+    display:grid !important;
+    grid-template-areas:'dpad travel' 'dpad bag';
+    grid-template-columns:auto 1fr;
+    align-items:stretch;
+  }
+  #page-world .playbar .dpad{
+    grid-area:dpad;
+    grid-template-columns:repeat(3,34px) !important;
+    grid-template-rows:repeat(3,32px) !important;
+    gap:3px !important;
+    justify-self:start;
+  }
+  #page-world .playbar .dpad button{
+    font-size:14px !important;
+    border-radius:7px !important;
+    box-shadow:none !important;
+  }
+  #page-world .playbar .quick:first-child{grid-area:travel}
+  #page-world .playbar .quick:last-child{grid-area:bag}
+  #page-world .playbar .quick{
+    min-height:32px !important;
+    padding:4px 5px !important;
+    font-size:11px !important;
+    box-shadow:none !important;
+  }
+  #page-world .tablet-help{
+    display:none !important;
+  }
+  #battle-overlay .battlebox{
+    width:min(100vw - 12px, 1000px) !important;
+    max-height:calc(100dvh - 12px) !important;
+    padding:10px !important;
+    border-radius:18px !important;
+  }
+  #battle-overlay .battletop{
+    margin-bottom:6px;
+  }
+  #battle-overlay .battletop b,
+  #battle-overlay .battletop span{
+    font-size:12px !important;
+  }
+  #battle-overlay .arena{
+    height:min(28dvh, 170px) !important;
+    min-height:150px !important;
+  }
+  #battle-overlay .battlemon{
+    max-width:180px;
+    padding:8px 10px !important;
+  }
+  #battle-overlay .battlemon b,
+  #battle-overlay .battlemon strong{
+    font-size:13px !important;
+  }
+  #battle-overlay .battlemon small{
+    font-size:10px !important;
+  }
+  #battle-overlay .battlelog{
+    font-size:12px !important;
+    margin:6px 0 !important;
+    padding:8px 10px !important;
+  }
+  #battle-overlay .battleactions{
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    gap:6px !important;
+  }
+  #battle-overlay .battleactions button,
+  #battle-overlay .movebtn{
+    min-height:40px !important;
+    padding:7px 6px !important;
+    font-size:12px !important;
+    line-height:1.15;
+  }
+  #battle-overlay .movebtn small{
+    font-size:9px !important;
+  }
+}
+@media (max-width:560px){
+  #battle-overlay .battleactions{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+}

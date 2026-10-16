@@ -1,0 +1,30 @@
+/* AuriMon 1.3.8 – original colourful action keys, large d-pad preserved. */
+body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack > button{
+ color:#fff!important;
+ border-width:2px!important;
+ border-style:solid!important;
+ text-shadow:0 1px 2px rgba(0,0,0,.28)!important;
+ box-shadow:0 6px 14px rgba(25,61,89,.24),inset 0 2px 0 rgba(255,255,255,.3)!important;
+}
+body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack > [data-action="interact"]{
+ background:linear-gradient(180deg,#39c979,#13924f)!important;
+ border-color:#087440!important;
+}
+body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack > [data-action="retro-back"]{
+ background:linear-gradient(180deg,#f07279,#c72b45)!important;
+ border-color:#a71c33!important;
+}
+body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack > [data-action="retro-menu"]{
+ background:linear-gradient(180deg,#65b6f9,#246ac4)!important;
+ border-color:#1953a1!important;
+}
+body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack > [data-action="stuck-center"]{
+ background:linear-gradient(180deg,#ffcb65,#e18a23)!important;
+ border-color:#a95e0c!important;
+ color:#44270d!important;
+ text-shadow:0 1px 0 rgba(255,255,255,.35)!important;
+}
+body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack > button:active{
+ transform:translateY(2px)!important;
+ filter:brightness(.92)!important;
+}

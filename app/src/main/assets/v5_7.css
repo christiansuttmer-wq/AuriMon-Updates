@@ -1,0 +1,153 @@
+/* AuriMon 5.7.2 — kompletter Grafikumbau für Außenwelt, Innenräume und Kampf-UI */
+:root{
+  --v57-panel:rgba(17,37,57,.82);
+  --v57-panel-soft:rgba(27,58,88,.72);
+  --v57-line:#7fc5d9;
+  --v57-gold:#ffd778;
+  --v57-blue:#9ddcf5;
+  --v57-green:#8ae0b4;
+}
+html,body{
+  background:
+    radial-gradient(circle at top, #204a66 0%, #0c243a 32%, #05131f 100%);
+}
+#app{
+  background:
+    radial-gradient(circle at top, rgba(126,214,255,.12), transparent 24%),
+    linear-gradient(180deg,#17324c 0%,#0c2033 45%,#091724 100%);
+}
+.header{
+  background:linear-gradient(180deg,rgba(24,50,74,.96),rgba(16,37,56,.96));
+  border-bottom:1px solid rgba(147,220,255,.18);
+  box-shadow:0 10px 24px rgba(0,0,0,.28);
+}
+.logo{
+  box-shadow:0 0 0 3px rgba(255,232,174,.22), 0 8px 16px rgba(0,0,0,.25), 0 3px #b98722;
+}
+.hero,.subhead,.card,.task,.mapwrap,.world-hud span,.travelcard,.bag-entry,.boxpoke,.dexcell,.dialog,.battlebox,.field,.tabs button.selected,.v51-room-bar,.player-slot,.player-name-button,.player-manage-item{
+  backdrop-filter: blur(8px);
+}
+.hero{
+  background:
+    radial-gradient(circle at top right, rgba(255,223,122,.18), transparent 24%),
+    linear-gradient(135deg, rgba(45,100,133,.96), rgba(31,55,93,.97));
+  border:1px solid rgba(161,221,241,.34);
+  box-shadow:0 10px 24px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.08);
+}
+.world-hud span,.task,.card,.travelcard,.boxpoke,.dexcell,.bag-entry,.subhead,.dialog,.battlebox,.field{
+  background:linear-gradient(180deg, rgba(28,63,90,.88), rgba(18,41,61,.94));
+  border-color:rgba(129,190,219,.34);
+  box-shadow:0 10px 20px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.05);
+}
+.mapwrap{
+  background:
+    linear-gradient(180deg, rgba(36,81,97,.92), rgba(19,43,58,.97));
+  border:1px solid rgba(119,197,214,.38);
+  box-shadow:0 10px 28px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06);
+}
+.map.hd-render{
+  border-radius:14px;
+  background:linear-gradient(180deg,#a6dbff 0%,#88ccdf 18%,#8fdb91 18.5%,#6eb96c 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 0 34px rgba(0,0,0,.12);
+}
+.quick,.smallbtn,.chips button,.v4-shortcuts button,.v4-travel-buttons button,.travelcard,.battleactions button,.btn,.picker-back,.picker-manage,.mini,.player-slot-controls button{
+  transition:transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+.quick:hover,.smallbtn:hover,.chips button:hover,.v4-shortcuts button:hover,.v4-travel-buttons button:hover,.battleactions button:hover,.btn:hover,.mini:hover,.player-slot-controls button:hover{
+  transform:translateY(-1px);
+  box-shadow:0 8px 16px rgba(0,0,0,.18);
+  filter:brightness(1.05);
+}
+.quick,.smallbtn,.chips button,.v4-shortcuts button,.v4-travel-buttons button,.battleactions button,.btn,.mini{
+  border-color:rgba(155,215,238,.32);
+}
+.tabs{
+  background:linear-gradient(180deg,#0f2437,#0a1825);
+}
+.tabs button.selected{
+  background:linear-gradient(180deg,#2d6284,#214861);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+.dialog,.battlebox{
+  background:
+    radial-gradient(circle at top right, rgba(255,229,150,.09), transparent 28%),
+    linear-gradient(180deg, rgba(28,67,95,.96), rgba(15,35,53,.98));
+}
+.battlebox{
+  max-width:760px;
+}
+.battletop{
+  margin-bottom:12px;
+  padding:10px 12px;
+  background:linear-gradient(180deg, rgba(13,35,51,.54), rgba(11,28,41,.2));
+  border:1px solid rgba(147,221,234,.18);
+  border-radius:14px;
+}
+.arena{
+  height:300px;
+  background:
+    radial-gradient(circle at 70% 15%, rgba(255,244,183,.38), transparent 28%),
+    linear-gradient(180deg,#94d8ff 0%, #6fb9ea 36%, #8dd8be 56%, #55aa78 56.4%, #38744c 100%);
+  border:1px solid rgba(190,245,241,.42);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 -40px 60px rgba(0,0,0,.1);
+}
+.arena:before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(255,255,255,.16), transparent 20%);
+  pointer-events:none;
+}
+.arena:after{
+  height:49%;
+  bottom:-24%;
+  background:radial-gradient(circle at center, #9acc81 0%, #73a963 70%, #5d8a55 100%);
+}
+.battlemon{
+  background:linear-gradient(180deg, rgba(10,32,46,.88), rgba(11,28,42,.78));
+  border-color:rgba(189,235,228,.48);
+  box-shadow:0 10px 18px rgba(0,0,0,.16);
+}
+.battlelog{
+  background:linear-gradient(180deg, rgba(15,44,64,.9), rgba(12,32,47,.95));
+  border-color:rgba(123,190,219,.32);
+  color:#f6edc1;
+  border-radius:14px;
+}
+.battleactions{
+  gap:10px;
+}
+.battleactions button{
+  min-height:54px;
+  border-radius:14px;
+  background:linear-gradient(180deg, rgba(41,92,123,.98), rgba(29,67,92,.98));
+  box-shadow:0 6px 14px rgba(0,0,0,.16);
+}
+.battleactions .attack{background:linear-gradient(180deg,#c3545e,#8d313b)}
+.battleactions .special{background:linear-gradient(180deg,#c59a45,#8b682d)}
+.toast{
+  background:linear-gradient(180deg,#ffeab6,#ffd983);
+  box-shadow:0 14px 30px rgba(0,0,0,.28);
+}
+.v51-room-canvas{
+  border-radius:14px;
+  box-shadow:0 14px 28px rgba(0,0,0,.24), inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.v51-room-bar{
+  background:linear-gradient(180deg, rgba(23,56,80,.9), rgba(12,31,48,.96));
+  border:1px solid rgba(140,204,227,.3);
+  border-radius:14px;
+  padding:8px 10px;
+  margin-top:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.v51-room-bar button{
+  background:linear-gradient(180deg,#35698c,#234d67);
+  color:#fff;
+  border:1px solid rgba(156,221,242,.3);
+  border-radius:10px;
+  min-height:36px;
+  padding:8px 12px;
+}

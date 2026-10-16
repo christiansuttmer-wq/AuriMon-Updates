@@ -1,0 +1,6 @@
+/* AuriMon 1.3.10 - explicit vibrant action keys, layered above old themes. */
+body #app #page-world .playbar button[data-action="interact"],body #app #page-world .playbar button.auri-color-a{background:#159d58!important;background-image:linear-gradient(180deg,#55e89a,#0b8441)!important;border:2px solid #08723d!important;color:#fff!important}
+body #app #page-world .playbar button[data-action="retro-back"],body #app #page-world .playbar button.auri-color-b{background:#d42b4d!important;background-image:linear-gradient(180deg,#ff8190,#b51c3b)!important;border:2px solid #99152d!important;color:#fff!important}
+body #app #page-world .playbar button[data-action="retro-menu"],body #app #page-world .playbar button.auri-color-menu{background:#2977d7!important;background-image:linear-gradient(180deg,#72c3ff,#1958b2)!important;border:2px solid #124893!important;color:#fff!important}
+body #app #page-world .playbar button[data-action="stuck-center"],body #app #page-world .playbar button.auri-color-stuck{background:#f1a326!important;background-image:linear-gradient(180deg,#ffdb83,#dc8710)!important;border:2px solid #b5710c!important;color:#382208!important}
+body #app #page-world .playbar .auri137-action-stack > button{box-shadow:0 5px 11px #13334966,inset 0 2px 0 #ffffff55!important;opacity:1!important;filter:none!important}

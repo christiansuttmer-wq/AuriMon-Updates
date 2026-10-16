@@ -1,0 +1,15 @@
+/* 5.3.0: dialog-first adventure cards, 360px phones to wide tablets */
+.v53-shortcuts{display:flex;gap:8px;flex-wrap:wrap;margin-top:7px}
+.v53-shortcuts>button{border:1px solid #78cde7;background:linear-gradient(125deg,#18465d,#285a6b);border-radius:12px;padding:11px 14px;color:#f4fbff;font-weight:800;min-height:44px;cursor:pointer;box-shadow:inset 0 1px #93dced50}
+.v53-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;max-height:53vh;overflow:auto;padding:4px 2px}
+.v53-card{display:flex;flex-direction:column;gap:7px;background:#15394d;border:1px solid #81c3d966;padding:12px;border-radius:13px;color:#fff}
+.v53-card b{font-size:15px}.v53-card small{color:#c4e5ec;line-height:1.5;flex:1}
+.v53-card button,.v53-glyphs button,.v53-action button,.v53-fossils button,.v53-report button{border-radius:9px;border:1px solid #9cbcd1;background:#2d6682;color:#fff;padding:11px;font-weight:750;min-height:42px}
+.v53-card button:disabled,.v53-action button:disabled,.v53-fossils button:disabled{opacity:.4;cursor:not-allowed}
+.v53-story-row{display:flex;flex-direction:column;gap:3px;border-bottom:1px solid #778ca850;padding:9px 0}.v53-story-row small{color:inherit;opacity:.8}
+.v53-glyphs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:16px auto}.v53-glyphs button{font-size:27px;background:linear-gradient(130deg,#123b53,#3b6481);padding:12px 0}
+.v53-fossils{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin-top:10px}
+.v53-flavor{background:#183d5370;padding:13px;border-radius:12px}
+.v53-action{margin:12px 0}
+.v53-report{border-top:1px solid #7ea2b8;padding-top:11px;margin-top:14px}.v53-report button{font-size:14px}
+@media(max-width:500px){.v53-grid{grid-template-columns:1fr;max-height:43vh}.v53-glyphs button{font-size:22px}.v53-card{padding:10px}}

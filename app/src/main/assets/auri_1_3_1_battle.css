@@ -1,0 +1,375 @@
+/* AuriMon 1.3.1 — Querformat. Statuskarten sind Teil ihrer Kämpfer-Kolumne,
+   keine schwebenden/überlappenden Labels mehr. */
+body.auri130 #battle-overlay{
+  padding:6px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+}
+body.auri130 #battle-overlay .auri131-battle{
+  width:min(99vw,1440px)!important;
+  max-width:min(99vw,1440px)!important;
+  height:min(98dvh,900px)!important;
+  max-height:98dvh!important;
+  padding:clamp(6px,.9vw,14px)!important;
+  display:grid!important;
+  grid-template-rows:auto minmax(0,1fr)!important;
+  gap:6px!important;
+  overflow:hidden!important;
+  border:1px solid #76b8ce!important;
+  border-radius:clamp(12px,1.6vw,22px)!important;
+  background:linear-gradient(140deg,#123b54,#0a273e 68%,#0a2235)!important;
+}
+body.auri130 .auri131-battle .battletop{
+  display:flex!important;
+  justify-content:space-between!important;
+  align-items:center!important;
+  gap:10px!important;
+  min-height:25px!important;
+  padding:4px 9px!important;
+  margin:0!important;
+  border-radius:9px!important;
+  background:rgba(0,17,28,.3)!important;
+  color:#d8edf9!important;
+  font-size:clamp(10px,.9vw,14px)!important;
+}
+body.auri130 .auri131-battle .battletop b,
+body.auri130 .auri131-battle .battletop span{
+  font-size:inherit!important;
+  color:#e9f9ff!important;
+}
+body.auri130 .auri131-battle .auri131-stage{
+  display:grid!important;
+  grid-template-columns:clamp(145px,19vw,242px) minmax(0,1fr) clamp(166px,22vw,266px)!important;
+  gap:clamp(5px,1vw,14px)!important;
+  min-height:0!important;
+  height:100%!important;
+}
+body.auri130 .auri131-battle .auri131-tools,
+body.auri130 .auri131-battle .auri131-moves{
+  min-width:0!important;
+  min-height:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:5px!important;
+  padding:clamp(5px,.8vw,12px)!important;
+  border-radius:12px!important;
+  border:1px solid #36637d!important;
+  background:linear-gradient(175deg,#12334b,#0b273a)!important;
+  overflow:hidden!important;
+}
+body.auri130 .auri131-battle .auri131-panel-heading{
+  font-size:clamp(10px,.85vw,14px)!important;
+  line-height:1.2!important;
+  letter-spacing:.035em!important;
+  font-weight:900!important;
+  color:#a8eaff!important;
+  margin:0!important;
+  padding:2px 1px 5px!important;
+  flex:0 0 auto!important;
+  border-bottom:1px solid #31536b!important;
+}
+body.auri130 .auri131-battle .auri131-item-grid,
+body.auri130 .auri131-battle .auri131-move-grid{
+  min-height:0!important;
+  display:grid!important;
+  align-content:start!important;
+  gap:clamp(3px,.5vw,8px)!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color:#4d7992 transparent;
+  padding:1px!important;
+}
+body.auri130 .auri131-battle .auri131-item-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+body.auri130 .auri131-battle .auri131-move-grid{
+  grid-template-columns:minmax(0,1fr)!important;
+}
+body.auri130 .auri131-battle :is(.auri131-item-grid,.auri131-move-grid) button{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:center!important;
+  min-width:0!important;
+  width:100%!important;
+  min-height:clamp(37px,6.3dvh,66px)!important;
+  height:auto!important;
+  padding:5px 4px!important;
+  border-radius:8px!important;
+  border:1px solid #4b829e!important;
+  background:linear-gradient(180deg,#245a78,#193e59)!important;
+  color:#fff!important;
+  font-size:clamp(9px,.86vw,13px)!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  text-align:center!important;
+  overflow-wrap:anywhere;
+  white-space:normal!important;
+  box-shadow:none!important;
+  cursor:pointer;
+}
+body.auri130 .auri131-battle .auri131-move-grid button{
+  align-items:flex-start!important;
+  text-align:left!important;
+  padding:7px 9px!important;
+  background:linear-gradient(160deg,#86613d,#67472d)!important;
+  border-color:#bd9665!important;
+  min-height:clamp(44px,7.5dvh,76px)!important;
+}
+body.auri130 .auri131-battle .auri131-move-grid button.attack{
+  background:linear-gradient(160deg,#a34c5c,#75364a)!important;
+  border-color:#dc8d9e!important;
+}
+body.auri130 .auri131-battle .auri131-move-grid .v4-move-title{
+  font-size:clamp(10px,1vw,15px)!important;
+  font-weight:900!important;
+  color:#fff!important;
+}
+body.auri130 .auri131-battle .auri131-move-grid button small{
+  font-size:clamp(9px,.82vw,12px)!important;
+  line-height:1.15!important;
+  color:#ffe4a8!important;
+  opacity:1!important;
+  display:block!important;
+  margin-top:2px!important;
+}
+body.auri130 .auri131-battle :is(.auri131-item-grid,.auri131-move-grid) button:disabled{
+  opacity:.55!important;
+  filter:saturate(.5)!important;
+  cursor:default;
+}
+body.auri130 .auri131-battle .auri131-center{
+  display:flex!important;
+  flex-direction:column!important;
+  min-width:0!important;
+  min-height:0!important;
+  gap:6px!important;
+  height:100%!important;
+}
+body.auri130 .auri131-battle .arena{
+  display:block!important;
+  position:relative!important;
+  flex:1 1 auto!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:hidden!important;
+  background:linear-gradient(180deg,#41677f 0%,#618da0 54%,#558678 55%,#315d57 100%)!important;
+  border-radius:14px!important;
+  border:1px solid #7babb0!important;
+  isolation:isolate;
+}
+body.auri130 .auri131-battle .arena:after{
+  z-index:0!important;
+  pointer-events:none!important;
+}
+body.auri130 .auri131-battle .auri131-fighters{
+  position:relative!important;
+  z-index:2!important;
+  width:100%!important;
+  height:100%!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:6px!important;
+  padding:clamp(4px,.6vw,10px)!important;
+  align-items:stretch!important;
+}
+body.auri130 .auri131-battle .auri131-fighter{
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:3px!important;
+  min-height:0!important;
+  min-width:0!important;
+  align-self:stretch!important;
+}
+body.auri130 .auri131-battle .auri131-fighter.enemy{
+  justify-content:flex-start!important;
+}
+body.auri130 .auri131-battle .auri131-fighter .art{
+  position:relative!important;
+  top:auto!important;right:auto!important;left:auto!important;bottom:auto!important;
+  display:grid!important;
+  place-items:center!important;
+  flex:1 1 auto!important;
+  min-height:0!important;
+  min-width:0!important;
+  width:100%!important;
+  height:0!important;
+  max-width:100%!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  padding:0!important;
+  margin:0!important;
+  overflow:visible!important;
+}
+body.auri130 .auri131-battle .auri131-fighter .art img{
+  display:block;
+  width:100%!important;
+  height:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+  filter:drop-shadow(0 7px 8px rgba(2,23,39,.42));
+}
+body.auri130 .auri131-battle .auri131-fighter .art .fallback{
+  font-size:clamp(30px,8dvh,75px)!important;
+}
+body.auri130 .auri131-battle .auri131-fighter .battlemon{
+  position:relative!important;
+  top:auto!important;bottom:auto!important;left:auto!important;right:auto!important;
+  display:block!important;
+  flex:0 0 auto!important;
+  width:min(100%,230px)!important;
+  min-width:0!important;
+  max-width:100%!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:clamp(3px,.5vw,8px) clamp(5px,.7vw,10px)!important;
+  border-radius:9px!important;
+  background:rgba(7,35,54,.94)!important;
+  border:1px solid #8cc8d8!important;
+  box-shadow:0 3px 8px rgba(0,0,0,.18)!important;
+  text-align:left!important;
+  white-space:normal!important;
+  color:#fff!important;
+  font-size:clamp(10px,.94vw,14px)!important;
+  line-height:1.2!important;
+}
+body.auri130 .auri131-battle .auri131-fighter .battlemon b{
+  color:#fff!important;
+  font-size:inherit!important;
+}
+body.auri130 .auri131-battle .auri131-fighter .battlemon .hpbar{
+  margin:3px 0 2px!important;
+  height:6px!important;
+}
+body.auri130 .auri131-battle .auri131-fighter .battlemon small{
+  display:block!important;
+  color:#e1f3fd!important;
+  font-size:clamp(9px,.75vw,12px)!important;
+  opacity:1!important;
+}
+body.auri130 .auri131-battle .auri131-fighter .v4-status{
+  font-size:10px!important;
+  color:#ffe1aa!important;
+}
+body.auri130 .auri131-battle .battlelog{
+  flex:0 0 auto!important;
+  width:100%!important;
+  max-height:clamp(35px,9dvh,74px)!important;
+  min-height:36px!important;
+  margin:0!important;
+  padding:6px 9px!important;
+  overflow-y:auto!important;
+  border-radius:9px!important;
+  font-size:clamp(10px,.85vw,14px)!important;
+  line-height:1.25!important;
+  color:#fdf2d1!important;
+  background:#0d3049!important;
+  border:1px solid #3c718c!important;
+}
+body.auri130 .auri131-battle .auri131-empty{
+  color:#c5dce8;
+  font-size:11px;
+}
+@media (max-height:420px) and (orientation:landscape){
+  body.auri130 #battle-overlay{padding:4px!important}
+  body.auri130 #battle-overlay .auri131-battle{
+    height:calc(100dvh - 8px)!important;
+    max-height:calc(100dvh - 8px)!important;
+    gap:4px!important;
+    padding:5px!important;
+    border-radius:11px!important;
+  }
+  body.auri130 .auri131-battle .battletop{min-height:22px!important;padding:3px 6px!important;}
+  body.auri130 .auri131-battle .auri131-stage{gap:5px!important;grid-template-columns:clamp(132px,19vw,170px) minmax(0,1fr) clamp(158px,23vw,200px)!important;}
+  body.auri130 .auri131-battle .auri131-tools,
+  body.auri130 .auri131-battle .auri131-moves{padding:5px!important;gap:3px!important;}
+  body.auri130 .auri131-battle .auri131-panel-heading{font-size:10px!important;padding:0 0 3px!important;}
+  body.auri130 .auri131-battle .auri131-item-grid,
+  body.auri130 .auri131-battle .auri131-move-grid{gap:3px!important;}
+  body.auri130 .auri131-battle .auri131-item-grid button{min-height:38px!important;font-size:9px!important;padding:3px!important;}
+  body.auri130 .auri131-battle .auri131-move-grid button{min-height:46px!important;font-size:10px!important;padding:4px 6px!important;}
+  body.auri130 .auri131-battle .auri131-fighter .battlemon{padding:3px 5px!important;font-size:10px!important;}
+  body.auri130 .auri131-battle .auri131-fighter .battlemon small{font-size:9px!important;}
+  body.auri130 .auri131-battle .battlelog{min-height:32px!important;padding:4px 7px!important;font-size:10px!important;}
+}
+/* Keep both figures and their status cards as one compact visual unit.
+   A fixed-size sprite area ensures status immediately follows the figure on tablets too. */
+body.auri130 .auri131-battle .auri131-fighter.ally{
+  justify-content:flex-end!important;
+  padding-bottom:clamp(5px,3dvh,24px)!important;
+}
+body.auri130 .auri131-battle .auri131-fighter.enemy{
+  justify-content:flex-start!important;
+  padding-top:clamp(5px,3dvh,24px)!important;
+}
+body.auri130 .auri131-battle .auri131-fighter .art{
+  flex:0 0 auto!important;
+  width:100%!important;
+  height:clamp(75px,25dvh,220px)!important;
+  max-height:calc(100% - 65px)!important;
+}
+@media (max-height:420px) and (orientation:landscape){
+  body.auri130 .auri131-battle .auri131-fighter .art{
+    height:clamp(70px,26dvh,108px)!important;
+    max-height:calc(100% - 67px)!important;
+  }
+  body.auri130 .auri131-battle .auri131-fighter.ally{padding-bottom:5px!important;}
+  body.auri130 .auri131-battle .auri131-fighter.enemy{padding-top:5px!important;}
+}
+
+/* 1.3.2: artwork always above status, irrespective of screen height */
+body.auri130 .auri131-battle .auri131-fighter.ally,
+body.auri130 .auri131-battle .auri131-fighter.enemy{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:minmax(0,1fr) auto!important;
+  justify-items:center!important;
+  align-content:stretch!important;
+  align-items:stretch!important;
+  gap:clamp(4px,1dvh,10px)!important;
+  padding:clamp(3px,.7dvh,9px) 2px!important;
+  overflow:hidden!important;
+}
+body.auri130 .auri131-battle .auri131-fighter .art{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  position:relative!important;
+  inset:auto!important;
+  grid-row:1!important;
+  flex:none!important;
+  width:100%!important;
+  height:100%!important;
+  max-height:100%!important;
+  min-height:0!important;
+  overflow:hidden!important;
+  transform:none!important;
+}
+body.auri130 .auri131-battle .auri131-fighter .art img{
+  position:relative!important;
+  inset:auto!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:center bottom!important;
+  max-width:100%!important;
+  max-height:100%!important;
+}
+body.auri130 .auri131-battle .auri131-fighter .battlemon{
+  grid-row:2!important;
+  align-self:end!important;
+  position:relative!important;
+  z-index:4!important;
+  width:100%!important;
+  max-width:230px!important;
+  margin:0!important;
+  overflow:visible!important;
+}
+body.auri130 .auri131-battle .auri131-fighter.enemy{justify-content:stretch!important;}

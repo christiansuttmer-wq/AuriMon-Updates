@@ -1,0 +1,59 @@
+/* AuriMon 1.3.5 – accessibility-first landscape controls. */
+/* Main navigation goes directly below the header, never beneath the D-pad. */
+body.auri130 #app{grid-template-rows:58px 56px minmax(0,1fr)!important}
+body.auri130 #app>.header{grid-row:1!important}
+body.auri130 #app>.tabs{grid-row:2!important}
+body.auri130 #app>.main{grid-row:3!important}
+/* Keep the control pad against the bottom right, with 4 vertical action keys on left. */
+body.auri130 #page-world .playbar.auri135-playbar{
+  margin-top:auto!important;display:grid!important;
+  grid-template-columns:minmax(42px,0.48fr) minmax(0,1fr)!important;
+  grid-template-rows:auto!important;align-items:stretch!important;
+  gap:5px!important;padding:5px!important;
+  width:100%!important;max-width:none!important;
+}
+body.auri130 #page-world .playbar.auri135-playbar>.auri135-actions{
+  grid-column:1!important;grid-row:1!important;display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:repeat(4,minmax(0,1fr))!important;
+  align-items:stretch!important;gap:4px!important;
+  height:auto!important;min-width:0!important;width:100%!important;
+  align-self:stretch!important;
+}
+body.auri130 #page-world .playbar.auri135-playbar>.auri135-actions>button{
+  display:grid!important;place-items:center!important;min-width:0!important;
+  width:100%!important;height:100%!important;min-height:0!important;
+  padding:1px!important;margin:0!important;border-radius:9px!important;
+  font-size:clamp(11px,1.5vw,15px)!important;font-weight:900!important;
+  touch-action:manipulation!important;
+}
+body.auri130 #page-world .playbar.auri135-playbar>.auri135-actions>[data-action="interact"],
+body.auri130 #page-world .playbar.auri135-playbar>.auri135-actions>[data-action="retro-back"]{font-size:clamp(17px,2vw,22px)!important}
+body.auri130 #page-world .playbar.auri135-playbar>.dpad{
+  grid-column:2!important;grid-row:1!important;align-self:end!important;
+  justify-self:end!important;display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-template-rows:repeat(3,minmax(0,1fr))!important;
+  aspect-ratio:1!important;width:100%!important;max-width:190px!important;
+  height:auto!important;gap:3px!important;margin:0!important;
+}
+body.auri130 #page-world .playbar.auri135-playbar>.dpad button{
+  display:grid!important;place-items:center!important;font-size:clamp(18px,2.3vw,25px)!important;
+  border-radius:9px!important;touch-action:none!important;user-select:none!important;
+}
+/* Space-constrained phones in landscape: prioritize reachable controls. */
+@media (max-height:600px) and (orientation:landscape){
+ body.auri130 #page-world .exploration-layout{grid-template-columns:minmax(0,1fr) clamp(208px,31vw,265px)!important}
+ body.auri130 #page-world .playbar.auri135-playbar{grid-template-columns:minmax(47px,.46fr) minmax(0,1fr)!important;gap:4px!important;padding:3px!important}
+ body.auri130 #page-world .playbar.auri135-playbar>.dpad{max-width:155px!important;gap:3px!important}
+ body.auri130 #page-world .playbar.auri135-playbar>.auri135-actions{gap:3px!important}
+ body.auri130 #page-world .playbar.auri135-playbar>.auri135-actions>button{font-size:11px!important}
+ body.auri130 #page-world .playbar.auri135-playbar>.auri135-actions>[data-action="interact"],body.auri130 #page-world .playbar.auri135-playbar>.auri135-actions>[data-action="retro-back"]{font-size:19px!important}
+}
+@media (max-width:720px) and (orientation:landscape){
+ body.auri130 #page-world .exploration-layout{grid-template-columns:minmax(0,1fr) 204px!important}
+ body.auri130 #page-world .playbar.auri135-playbar{grid-template-columns:49px minmax(0,1fr)!important}
+ body.auri130 #page-world .playbar.auri135-playbar>.dpad{max-width:140px!important}
+ body.auri130 #page-world .playbar.auri135-playbar>.dpad button{font-size:19px!important}
+ body.auri130 #app .tabs button{font-size:10px!important}
+}

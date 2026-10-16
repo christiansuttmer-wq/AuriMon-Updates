@@ -1,0 +1,29 @@
+/* Version 5.2 · Auf Tablet und Smartphone skalierende Turnier- und Kampfoberfläche. */
+.v52-shortcuts{display:contents}
+.v52-shortcuts button{background:linear-gradient(160deg,#315c83,#233b5e)!important;color:#fff3d4!important;border:1px solid #8bb3d1!important}
+.v52-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));margin:10px 0 15px}
+.v52-card{background:linear-gradient(145deg,#1c3856,#22324b);border:1px solid #6fa9b9;border-radius:14px;padding:12px;color:#eaf7ff}
+.v52-card strong{color:#fff0b0;font-size:15px}
+.v52-card p{margin:9px 0;color:#dae6ee;font-size:13px;line-height:1.5}
+.v52-card button{background:#e9bc63;color:#182b3d;min-height:43px;border:0;padding:9px 12px;border-radius:9px;font-weight:800;width:100%;cursor:pointer}
+.v52-card button:disabled{opacity:.5;cursor:not-allowed}
+.v52-card-top{display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap}
+.v52-card-top span{font-size:12px;color:#b9f3ce}
+.v52-report{padding:11px;margin-top:13px;border:1px solid #60829a;border-radius:12px;background:linear-gradient(145deg,#213b5b,#203453)}
+.v52-report h2{font-size:17px;color:#ffe69d;margin:0 0 8px}.v52-report p{font-size:13px;color:#d4eaf7;margin:5px 0}
+.v52-battle .arena{overflow:hidden;isolation:isolate;position:relative;background:radial-gradient(ellipse at 70% 24%,#cfeaff55,transparent 60%),linear-gradient(130deg,#234061,#416a81 48%,#3c715c)!important}
+.v52-floor{position:absolute;inset:0;pointer-events:none;z-index:-1;background:repeating-linear-gradient(115deg,transparent 0 23px,#ffffff0a 24px 26px,transparent 28px 48px)}
+.v52-floor span{position:absolute;border-radius:50%;background:#e8f5ef23;border:3px solid #ddedca44;transform:rotate(-8deg)}
+.v52-floor span:first-child{width:35%;height:18%;left:9%;bottom:7%}.v52-floor span:nth-child(2){width:31%;height:14%;right:8%;top:37%}
+.v52-floor span:last-child{width:9px;height:9px;left:48%;top:20%;background:#fffbb8c9;animation:v52float 2.1s infinite alternate}
+.v52-impact::after{content:'✦';position:absolute;z-index:10;right:26%;top:29%;font-size:56px;color:#fff8c8;text-shadow:0 0 20px #ffda56;pointer-events:none;animation:v52impact .7s ease-out forwards}
+.v52-impact .enemyart{animation:v52shake .36s ease-out}
+.v52-battle .enemyart{animation:v52hover 1.7s ease-in-out infinite alternate}
+.v52-battle .allyart{animation:v52hover 2s ease-in-out infinite alternate-reverse}
+.v52-battle .battleactions button:active{transform:scale(.97)}
+@keyframes v52float{from{transform:translateY(5px);opacity:.4}to{transform:translateY(-16px);opacity:1}}
+@keyframes v52hover{from{transform:translateY(0)}to{transform:translateY(-5px)}}
+@keyframes v52impact{0%{opacity:0;transform:scale(.25) rotate(0deg)}35%{opacity:1;transform:scale(1.5) rotate(32deg)}100%{opacity:0;transform:scale(2.2) rotate(85deg)}}
+@keyframes v52shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
+@media(max-width:520px){.v52-grid{grid-template-columns:1fr}.v52-card p{font-size:13px}.v52-battle .arena{min-height:185px}}
+@media(prefers-reduced-motion:reduce){.v52-battle *, .v52-impact::after{animation:none!important}}

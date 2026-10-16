@@ -1,0 +1,127 @@
+/* AuriMon 1.3.7 – beautiful, larger smartphone controls. */
+body.auri130 #page-world .playbar.auri137-playbar{
+  display:grid!important;
+  grid-template-columns:64px minmax(150px, 1fr)!important;
+  align-items:end!important;
+  justify-content:end!important;
+  gap:10px!important;
+  width:100%!important;
+  max-width:none!important;
+  margin-top:auto!important;
+  padding:8px!important;
+}
+
+body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  grid-template-rows:repeat(4, minmax(0, 1fr))!important;
+  gap:8px!important;
+  width:64px!important;
+  min-width:64px!important;
+  align-self:stretch!important;
+}
+
+body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack > button{
+  display:grid!important;
+  place-items:center!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:44px!important;
+  padding:4px 2px!important;
+  margin:0!important;
+  border-radius:14px!important;
+  font-weight:900!important;
+  letter-spacing:.02em!important;
+  line-height:1!important;
+  box-shadow:0 6px 14px rgba(25,61,89,.22), inset 0 1px 0 rgba(255,255,255,.26)!important;
+}
+
+body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack > [data-action="interact"],
+body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack > [data-action="retro-back"]{
+  font-size:24px!important;
+}
+
+body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack > [data-action="retro-menu"],
+body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack > [data-action="stuck-center"]{
+  font-size:11px!important;
+}
+
+body.auri130 #page-world .playbar.auri137-playbar > .dpad{
+  display:grid!important;
+  grid-template-columns:repeat(3,1fr)!important;
+  grid-template-rows:repeat(3,1fr)!important;
+  gap:6px!important;
+  width:min(100%, 210px)!important;
+  max-width:210px!important;
+  aspect-ratio:1 / 1!important;
+  justify-self:end!important;
+  align-self:end!important;
+  margin:0!important;
+}
+
+body.auri130 #page-world .playbar.auri137-playbar > .dpad > i{
+  display:block!important;
+}
+
+body.auri130 #page-world .playbar.auri137-playbar > .dpad button{
+  display:grid!important;
+  place-items:center!important;
+  min-width:0!important;
+  min-height:0!important;
+  width:100%!important;
+  height:100%!important;
+  padding:0!important;
+  border-radius:16px!important;
+  font-size:30px!important;
+  font-weight:900!important;
+  box-shadow:0 8px 18px rgba(18,61,92,.26), inset 0 1px 0 rgba(255,255,255,.28)!important;
+}
+
+/* Clear away older floating/secondary layout artifacts. */
+body.auri130 #page-world .playbar.auri137-playbar .v58-control-right,
+body.auri130 #page-world .playbar.auri137-playbar .auri135-actions{
+  display:contents!important;
+}
+
+@media (max-height: 680px) and (orientation: landscape){
+  body.auri130 #page-world .exploration-layout{
+    grid-template-columns:minmax(0,1fr) 280px!important;
+  }
+  body.auri130 #page-world .playbar.auri137-playbar{
+    grid-template-columns:58px minmax(138px,1fr)!important;
+    gap:8px!important;
+    padding:6px!important;
+  }
+  body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack{
+    width:58px!important;
+    min-width:58px!important;
+    gap:6px!important;
+  }
+  body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack > button{
+    min-height:39px!important;
+    border-radius:12px!important;
+  }
+  body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack > [data-action="interact"],
+  body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack > [data-action="retro-back"]{
+    font-size:22px!important;
+  }
+  body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack > [data-action="retro-menu"],
+  body.auri130 #page-world .playbar.auri137-playbar > .auri137-action-stack > [data-action="stuck-center"]{
+    font-size:10px!important;
+  }
+  body.auri130 #page-world .playbar.auri137-playbar > .dpad{
+    width:min(100%, 176px)!important;
+    max-width:176px!important;
+    gap:5px!important;
+  }
+  body.auri130 #page-world .playbar.auri137-playbar > .dpad button{
+    font-size:26px!important;
+    border-radius:14px!important;
+  }
+}
+
+@media (max-width: 740px) and (orientation: landscape){
+  body.auri130 #page-world .exploration-layout{
+    grid-template-columns:minmax(0,1fr) 265px!important;
+  }
+}

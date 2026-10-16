@@ -1,0 +1,161 @@
+/* AURIMON ABENTEUER 1.1.0 — konsolidierte Oberflächen- und Lesbarkeitsregeln */
+body.v581-modern{
+ --ink:#153a56;--ink-quiet:#416681;--paper:#fbfdff;--paper-alt:#edf5fc;
+ --border:#b7cfe2;--button:#205878;--button-dark:#123d59;--button-light:#f4fbff;
+ --sun:#ffe5a3;--danger:#893a50;--focus:#efba52;
+}
+body.v581-modern #app{
+ background:linear-gradient(160deg,#f9fcff 0%,#e9f4fd 100%);
+ color:var(--ink);
+}
+body.v581-modern #app .main,
+body.v581-modern #app .page{
+ color:var(--ink)!important;
+}
+body.v581-modern #app :is(p,small,li,summary,label){line-height:1.5}
+body.v581-modern #app :is(.section-title,.section-title small){color:var(--ink)!important}
+body.v581-modern #app :is(.muted,small.muted){color:var(--ink-quiet)!important;opacity:1!important}
+
+/* Top: schmal, klar, stabile Statusanzeige */
+body.v581-modern #app .header{
+ background:linear-gradient(115deg,#fdfefe,#e5f2fc)!important;
+ border-bottom:1px solid var(--border)!important;
+ color:var(--ink)!important;
+}
+body.v581-modern #app .header .brand strong{color:#103b5d!important}
+body.v581-modern #app .header .brand span{color:#3a6685!important;letter-spacing:.7px}
+body.v581-modern #app .resources{color:#173a56!important}
+body.v581-modern #app .resources small{color:#5a6272!important}
+#arimons-save-state{font-size:10px;font-weight:750;color:#597995;line-height:1.1;transition:color .2s}
+#arimons-save-state.just-saved{color:#23765a}
+
+/* Wiederkehrende helle Inhalte. Nicht globale Farben für dunkle Buttons übernehmen. */
+body.v581-modern #app :is(.subhead,.card,.bag-entry,.boxpoke,.dexcell,.travelcard,.task,.player-slot,.player-manage-item,.v54-mon,.v54-egg,.v54-photo,.v54-travel-card){
+ background:linear-gradient(145deg,var(--paper),var(--paper-alt))!important;
+ color:var(--ink)!important;
+ border:1px solid var(--border)!important;
+ box-shadow:0 4px 13px rgba(24,65,97,.08);
+}
+body.v581-modern #app :is(.subhead,.card,.bag-entry,.boxpoke,.dexcell,.travelcard,.task,.player-slot,.player-manage-item,.v54-mon,.v54-egg,.v54-photo,.v54-travel-card) :is(h1,h2,h3,h4,p,small,strong,b,span,label,li){color:var(--ink)!important}
+body.v581-modern #app :is(.subhead,.card,.bag-entry,.boxpoke,.dexcell,.travelcard,.task,.player-slot,.player-manage-item) :is(small,.muted){color:var(--ink-quiet)!important}
+body.v581-modern #app .travelcard.locked{opacity:1!important}
+body.v581-modern #app .travelcard.locked :is(b,small,em){color:#55738a!important}
+body.v581-modern #app .travelcard.current{border-color:#d49f47!important;box-shadow:inset 0 0 0 1px #d49f47,0 4px 13px #234b621a}
+
+/* Spielwelt und Steuerung */
+body.v581-modern #app .mapwrap{background:#f7fbff!important;border:1px solid var(--border)!important;box-shadow:0 5px 16px #123c5d16!important}
+body.v581-modern #app :is(.dpad button,.quick,.v4-shortcuts button,.v581-right-main button,.v581-util button){
+ font-weight:800;line-height:1.1;
+}
+body.v581-modern #app :is(.v581-right-main button,.v581-util button,.dpad button){touch-action:manipulation;user-select:none;-webkit-user-select:none}
+
+/* Einheitliche Tasten. Priorität: dunkel auf hellgelb, hell auf dunkelblau. */
+body.v581-modern #app :is(.btn,.smallbtn,.v4-travel-buttons button,.chips button:not(.chosen),.v54-mon button,.v54-parents button,.v54-bottom button,.v55-actions button,.v55-shortcuts button,.v55-path-item button,.v53-card button,.v53-report button,.v52-card button,.v052-actions button,.v052-quick button,.v052-quest-list button,.ari04-atlas-button){
+ background:linear-gradient(180deg,var(--button),var(--button-dark))!important;
+ color:var(--button-light)!important;
+ border:1px solid #6694b0!important;
+ text-shadow:none!important;
+}
+body.v581-modern #app :is(.btn.gold,.smallbtn.gold,.chips button.chosen,.v4-questitem button){
+ background:linear-gradient(#ffe6ad,#efbc5c)!important;
+ color:#24405a!important;
+ border-color:#ca9840!important;
+}
+body.v581-modern #app :is(.smallbtn.red,.danger){background:#78384b!important;color:#fff!important;border-color:#ba7087!important}
+body.v581-modern button:disabled{opacity:.78!important;filter:none!important;cursor:default}
+body.v581-modern :is(button,input,summary):focus-visible{outline:3px solid var(--focus)!important;outline-offset:2px}
+
+/* Einheitlich gespeicherte Gruppierung im Reise-Tagebuch */
+body.v581-modern #page-travel #journal{display:grid;gap:10px}
+body.v581-modern #page-travel .arimons-journal-group{
+ background:#fff!important;border:1px solid var(--border)!important;border-radius:15px;
+ margin:0!important;overflow:hidden;box-shadow:0 3px 10px #27506c12;
+}
+body.v581-modern #page-travel .arimons-journal-group > summary{
+ display:flex;flex-direction:column;gap:2px;position:relative;cursor:pointer;min-height:62px;
+ padding:11px 42px 11px 14px;background:linear-gradient(100deg,#f8fcff,#eaf5fc);
+ color:var(--ink)!important;list-style:none;
+}
+body.v581-modern #page-travel .arimons-journal-group > summary::-webkit-details-marker{display:none}
+body.v581-modern #page-travel .arimons-journal-group > summary::after{content:'⌄';position:absolute;right:16px;top:13px;font-size:27px;font-weight:800;color:#38678a;line-height:1;transform:rotate(0)}
+body.v581-modern #page-travel .arimons-journal-group[open] > summary::after{transform:rotate(180deg)}
+body.v581-modern #page-travel .arimons-journal-group > summary strong{color:#173d5a!important;font-size:14px!important}
+body.v581-modern #page-travel .arimons-journal-group > summary small{color:#55748b!important;font-size:11px!important;opacity:1}
+body.v581-modern #page-travel .arimons-journal-body{padding:12px 14px;color:var(--ink)!important;border-top:1px solid #d6e5ef}
+body.v581-modern #page-travel .arimons-journal-body > p{color:var(--ink)!important;margin:0 0 9px;font-size:14px!important}
+body.v581-modern #page-travel .arimons-journal-body > p :is(strong,b){color:#153b57!important}
+body.v581-modern #page-travel .arimons-journal-body :is(.v4-achievement,.v51-journal,.v52-report,.v53-report,.v54-travel-card,.v55-travel-card,.ari04-travel-info){
+ background:linear-gradient(150deg,#fff,#f4f9fd)!important;color:var(--ink)!important;
+ border:1px solid #d4e3ed!important;border-radius:12px!important;
+ margin:7px 0!important;padding:12px!important;box-shadow:none!important;
+}
+body.v581-modern #page-travel .arimons-journal-body :is(.v4-achievement,.v51-journal,.v52-report,.v53-report,.v54-travel-card,.v55-travel-card,.ari04-travel-info) :is(h1,h2,h3,h4,p,small,strong,b,span,label,li){color:var(--ink)!important;opacity:1!important}
+body.v581-modern #page-travel .arimons-journal-body :is(.v4-achievement,.v51-journal,.v52-report,.v53-report,.v54-travel-card,.v55-travel-card,.ari04-travel-info) :is(small,.muted){color:var(--ink-quiet)!important}
+body.v581-modern #page-travel .arimons-journal-body .v51-journal details{background:#fff!important;border-color:#c6dae8!important;color:var(--ink)!important}
+body.v581-modern #page-travel .arimons-journal-body .v51-journal summary{color:var(--ink)!important}
+body.v581-modern #page-travel .arimons-journal-body .v51-journal summary::after{content:' ▾';color:#527791}
+
+/* Tasche: aktuelle Bestände und Aktionen klar getrennt */
+body.v581-modern #page-bag .bag-entry{display:flex;align-items:center;gap:10px;padding:12px;margin:8px 0;border-radius:15px}
+body.v581-modern #page-bag .bag-entry .meta{min-width:0;flex:1}
+body.v581-modern #page-bag .bag-entry .meta b{display:block;font-size:14px;color:#153b57!important}
+body.v581-modern #page-bag .bag-entry .meta small{display:block;color:#4d6b81!important;font-size:12px;line-height:1.35}
+body.v581-modern #page-bag .bag-entry .qty{flex:none;background:#e0eef8;padding:5px 8px;border-radius:9px;font-weight:900;color:#1b4c70!important}
+body.v581-modern #page-bag .bag-entry .smallbtn{margin:0;flex:none;font-size:11px;min-width:78px}
+body.v581-modern #page-bag .arimons-empty{padding:16px!important}
+body.v581-modern #page-bag .arimons-empty p{font-size:13px!important;margin:6px 0 11px}
+
+/* Bilder: genau ein Hauptbild pro Kachel, Ersatzsymbol bei fehlgeschlagener Ladung */
+body.v581-modern #app .art{isolation:isolate;overflow:hidden;background:radial-gradient(circle at 40% 30%,#ffffff,#eaf4fb)}
+body.v581-modern #app .art img{max-width:100%;max-height:100%;object-fit:contain;position:relative;z-index:2}
+body.v581-modern #app .art .fallback{z-index:1;pointer-events:none}
+body.v581-modern #app .art.loaded .fallback{display:none!important}
+body.v581-modern #page-dex .dexcell .art{margin:3px auto;border-radius:14px}
+body.v581-modern #page-dex .dexcell strong{font-size:12px!important}
+body.v581-modern #page-dex .dexcell small{color:#426480!important;opacity:1!important}
+
+/* Kämpfe & modale Dialoge behalten dunkle Flächen mit hellem Text */
+body.v581-modern #modal-overlay .dialog,
+body.v581-modern #battle-overlay .battlebox{background:linear-gradient(145deg,#214a68,#102f48)!important;color:#f5fbff!important}
+body.v581-modern #modal-overlay .dialog > :is(h1,h2,h3,p,small),
+body.v581-modern #battle-overlay .battlebox > :is(h1,h2,h3,p,small){color:#e6f5ff!important}
+body.v581-modern #battle-overlay .battlelog{background:#153e5a!important;color:#fff1c7!important;border-color:#5e95b7!important}
+body.v581-modern #battle-overlay .movebtn small{color:#e7f5ff!important}
+
+/* Smartphone/Tablet: lesbar, ohne horizontales Abschneiden */
+body.v581-modern #app .main{overflow-x:hidden}
+body.v581-modern #app .page{min-width:0}
+@media(max-width:410px){
+ body.v581-modern #app .main{padding:9px 9px 13px}
+ body.v581-modern #page-travel .arimons-journal-body{padding:10px}
+ body.v581-modern #page-bag .bag-entry{flex-wrap:wrap}
+ body.v581-modern #page-bag .bag-entry .meta{flex:1 1 calc(100% - 68px)}
+ body.v581-modern #page-bag .bag-entry .smallbtn{margin-left:auto}
+}
+@media(orientation:landscape) and (max-height:560px){
+ body.v581-modern #battle-overlay .battlebox{max-height:calc(100dvh - 12px)!important}
+ body.v581-modern #battle-overlay .arena{min-height:120px!important;height:min(27dvh,160px)!important}
+ body.v581-modern #battle-overlay .battleactions{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+ body.v581-modern #battle-overlay .battleactions button{min-height:40px!important;padding:6px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body.v581-modern *,body.v581-modern *::before,body.v581-modern *::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
+/* Aufgeräumte Regionsauswahl */
+body.v581-modern #page-travel .arimons-regions{
+  border:1px solid var(--border);border-radius:15px;overflow:hidden;
+  background:#fff;margin:14px 0;box-shadow:0 3px 12px #23496212;
+}
+body.v581-modern #page-travel .arimons-regions>summary{
+  position:relative;display:flex;flex-direction:column;gap:3px;list-style:none;
+  padding:15px 45px 15px 16px;cursor:pointer;
+  background:linear-gradient(110deg,#f9fcff,#e7f3fc);
+}
+body.v581-modern #page-travel .arimons-regions>summary::-webkit-details-marker{display:none}
+body.v581-modern #page-travel .arimons-regions>summary strong{color:#173b58!important;font-size:15px!important}
+body.v581-modern #page-travel .arimons-regions>summary small{color:#557389!important;font-size:12px!important}
+body.v581-modern #page-travel .arimons-regions>summary::after{content:'⌄';position:absolute;right:16px;top:13px;color:#3b6a88;font-size:28px}
+body.v581-modern #page-travel .arimons-regions[open]>summary::after{content:'⌃'}
+body.v581-modern #page-travel .arimons-regions .travelgrid{padding:12px!important;margin:0!important}
+body.v581-modern #page-travel .card:has(#journal){margin:10px 0!important}

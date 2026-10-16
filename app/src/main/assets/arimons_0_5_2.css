@@ -1,0 +1,13 @@
+/* AuriMon 0.5.2 – kompakte Auftragsoberfläche */
+.v052-masterball{background:linear-gradient(130deg,#8660c9,#624597)!important;color:#fff!important;border:1px solid #c5adef!important;border-radius:12px!important;font-weight:800!important}
+.v052-legend-hint{padding:5px 0 0;color:#edccff;font-size:11px;font-weight:750}
+.v052-quick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:12px 0}
+.v052-quick button,.v052-quest-list button,.v052-actions button{border:1px solid rgba(143,196,221,.35);background:linear-gradient(#295a77,#19445e);color:#f7fbff;border-radius:12px;font-size:12px;font-weight:750;padding:10px 8px;min-width:0}
+.v052-quest-list{display:grid;grid-template-columns:1fr;gap:6px;margin:10px 0;max-height:48dvh;overflow-y:auto}
+.v052-quest{text-align:left;border:1px solid rgba(143,196,221,.28);background:linear-gradient(150deg,rgba(41,83,112,.6),rgba(20,48,72,.8));padding:10px 11px;border-radius:14px;margin:8px 0}
+.v052-quest b{display:block;color:#fff;font-size:13px;margin-bottom:5px}
+.v052-quest small{display:block;color:#d0e5ef;font-size:11px;line-height:1.45;margin:4px 0}
+.v052-actions{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}
+.v052-actions button{flex:1;padding:8px 7px}
+.v052-actions button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:360px){.v052-quick{grid-template-columns:1fr}}

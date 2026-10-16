@@ -1,0 +1,65 @@
+/* AuriMon 1.3.9: capture success popup fits the physical screen, centered. */
+body.auri130 #modal-overlay.auri139-catch{
+  display:flex!important;
+  position:fixed!important;
+  inset:0!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:clamp(6px,2dvh,12px)!important;
+  overflow:hidden!important;
+}
+body.auri130 #modal-overlay.auri139-catch #modal-content{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  width:min(92vw,360px)!important;
+  max-width:calc(100vw - 12px)!important;
+  max-height:calc(100dvh - 12px)!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:auto!important;
+  padding:clamp(8px,2dvh,16px)!important;
+  gap:clamp(4px,1dvh,8px)!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+}
+body.auri130 #modal-overlay.auri139-catch #modal-content h2{
+  font-size:clamp(16px,3.3dvh,22px)!important;
+  line-height:1.18!important;
+  margin:0!important;
+}
+body.auri130 #modal-overlay.auri139-catch #modal-content .art{
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 auto!important;
+  width:min(24dvh,95px)!important;
+  height:min(24dvh,95px)!important;
+  max-width:95px!important;
+  max-height:95px!important;
+  margin:0 auto!important;
+  position:relative!important;
+}
+body.auri130 #modal-overlay.auri139-catch #modal-content .art img{
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+}
+body.auri130 #modal-overlay.auri139-catch #modal-content p{
+  margin:0!important;
+  font-size:clamp(12px,2.8dvh,15px)!important;
+  line-height:1.3!important;
+}
+body.auri130 #modal-overlay.auri139-catch #modal-content button{
+  min-height:40px!important;
+  max-width:100%!important;
+  touch-action:manipulation!important;
+}
+@media(max-height:420px) and (orientation:landscape){
+ body.auri130 #modal-overlay.auri139-catch #modal-content{width:min(88vw,350px)!important;padding:7px 12px!important;gap:3px!important}
+ body.auri130 #modal-overlay.auri139-catch #modal-content .art{width:min(19dvh,70px)!important;height:min(19dvh,70px)!important}
+ body.auri130 #modal-overlay.auri139-catch #modal-content button{min-height:36px!important}
+}

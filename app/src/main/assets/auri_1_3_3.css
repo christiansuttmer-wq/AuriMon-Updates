@@ -1,0 +1,24 @@
+/* AuriMon 1.3.3: wider 18x11 playfield; same available vertical map space. */
+body.auri130 #page-world .aur-map-frame{aspect-ratio:18/11!important;width:min(100%,calc((100dvh - 216px)*18/11))!important;max-height:calc(100% - 60px)!important}
+body.auri130 #page-world #game-map{grid-template-columns:repeat(var(--map-cols,18),minmax(0,1fr))!important;grid-template-rows:repeat(var(--map-rows,11),minmax(0,1fr))!important;aspect-ratio:18/11!important}
+/* A real, larger direction pad, placed against the bottom-right of the control column. */
+body.auri130 #page-world .tablet-controls{display:flex!important;flex-direction:column!important}
+body.auri130 #page-world .playbar{margin-top:auto!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(140px,180px)!important;grid-template-rows:auto!important;align-items:end!important;justify-content:end!important;gap:8px!important;width:100%!important;flex:0 0 auto!important}
+body.auri130 #page-world .playbar>.dpad{grid-column:2!important;grid-row:1!important;justify-self:end!important;margin:0!important;width:100%!important;max-width:180px!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-template-rows:repeat(3,48px)!important;gap:4px!important}
+body.auri130 #page-world .playbar>.dpad button{font-size:22px!important;border-radius:10px!important;touch-action:none!important}
+body.auri130 #page-world .playbar>.v58-control-right{grid-column:1!important;grid-row:1!important;align-self:end!important}
+/* Fixed horizontal layout for the smaller-screen overrides in 1.3.0. */
+@media(max-height:600px) and (orientation:landscape){
+ body.auri130 #page-world .aur-map-frame{width:min(100%,calc((100dvh - 112px)*18/11))!important;max-height:calc(100% - 6px)!important}
+ body.auri130 #page-world .playbar{grid-template-columns:minmax(0,1fr) minmax(112px,150px)!important;gap:4px!important}
+ body.auri130 #page-world .playbar>.dpad{max-width:150px!important;grid-template-rows:repeat(3,38px)!important;gap:3px!important}
+ body.auri130 #page-world .playbar>.dpad button{font-size:18px!important}
+}
+@media(max-width:720px) and (orientation:landscape){
+ body.auri130 #page-world .playbar{grid-template-columns:minmax(0,1fr) 112px!important;gap:3px!important;padding:3px!important}
+ body.auri130 #page-world .playbar>.dpad{max-width:112px!important;grid-template-rows:repeat(3,34px)!important;gap:2px!important}
+ body.auri130 #page-world .playbar>.dpad button{font-size:16px!important}
+}
+/* The cave remains its original separate 11x9 map. */
+body.auri130 #page-world .aur-map-frame:has(#game-map[style*="--map-cols: 11"]){aspect-ratio:11/9!important}
+body.auri130 #page-world #game-map[style*="--map-cols: 11"]{grid-template-columns:repeat(11,minmax(0,1fr))!important;grid-template-rows:repeat(9,minmax(0,1fr))!important;aspect-ratio:11/9!important}

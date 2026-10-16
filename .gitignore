@@ -1,0 +1,24 @@
+# Do not publish personal secrets/signing material
+*.jks
+*.keystore
+*.p12
+*.pfx
+release-signing.properties
+release-output/
+.gradle/
+.idea/
+local.properties
+**/build/
+
+release-key.jks
+AURIMON_SIGNATUR_SHA256.txt
+
+# Backups of local signing configuration
+release-signing.properties.sicherung-*
+
+# AuriMon Autopilot local environment
+*.apk
+*.aab
+*.log
+AuriMon_Release/
+aurimon-signing/

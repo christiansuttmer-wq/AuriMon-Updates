@@ -1,0 +1,35 @@
+/* World50 pilot only: no changes to existing pages or player profiles. */
+#game-map.aur50-active{display:block!important;position:relative;isolation:isolate;padding:0!important;width:100%;height:auto!important;max-height:none;aspect-ratio:5 / 3;overflow:hidden!important;background:#90c886;border:3px solid rgba(243,234,195,.74);border-radius:16px;box-shadow:0 12px 28px rgba(19,59,48,.29), inset 0 0 0 1px rgba(255,255,255,.3)}
+#game-map.aur50-active #aur50-map-canvas{width:100%;height:100%;display:block;object-fit:fill;image-rendering:auto;touch-action:manipulation;position:relative;z-index:4}
+#game-map.aur50-active .hd-map-canvas,#game-map.aur50-active .cell,#game-map.aur50-active .world-effects,#game-map.aur50-active .world-layer{display:none!important;visibility:hidden!important;opacity:0!important}
+#page-world .aur-map-frame:has(.aur50-active){aspect-ratio:5 / 3!important;height:auto!important;min-height:0!important;overflow:visible!important}
+#page-world .mapwrap:has(.aur50-active){min-height:0!important}
+#page-world .maptop:has(+.aur-map-frame .aur50-active) span{font-variant-numeric:tabular-nums}
+@media(max-width:650px){#game-map.aur50-active{border-radius:11px;border-width:2px}}
+
+
+/* Kartenskalierung-Fix (nur Sonnenwiese-Pilot):
+ * Die alten body.auri130-Grid-Regeln sind spezifischer als #game-map.aur50-active.
+ * Dadurch schrumpfte das neue Gesamt-Canvas auf die ERSTE Grid-Zelle.
+ * Diese Regeln gelten ausschliesslich bei aur50-active, nicht fuer alte Gebiete.
+ */
+body.auri130 #page-world #game-map.aur50-active {
+  display: block !important;
+  grid-template-columns: none !important;
+  grid-template-rows: none !important;
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: auto !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+body.auri130 #page-world #game-map.aur50-active > #aur50-map-canvas {
+  display: block !important;
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: fill !important;
+}

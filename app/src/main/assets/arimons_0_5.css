@@ -1,0 +1,26 @@
+/* AuriMon 0.5.0 — X/Y-inspirierter Welt-Look */
+:root{--bg:#eef7ff;--base:#2f5f83;--panel:#f7fbff;--panel2:#edf6ff;--line:#99bdd8;--gold:#ffd57b;--mint:#89efc7;--text:#17324c;--muted:#5d7b93}
+html,body{background:linear-gradient(180deg,#d9f0ff 0%,#cde5f6 30%,#b7d2e4 100%)}
+#app{background:radial-gradient(ellipse 90% 55% at 20% 0%,#ffffff 0%,#f0f8ff 45%,#d5e8f4 100%);box-shadow:0 0 0 1px rgba(153,189,216,.45),0 18px 60px rgba(15,39,62,.22)}
+.header{background:linear-gradient(95deg,#f7fbff,#e8f4fd);border-bottom:1px solid #bfd8ea;box-shadow:0 4px 14px rgba(75,114,142,.15)}
+.logo{background:linear-gradient(160deg,#fff7bf,#ffc86e);border:2px solid #fffdf2;box-shadow:0 3px 0 #d59648,0 0 16px rgba(255,211,122,.35)}
+.brand,.brand span,.header h1,.maptop,.hero h1,.card h2,.subhead,.task strong,.world-hud span,.badgecounter,.tabs button,.dialog,.battlebox,.quick,.v4-shortcuts button,.dpad button{color:#17324c!important;text-shadow:none}
+.hero{background:linear-gradient(135deg,#ffffff,#eff7ff);border:1px solid #c8deef;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 20px rgba(100,139,167,.14);border-radius:18px}
+.world-hud span{background:#ffffffeb!important;border-color:#bfd7ea!important;box-shadow:inset 0 1px 0 #fff}
+.mapwrap{background:linear-gradient(180deg,#ffffff,#edf7ff);padding:9px;border:1px solid #c7deee;border-radius:22px;box-shadow:0 10px 32px rgba(67,104,130,.18),inset 0 0 0 1px rgba(255,255,255,.85)}
+.map{position:relative;isolation:isolate;background:#a8e28a;border-radius:16px;image-rendering:auto;box-shadow:inset 0 0 0 1px rgba(80,119,146,.45);overflow:hidden}
+.map.hd-render .cell{opacity:0;cursor:pointer;z-index:1;background:transparent!important}
+.map.hd-render .cell:focus-visible{opacity:.28;outline:3px solid #ffdf7d;outline-offset:-3px}
+.hd-map-canvas{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:fill;image-rendering:auto;pointer-events:none;z-index:4}
+.mapkey{background:#f3f9ff;border-radius:0 0 14px 14px;margin-top:7px;color:#507087;border:1px solid #d6e7f4}
+.card,.bag-entry,.boxpoke,.dexcell,.travelcard,.task,.dialog,.battlebox,.starter{background:linear-gradient(180deg,#ffffff,#f4f9ff)!important;border:1px solid #c9dcec!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 6px 16px rgba(89,126,150,.12)}
+.quick,.v4-shortcuts button,.dpad button{background:linear-gradient(#ffffff,#edf5fc)!important;border:1px solid #b7d1e4!important;box-shadow:0 3px 0 #bfd6e7!important}
+.dpad .actionkey{background:linear-gradient(#fff8c6,#ffd37a)!important;border:2px solid #fff3be!important;color:#3b4a56!important}
+.tabs{background:linear-gradient(#eff7ff,#dcebf6);border-top:1px solid #bdd5e5}
+.tabs button.selected{background:linear-gradient(#ffffff,#eaf5fe);color:#17324c;box-shadow:inset 0 0 0 1px #c7dff1}
+.subhead{background:linear-gradient(135deg,#ffffff,#eff7ff)!important;border:1px solid #bfd8ea!important}
+.v5-battle .arena{background:linear-gradient(180deg,#89cdf2 0%,#d8f0ff 43%,#d9f1cf 55%,#96cc8b 56%,#6da56d 83%,#4e8062 100%);border:1px solid #c7d8e4;box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),0 4px 16px rgba(77,116,142,.2)}
+.v5-battle .battlemon,.v5-battle .battlelog,.v5-battle .movebtn{background:linear-gradient(180deg,#ffffff,#eef6fc)!important;border-color:#bfd6e8!important;box-shadow:0 4px 12px rgba(89,126,150,.12)}
+.v5-battle .movebtn.attack{background:linear-gradient(#ffe1e1,#ffc7c7)!important;border-color:#f1b3b3!important}
+.v5-battle .movebtn.special{background:linear-gradient(#fff1da,#f8d7a1)!important;border-color:#eac68c!important}
+@media (max-height:520px) and (orientation:landscape){.mapwrap{padding:5px}}

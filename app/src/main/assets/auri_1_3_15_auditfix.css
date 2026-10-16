@@ -1,0 +1,160 @@
+/* AuriMon 1.3.15 — Audited responsive right controller; fixes clipped controls. */
+body.auri130 #page-world .tablet-controls{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  align-items:stretch!important;
+  min-width:0!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  scrollbar-width:thin;
+}
+/* Use one predictable additional-actions drawer on EVERY screen width. */
+body.auri130 #page-world .tablet-controls > .aur-more-toggle{
+  display:flex!important;
+  order:-20!important;
+  position:relative!important;
+  inset:auto!important;
+  z-index:3!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  padding:7px 10px!important;
+  min-height:38px!important;
+}
+body.auri130 #page-world .tablet-controls > .v4-shortcuts{
+  display:none!important;
+  order:-19!important;
+}
+body.auri130 #page-world .tablet-controls.aur-shortcuts-open > .v4-shortcuts{
+  display:grid!important;
+  position:fixed!important;
+  inset:var(--auri1315-menu-top,175px) max(8px,env(safe-area-inset-right)) auto auto!important;
+  z-index:250!important;
+  width:min(320px,calc(100vw - 16px))!important;
+  height:max-content!important;
+  max-height:calc(100dvh - var(--auri1315-menu-top,175px) - 8px)!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-rows:minmax(42px,auto)!important;
+  gap:7px!important;
+  padding:10px!important;
+  border:1px solid #779eb6!important;
+  border-radius:12px!important;
+  background:#0c2b41!important;
+  box-shadow:0 12px 24px #0009!important;
+}
+body.auri130 #page-world .tablet-controls.aur-shortcuts-open > .aur-more-toggle{
+  position:relative!important;
+  inset:auto!important;
+  width:100%!important;
+  z-index:3!important;
+}
+body.auri130 #page-world .tablet-controls > .auri-story-launch{
+  order:0!important;
+  flex:0 0 auto!important;
+  display:flex!important;
+  justify-content:center!important;
+  align-items:center!important;
+  width:100%!important;
+  min-height:40px!important;
+  height:40px!important;
+  padding:5px 7px!important;
+  margin:0!important;
+  font-size:clamp(11px,1.5vw,14px)!important;
+  line-height:1.15!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+body.auri130 #page-world .tablet-controls > .playbar.auri137-playbar{
+  order:10!important;
+  display:grid!important;
+  flex:0 0 auto!important;
+  grid-template-columns:clamp(48px,8dvh,62px) minmax(0,1fr)!important;
+  grid-template-rows:auto!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  gap:7px!important;
+  padding:5px!important;
+  margin: auto 0 0!important;
+  align-items:end!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+}
+body.auri130 #page-world .tablet-controls > .playbar.auri137-playbar > .dpad{
+  grid-column:2!important;
+  grid-row:1!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-template-rows:repeat(3,minmax(0,1fr))!important;
+  width:min(100%,clamp(122px,35dvh,185px))!important;
+  max-width:185px!important;
+  height:auto!important;
+  aspect-ratio:1/1!important;
+  gap:4px!important;
+  margin:0!important;
+  padding:0!important;
+  justify-self:end!important;
+  align-self:end!important;
+}
+body.auri130 #page-world .tablet-controls > .playbar.auri137-playbar > .dpad button{
+  min-width:0!important;
+  min-height:0!important;
+  width:100%!important;
+  height:100%!important;
+  border-radius:11px!important;
+  font-size:clamp(19px,6dvh,27px)!important;
+  touch-action:manipulation!important;
+}
+body.auri130 #page-world .tablet-controls > .playbar.auri137-playbar > .auri137-action-stack{
+  grid-column:1!important;
+  grid-row:1!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:repeat(4,minmax(0,1fr))!important;
+  gap:4px!important;
+  align-self:stretch!important;
+  justify-self:start!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  height:auto!important;
+}
+body.auri130 #page-world .tablet-controls > .playbar.auri137-playbar > .auri137-action-stack > button{
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  padding:1px!important;
+  margin:0!important;
+  border-radius:10px!important;
+  font-size:clamp(9px,2.1dvh,11px)!important;
+  touch-action:manipulation!important;
+}
+body.auri130 #page-world .tablet-controls > .playbar.auri137-playbar > .auri137-action-stack > [data-action="interact"],
+body.auri130 #page-world .tablet-controls > .playbar.auri137-playbar > .auri137-action-stack > [data-action="retro-back"]{
+  font-size:clamp(17px,5dvh,24px)!important;
+}
+
+/* In phone and mid-sized landscape, focus on two visible headings + controller. */
+@media (orientation:landscape) and (max-height:900px){
+  body.auri130 #page-world .tablet-controls > .aur-control-title,
+  body.auri130 #page-world .tablet-controls > .task,
+  body.auri130 #page-world .tablet-controls > .tablet-help{display:none!important;}
+  body.auri130 #page-world .tablet-controls{gap:6px!important;padding:6px!important;}
+}
+@media (orientation:landscape) and (max-height:420px){
+  body.auri130 #page-world .tablet-controls{gap:4px!important;padding:4px!important;}
+  body.auri130 #page-world .tablet-controls > .aur-more-toggle{height:35px!important;min-height:35px!important;padding:3px 7px!important;font-size:12px!important;}
+  body.auri130 #page-world .tablet-controls > .auri-story-launch{height:35px!important;min-height:35px!important;padding:2px 5px!important;font-size:12px!important;}
+  body.auri130 #page-world .tablet-controls > .playbar.auri137-playbar{gap:5px!important;padding:4px!important;grid-template-columns:48px minmax(0,1fr)!important;}
+}
+/* Do not let portrait overrides hijack landscape sizing. */
+@media (orientation:landscape) and (min-height:901px){
+  body.auri130 #page-world .tablet-controls{gap:9px!important}
+}

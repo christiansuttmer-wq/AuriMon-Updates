@@ -1,0 +1,93 @@
+/* AuriMon 1.3.11 – contrasts on light surfaces and dark overlays; UI ONLY. */
+/* Shop and inventory: opaque light rows, truly dark typography. */
+body.v581-modern #app .bag-entry,
+body #modal-content .bag-entry,
+body #page-bag .bag-entry{
+ background:#f2f9ff!important;color:#203e55!important;
+ border:1px solid #a6c9df!important;
+}
+body #modal-content .bag-entry .meta,body #modal-content .bag-entry b,
+body #page-bag .bag-entry .meta,body #page-bag .bag-entry b,
+body #app .bag-entry .meta,body #app .bag-entry b {color:#17384f!important;}
+body #app .bag-entry small,body #app .bag-entry .qty,
+body #app .bag-entry .meta small {color:#3d6178!important;opacity:1!important;}
+body #modal-content .bag-entry button.smallbtn.gold,
+body #modal-content .bag-entry button[data-action^="buy:"],
+body #page-bag .bag-entry button.smallbtn.gold{
+ background:#ffcf63!important;background-image:none!important;
+ border:2px solid #aa7521!important;color:#292d30!important;
+ font-weight:900!important;min-height:38px!important;
+ opacity:1;
+}
+/* Dialog surfaces remain DARK, with LIGHT legible text. */
+body #modal-overlay .dialog,body #modal-content{
+ background:linear-gradient(150deg,#193e59,#0d283e)!important;
+ color:#f6fbff!important;
+ border-color:#779eb6!important;
+}
+body #modal-content>h2,body #modal-content>h3,
+body #modal-content>p,body #modal-content>div:not(.bag-entry):not(.card),
+body #modal-content .dialog-actions{color:#f5faff!important;}
+body #modal-content p,body #modal-content small{line-height:1.45;}
+body #modal-content .dialog-actions button.btn.ghost{
+ background:#dcecf8!important;color:#183750!important;
+ border-color:#8eacbf!important;font-weight:850!important;
+}
+/* Bright cards and lists: fix inherited pale text. */
+body.v581-modern #app .card,body.v581-modern #app .subhead,
+body.v581-modern #app .travelcard:not(.locked),
+body.v581-modern #app .dexcell:not(.unknown),
+body.v581-modern #app .boxpoke{
+ color:#1b405a!important;
+}
+body.v581-modern #app .card p,
+body.v581-modern #app .card small,
+body.v581-modern #app .subhead p,
+body.v581-modern #app .travelcard:not(.locked) small,
+body.v581-modern #app .dexcell:not(.unknown) small,
+body.v581-modern #app .boxpoke small{
+ color:#466b81!important;opacity:1!important;
+}
+body.v581-modern #app .card h2,body.v581-modern #app .card h3,
+body.v581-modern #app .subhead h1,
+body.v581-modern #app .travelcard:not(.locked) b,
+body.v581-modern #app .dexcell:not(.unknown) strong,
+body.v581-modern #app .boxpoke b{color:#193f59!important;}
+/* Dark cards, shaded selection, and buttons use explicit readable foregrounds. */
+body #app .travelcard.locked{color:#c7d9e6!important;}
+body #app .travelcard.locked small{color:#b7cad9!important;}
+body #app .chips button:not(.chosen),body #app .v4-shortcuts button,
+body #app .v4-travel-buttons button,body #app .smallbtn:not(.gold),
+body #app .quick{
+ color:#fff!important;
+}
+body #app .chips button.chosen{color:#243548!important;}
+body #app .field,body #modal-content input,body #modal-content select,
+body #modal-content textarea{
+ background:#eef7fd!important;color:#173950!important;
+ border:1px solid #7098b2!important;
+}
+body #app input::placeholder,body #modal-content input::placeholder{
+ color:#627f91!important;opacity:1!important;
+}
+body #modal-content button:not(.smallbtn):not(.ghost):not(.gold),
+body #battle-content button:not([data-action="interact"]){
+ font-weight:800;
+}
+/* Combat remains dark: no blanket recoloring, only clear status and text. */
+body #battle-content{color:#f8fcff!important;}
+body #battle-content .battlelog,body #battle-content .battle-message,
+body #battle-content .battletop{color:#f4faff!important;}
+/* Long names and narrow screens shouldn't be cropped. */
+body #modal-content .bag-entry .meta{min-width:0!important;overflow-wrap:anywhere!important;}
+body #modal-content .bag-entry button{flex:0 0 auto!important;}
+body #modal-overlay{padding:8px!important;}
+body #modal-overlay .dialog{
+ max-height:calc(100dvh - 16px)!important;overflow-y:auto!important;
+ overscroll-behavior:contain!important;
+}
+@media(max-height:460px) and (orientation:landscape){
+ body #modal-overlay .dialog{padding:12px!important;}
+ body #modal-content .bag-entry{min-height:0!important;padding:7px!important;margin:5px 0!important;}
+ body #modal-content .bag-entry .item-emoji{font-size:23px!important;}
+}

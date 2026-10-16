@@ -1,0 +1,162 @@
+/* AuriMon 0.5.3 – durchgehender Kontrast-/Lesbarkeits-Fix.
+   Farbregeln trennen helle Inhaltsflächen und dunkle Spiel-/Dialogpanels.
+   Keine Eingriffe in Spielzustand, Quests, Kartenlogik oder Menüstruktur. */
+body.v581-modern{
+  --read-ink:#193b55;
+  --read-muted:#466a83;
+  --read-dark:#102d45;
+  --read-light:#f6fbff;
+  --read-light-soft:#d4e8f5;
+}
+body.v581-modern #app,
+body.v581-modern #app .main,
+body.v581-modern #app .page{color:var(--read-ink)!important}
+body.v581-modern #app .page .section-title,
+body.v581-modern #app .page .section-title small{color:var(--read-ink)!important}
+body.v581-modern #app .muted{color:var(--read-muted)!important}
+/* Helle Inhaltsflächen: dunkle, gut erkennbare Schrift. */
+body.v581-modern #app :is(.subhead,.card,.bag-entry,.boxpoke,.dexcell,.travelcard,.task,.player-slot,.player-manage-item){
+  background:linear-gradient(145deg,#ffffff,#ecf6ff)!important;
+  color:var(--read-ink)!important;
+  border-color:#b4d1e5!important;
+}
+body.v581-modern #app :is(.subhead,.card,.bag-entry,.boxpoke,.dexcell,.travelcard,.task,.player-slot,.player-manage-item) > :is(h1,h2,h3,h4,p,small,strong,b,span,label),
+body.v581-modern #app :is(.subhead,.card,.bag-entry,.boxpoke,.dexcell,.travelcard,.task,.player-slot,.player-manage-item) > div > :is(h1,h2,h3,h4,p,small,strong,b,span,label){
+  color:var(--read-ink)!important;
+}
+body.v581-modern #app .subhead :is(h1,h2,h3,p,small),
+body.v581-modern #app .subhead > div,
+body.v581-modern #app :is(.boxpoke,.dexcell,.bag-entry,.travelcard) :is(b,strong,small),
+body.v581-modern #app .poke-desc :is(strong,b,small,span),
+body.v581-modern #app :is(.bag-entry,.travelcard) > div :is(b,strong,small,p){color:var(--read-ink)!important}
+body.v581-modern #app .subhead small,
+body.v581-modern #app .dexcell small,
+body.v581-modern #app .boxpoke small,
+body.v581-modern #app .travelcard small,
+body.v581-modern #app .muted,
+body.v581-modern #app .section-title small{color:var(--read-muted)!important}
+body.v581-modern #app .dexcell.unknown{background:#e6eef5!important;color:#4a647c!important}
+body.v581-modern #app .dexcell.unknown :is(small,strong,span){color:#50677d!important}
+body.v581-modern #app .field,
+body.v581-modern #app :is(input,textarea,select).field,
+body.v581-modern #app :is(input,textarea,select){
+  background:#fff!important;color:#1c3f5c!important;border:1.5px solid #8db5d2!important;
+  caret-color:#0e527d;
+}
+body.v581-modern #app input::placeholder,
+body.v581-modern #app textarea::placeholder{color:#55728b!important;opacity:1}
+/* Aktive Schaltflächen: bewusst dunkler Hintergrund + weiße Schrift. */
+body.v581-modern #app :is(.smallbtn,.btn,.v4-travel-buttons button,.chips button:not(.chosen),.v58-back){color:#fff!important}
+body.v581-modern #app :is(.btn.gold,.smallbtn.gold,.chips button.chosen){color:#183a53!important}
+body.v581-modern #app :is(.smallbtn.red,.danger){color:#fff!important}
+body.v581-modern #app .typepill{color:#fff!important;background:#276184!important}
+body.v581-modern #app .v4-achievement,
+body.v581-modern #app .v4-questitem,
+body.v581-modern #app .v4-highlight{
+  background:#f0f7fc!important;color:#1a3e5a!important;border-color:#bfd5e4!important
+}
+body.v581-modern #app .v4-achievement :is(b,strong,small,p,span),
+body.v581-modern #app .v4-questitem :is(b,strong,small,p,span),
+body.v581-modern #app .v4-highlight :is(b,strong,small,p,span){color:#1c4967!important}
+body.v581-modern #app .v4-questitem button{color:#18364c!important}
+/* Die Spielmenüs und alle Dialogfenster erhalten ein einheitlich DUNKLES Panel.
+   Ihre bisherigen weißen Beschriftungen bleiben kontrastreich sichtbar. */
+body.v581-modern #modal-overlay .dialog,
+body.v581-modern #battle-overlay .battlebox{
+  background:linear-gradient(145deg,#244a67 0%,#142f48 95%)!important;
+  border:2px solid #5a91b4!important;
+  color:var(--read-light)!important;
+  box-shadow:0 22px 65px #071a2f80!important;
+}
+body.v581-modern #modal-overlay .dialog :is(h1,h2,h3,h4),
+body.v581-modern #battle-overlay .battlebox :is(h1,h2,h3,h4){color:#ffffff!important}
+body.v581-modern #modal-overlay .dialog p,
+body.v581-modern #modal-overlay .dialog small,
+body.v581-modern #battle-overlay .battlebox p,
+body.v581-modern #battle-overlay .battlebox small{color:var(--read-light-soft)}
+body.v581-modern #modal-overlay .dialog :is(input,textarea,select),
+body.v581-modern #battle-overlay .battlebox :is(input,textarea,select){background:#f7fbff!important;color:#193b55!important;border:1px solid #98c3dd!important}
+body.v581-modern #modal-overlay .dialog input::placeholder{color:#496d83!important}
+/* Keine weißen Kampftexte mehr auf den hellen Kampf-Kärtchen. */
+body.v581-modern #battle-overlay .battlebox .v5-battle .battlemon,
+body.v581-modern #battle-overlay .battlebox .battlemon{
+  background:linear-gradient(140deg,#193b54,#102b40)!important;
+  color:#f6fbff!important;border:1px solid #7bacc6!important
+}
+body.v581-modern #battle-overlay .battlebox .battlemon :is(strong,b,small,span){color:#fff!important}
+body.v581-modern #battle-overlay .battlebox .v5-battle .battlelog,
+body.v581-modern #battle-overlay .battlebox .battlelog{
+  background:linear-gradient(135deg,#143b56,#1d4a64)!important;
+  color:#fff1c6!important;
+  border:1px solid #6799b6!important
+}
+body.v581-modern #battle-overlay .battlebox .v5-battle .movebtn,
+body.v581-modern #battle-overlay .battlebox .battleactions button{
+  background:linear-gradient(145deg,#2d688a,#1b4664)!important;
+  color:#f8fbff!important;border:1px solid #75afca!important
+}
+body.v581-modern #battle-overlay .battlebox .v5-battle .movebtn.attack,
+body.v581-modern #battle-overlay .battlebox .battleactions button.attack{
+  background:linear-gradient(145deg,#ab4553,#812c3d)!important;
+  color:#fff!important;border-color:#e28c98!important
+}
+body.v581-modern #battle-overlay .battlebox .v5-battle .movebtn.special,
+body.v581-modern #battle-overlay .battlebox .battleactions button.special{
+  background:linear-gradient(145deg,#916a3d,#75502d)!important;
+  color:#fff!important;border-color:#debd77!important
+}
+body.v581-modern #battle-overlay .battlebox .battletop,
+body.v581-modern #battle-overlay .battlebox .movebtn small{color:#e0f2ff!important}
+/* Shop, geheime Quests und Forschungsberichte sind dunkle Unterkarten.
+   Kein allgemeines Light-Theme darf sie mit dunkler Schrift übermalen. */
+body.v581-modern :is(.aridex-lore,.ari04-portrait,.ari04-travel-info,.ari04-atlas-person,
+  .ari04-battle-person,.v052-quest,.v52-card,.v53-card,.v52-report,.v51-journal,
+  .v55-travel-card,.v55-endgame-header,.v55-plus-info,.v55-trophy,.v55-path-item,
+  .v55-history,.v55-celebration,.v4-badgegrid div){color:#f3f9ff!important}
+body.v581-modern :is(.aridex-lore,.ari04-portrait,.ari04-travel-info,.ari04-atlas-person,
+  .ari04-battle-person,.v052-quest,.v52-card,.v53-card,.v52-report,.v51-journal,
+  .v55-travel-card,.v55-endgame-header,.v55-plus-info,.v55-trophy,.v55-path-item,
+  .v55-history,.v55-celebration) :is(h1,h2,h3,h4,p,small,strong,b,span,label){color:#edf8ff!important}
+body.v581-modern .v052-quest small,
+body.v581-modern .ari04-atlas-person small,
+body.v581-modern .ari04-person-meta > span{color:#d3e7f2!important}
+body.v581-modern .v052-quick button,
+body.v581-modern .v052-actions button,
+body.v581-modern .v052-quest-list button,
+body.v581-modern .ari04-atlas-button,
+body.v581-modern .ari04-atlas-person,
+body.v581-modern .v52-card button:not(:disabled){color:#fff!important}
+/* Bestimmte helle Sonderflächen brauchen passende dunkle Schrift. */
+body.v581-modern #app :is(.v54-mon,.v54-travel-card,.v54-egg,.v54-photo){
+  background:#eef7ff!important;color:#1a3e5a!important;border-color:#b5d2e6!important
+}
+body.v581-modern #app :is(.v54-mon,.v54-travel-card,.v54-egg,.v54-photo) :is(b,strong,small,p,span){color:#224b67!important}
+body.v581-modern .v54-friendline{color:#8d2e5e!important}
+/* Starke Kontraste und große Touch-Ziele bei allen Displaygrößen. */
+body.v581-modern .field:focus-visible,
+body.v581-modern button:focus-visible{outline:3px solid #ffbf42;outline-offset:2px}
+body.v581-modern .toast{color:#fff!important;background:#14374e!important}
+/* Shop- und Taschenzeilen: Preis, Bestand und Gegenstandsnamen sind dunkel auf Weiß. */
+body.v581-modern .bag-entry .meta,
+body.v581-modern .bag-entry .meta :is(b,strong,small,span),
+body.v581-modern .dialog .bag-entry .meta,
+body.v581-modern .dialog .bag-entry .meta :is(b,strong,small,span){color:#234a66!important}
+body.v581-modern .bag-entry .meta small,
+body.v581-modern .dialog .bag-entry .meta small{color:#476982!important;opacity:1!important}
+/* AuriDex-Filter: aktiver Filter wird hellgold und mit dunklem Text dargestellt. */
+body.v581-modern #app .chips button.chosen,
+body.v581-modern #app .chips button.chosen:focus-visible{
+  background:linear-gradient(180deg,#ffe5a1,#f7c75b)!important;
+  border:1px solid #c59231!important;color:#23405a!important;
+  box-shadow:0 4px 10px rgba(92,103,100,.15)!important
+}
+body.v581-modern button:disabled:not(.v052-masterball){opacity:.72!important}
+body.v581-modern #app .smallbtn:disabled{
+  background:#496983!important;border-color:#547b96!important;
+  color:#fff!important;opacity:.77!important
+}
+/* Reisekarten: Statusbeschriftungen auf hellem Grund dürfen nicht gelb/ausgewaschen sein. */
+body.v581-modern #app .travelcard em{color:#2d607f!important;font-weight:850!important}
+body.v581-modern #app .travelcard.locked{color:#315672!important;opacity:.94!important}
+body.v581-modern #app .travelcard.locked small{color:#4a6a82!important;opacity:1!important}
+body.v581-modern #app .travelcard.locked b{color:#294f6d!important}

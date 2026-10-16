@@ -1,0 +1,96 @@
+/* AuriMon 1.0.5 – Bildüberarbeitung und AuriDex-Doppeldarstellung-Fix */
+body.v581-modern{
+  --art-bg1:#fafdff;
+  --art-bg2:#e6f1fa;
+  --art-line:#b7cede;
+  --art-shadow:rgba(19,45,68,.14);
+}
+/* globale Bildpolitur */
+body.v581-modern #app .art{
+  position:relative;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  border-radius:14px;
+  background:radial-gradient(circle at 30% 25%, var(--art-bg1), var(--art-bg2));
+  border:1px solid var(--art-line);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8), 0 5px 14px var(--art-shadow);
+}
+body.v581-modern #app .art img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  position:relative;
+  z-index:2;
+  image-rendering:auto;
+  filter:drop-shadow(0 6px 8px rgba(0,0,0,.18));
+}
+body.v581-modern #app .art .fallback{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  z-index:1;
+  font-size:34px;
+  opacity:.22;
+  color:#5f87a2;
+}
+body.v581-modern #app .art.loaded .fallback{display:none!important}
+
+/* AuriDex */
+body.v581-modern #page-dex .dexcell{
+  background:linear-gradient(145deg,#ffffff,#eef6fc)!important;
+  border-color:#c3d7e5!important;
+  box-shadow:0 6px 12px rgba(18,48,72,.08);
+}
+body.v581-modern #page-dex .dexcell .art{
+  width:96px;
+  height:88px;
+  margin:2px auto 4px;
+  border-radius:16px;
+}
+body.v581-modern #page-dex .dexcell .art img{width:88px;height:82px}
+body.v581-modern #page-dex .dexcell.unknown .art{
+  background:linear-gradient(145deg,#edf3f8,#dde8f0)!important;
+}
+body.v581-modern #page-dex .dexcell strong{font-size:12px;color:#173a54!important}
+body.v581-modern #page-dex .dexcell small{color:#50738b!important}
+
+/* Team, Box, Starter */
+body.v581-modern #page-team .poke-row .art,
+body.v581-modern #page-team .boxpoke .art,
+body.v581-modern .starter .art,
+body.v581-modern .v54-mon-head .art{
+  background:radial-gradient(circle at 35% 30%, #ffffff, #e8f3fb)!important;
+}
+body.v581-modern #page-team .poke-row .art{width:84px;height:84px;border-radius:16px}
+body.v581-modern #page-team .boxpoke .art{height:70px}
+body.v581-modern #page-team .boxpoke .art img{width:66px;height:66px}
+body.v581-modern .starter .art{height:100px}
+body.v581-modern .starter .art img{height:92px}
+
+/* Kampf-Pokémon */
+body.v581-modern #battle-overlay .enemyart,
+body.v581-modern #battle-overlay .allyart{
+  background:radial-gradient(circle at 35% 30%, rgba(255,255,255,.18), rgba(255,255,255,.03));
+  border-radius:20px;
+}
+body.v581-modern #battle-overlay .enemyart img,
+body.v581-modern #battle-overlay .allyart img{
+  image-rendering:auto;
+}
+
+/* Reise/Quest/Shop-Bilder */
+body.v581-modern #app .travelcard .art,
+body.v581-modern #app .bag-entry .art,
+body.v581-modern #app .v54-photo img,
+body.v581-modern #app .v54-egg{
+  border-color:#c7d9e7;
+}
+body.v581-modern #app .v54-photo img{image-rendering:auto}
+
+/* Kleine Geräte */
+@media (max-width:420px){
+  body.v581-modern #page-dex .dexcell .art{width:90px;height:82px}
+  body.v581-modern #page-dex .dexcell .art img{width:82px;height:76px}
+}

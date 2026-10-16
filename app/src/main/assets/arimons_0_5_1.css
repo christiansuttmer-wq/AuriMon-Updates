@@ -1,0 +1,68 @@
+/* AuriMon 0.5.1 — clear contemporary interface around the 2.5D world.
+ * The menu data, layout and input mechanisms have deliberately NOT been changed. */
+body.v581-modern #app{
+  background:radial-gradient(ellipse 80% 45% at 50% -10%,#ffffff 0%,#eef9ff 75%,transparent 100%),linear-gradient(180deg,#ecf8ff 0%,#daecf9 100%)!important;
+  color:#1f415b!important;
+}
+body.v581-modern .header{
+  background:linear-gradient(160deg,#ffffff,#e4f4ff)!important;
+  border-bottom:1px solid #b8d6ea!important;
+  box-shadow:0 7px 20px rgba(42,95,125,.12)!important;
+}
+body.v581-modern .header .brand strong,
+body.v581-modern .header .brand span,
+body.v581-modern .header .resources,
+body.v581-modern .header .resources small{color:#264b6b!important}
+body.v581-modern .header .brand span{color:#477fa3!important}
+body.v581-modern #page-world .hero{
+  background:linear-gradient(135deg,#ffffff,#eaf7ff)!important;
+  color:#284c66!important;
+  border:1px solid #b8d8eb!important;
+  box-shadow:0 8px 20px rgba(46,104,138,.11),inset 0 1px 0 #ffffff!important;
+}
+body.v581-modern #page-world .hero h1,
+body.v581-modern #page-world .hero .eyebrow,
+body.v581-modern #page-world .badgecounter,
+body.v581-modern #page-world .badgecounter b,
+body.v581-modern #page-world .badgecounter small{color:#234c68!important}
+body.v581-modern #page-world .hero .eyebrow{color:#5487aa!important}
+body.v581-modern #page-world .maptop{
+  background:linear-gradient(135deg,#ffffff,#ecf7ff)!important;
+  color:#315b7a!important;
+  border:1px solid #c0dbed!important;
+  box-shadow:0 5px 15px rgba(53,115,154,.11)!important;
+}
+body.v581-modern #page-world .maptop b{color:#235476!important}
+body.v581-modern #page-world .maptop span,
+body.v581-modern #page-world .maptop #camera-position{color:#4c7e9e!important}
+body.v581-modern #page-world .mapwrap{
+  background:linear-gradient(145deg,#fdfefe,#dceefb)!important;
+  border:1px solid #a9cce2!important;
+  box-shadow:0 12px 26px rgba(58,108,140,.17),inset 0 1px 0 #fff!important;
+}
+body.v581-modern #page-world .playbar{
+  background:linear-gradient(155deg,#ffffff,#e5f2fb)!important;
+  border:1px solid #a8cde4!important;
+  box-shadow:0 12px 27px rgba(52,102,134,.16),inset 0 1px 0 #ffffff!important;
+}
+body.v581-modern #page-world .dpad button{
+  background:linear-gradient(180deg,#4f83aa,#2e648a)!important;
+  border:1px solid #2f698f!important;
+  color:#fff!important;
+  box-shadow:0 5px 11px rgba(31,82,116,.23),inset 0 1px 0 #ffffff4a!important;
+}
+body.v581-modern .subhead h1,
+body.v581-modern .subhead p,
+body.v581-modern .subhead small,
+body.v581-modern .card h2,
+body.v581-modern .card p,
+body.v581-modern .dexcell,
+body.v581-modern .travelcard,
+body.v581-modern .poke-desc,
+body.v581-modern .boxpoke,
+body.v581-modern .bag-entry{
+  color:#274760!important;
+}
+body.v581-modern .subhead, body.v581-modern .card{
+  background:linear-gradient(135deg,#ffffff,#eaf6ff)!important;
+}

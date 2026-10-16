@@ -1,0 +1,42 @@
+/* AuriMon 1.3.12 – expressly scoped SHOP contrast, not generic modal overrides. */
+body #modal-overlay #modal-content.auri-shop-visible .bag-entry,
+body.v581-modern #modal-overlay #modal-content.auri-shop-visible .bag-entry {
+ display:flex!important;align-items:center!important;gap:9px!important;
+ background:#f1f8ff!important;background-image:none!important;
+ color:#102b40!important;border:1px solid #91b3ca!important;
+ opacity:1!important;text-shadow:none!important;
+ padding:7px 9px!important;min-height:48px!important;
+}
+body #modal-overlay #modal-content.auri-shop-visible .bag-entry .meta,
+body #modal-overlay #modal-content.auri-shop-visible .bag-entry .meta *,
+body #modal-overlay #modal-content.auri-shop-visible .bag-entry b,
+body #modal-overlay #modal-content.auri-shop-visible .bag-entry small {
+ color:#102b40!important;-webkit-text-fill-color:#102b40!important;
+ opacity:1!important;filter:none!important;text-shadow:none!important;
+ background:transparent!important;
+}
+body #modal-overlay #modal-content.auri-shop-visible .bag-entry .meta {flex:1!important;min-width:0!important;overflow-wrap:anywhere!important}
+body #modal-overlay #modal-content.auri-shop-visible .bag-entry .meta b {display:block!important;font-weight:900!important;font-size:14px!important;line-height:1.3!important}
+body #modal-overlay #modal-content.auri-shop-visible .bag-entry .meta small {display:block!important;font-weight:700!important;font-size:11px!important;line-height:1.4!important}
+body #modal-overlay #modal-content.auri-shop-visible .bag-entry .item-emoji {flex:0 0 25px!important;font-size:22px!important;color:#153750!important}
+body #modal-overlay #modal-content.auri-shop-visible .bag-entry button[data-action^="buy:"]{
+ flex:0 0 auto!important;min-width:73px!important;min-height:42px!important;
+ border:2px solid #946415!important;border-radius:9px!important;
+ background:#ffe18c!important;background-image:none!important;
+ color:#1c2830!important;-webkit-text-fill-color:#1c2830!important;
+ opacity:1!important;text-shadow:none!important;font-weight:900!important;
+}
+body #modal-overlay #modal-content.auri-shop-visible > h2,
+body #modal-overlay #modal-content.auri-shop-visible > p,
+body #modal-overlay #modal-content.auri-shop-visible > p *{color:#fff!important;-webkit-text-fill-color:#fff!important}
+/* Story layout: dark dialog, light text and distinct actions. */
+body #modal-overlay #modal-content.auri-story-dialog {background:#142f48!important;color:#fff!important;max-width:680px!important}
+body #modal-content .auri-story-intro{line-height:1.55;color:#f2f8ff!important;font-size:14px}
+body #modal-content .auri-story-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:7px;margin:10px 0}
+body #modal-content .auri-story-grid button{border:1px solid #87b7cf;border-radius:9px;background:#e5f4ff;color:#15364b;min-height:43px;padding:6px;font-weight:800}
+body #modal-content .auri-story-grid button:disabled{background:#314758;color:#d0dce5;opacity:.75}
+body #modal-content .auri-story-next,body #modal-content .auri-story-back{min-height:42px;padding:9px 15px;margin:6px 7px 3px 0;border-radius:10px;border:1px solid #f0cc74;background:#ffdb81;color:#183044;font-weight:900}
+body #modal-content .auri-story-back{background:#ddebf7;border-color:#b5d5e7}
+body #modal-content .auri-story-progress{font-size:12px;color:#c4eaff!important;font-weight:800}
+.auri-story-launch{width:100%;border:2px solid #8bbce2;border-radius:12px;background:linear-gradient(120deg,#214f76,#503d89);color:#fff;font-weight:900;padding:9px;margin:5px 0;min-height:41px;}
+@media(max-height:470px) and (orientation:landscape){body #modal-content.auri-story-dialog{padding:12px!important}body #modal-content .auri-story-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}

@@ -1,0 +1,19 @@
+/* v5.1.0: Interaktive Häuser / Geheimnis-Menü, Tablet- und Smartphone-freundlich */
+.v51-room-canvas { position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;z-index:7;object-fit:fill;cursor:pointer;background:#bca085;touch-action:manipulation }
+.v51-room-canvas[hidden],.v51-room-bar[hidden]{display:none!important}
+.v51-room-bar {position:absolute;top:8px;left:8px;right:8px;z-index:8;display:flex;align-items:center;justify-content:space-between;gap:8px;pointer-events:none}
+.v51-room-bar strong {background:#132c41eb;color:#fff3c7;font-size:clamp(10px,1.8vw,15px);padding:6px 10px;border:1px solid #ead59a;border-radius:8px;text-shadow:0 1px #20304f}
+.v51-room-bar button {pointer-events:auto;background:#e9c576;color:#2c394d;border:2px solid #fff1c5;border-radius:10px;min-height:39px;padding:7px 11px;font-weight:800;font-size:13px;cursor:pointer}
+.v51-helpbtn {background:linear-gradient(#9372b5,#644e91)!important;color:#fff!important}
+.v51-journal {padding:12px 0 3px;border-top:1px solid #789db4;margin-top:15px}
+.v51-journal h2 {font-size:17px;color:#fff1c3;margin:0 0 5px}
+.v51-journal p {color:#d0eaed;margin:0 0 12px;font-size:14px}
+.v51-journal details {border:1px solid #7ca2a9;border-radius:10px;padding:8px;background:#132b46}
+.v51-journal summary {cursor:pointer;font-weight:750;min-height:37px;display:flex;align-items:center}
+.v51-world-list {display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:7px;padding:5px}
+.v51-world-row {display:grid;grid-template-columns:27px 1fr;gap:0 7px;background:#244359;padding:8px;border-radius:8px}
+.v51-world-row span {grid-row:span 2;font-size:20px}
+.v51-world-row strong {font-size:13px;color:#f9edcc}
+.v51-world-row small {font-size:11px;color:#c9d8e6}
+.v51-world-row.locked{opacity:.62}
+@media(max-width:450px){.v51-room-bar{top:3px;left:3px;right:3px}.v51-room-bar strong{padding:5px;font-size:10px}.v51-room-bar button{min-height:34px;padding:4px 7px;font-size:11px}}
