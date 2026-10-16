@@ -233,6 +233,6 @@
  const origLoad=v4SafeLoad;
  v4SafeLoad=function(data){const cleaned={...data,v51Indoor:null};origLoad(cleaned);ensure();showIndoor()};
  window.PokemonGame.walk=(dx,dy)=>walk(dx,dy);
- window.PokemonGame.world51={version:'5.1.0',interiorsPerRegion:2,regions:AREAS.length,location:specialAt,open:(kind)=>enterHouse(kind),leave:leaveHouse,inspect:()=>({interior:state.v51Indoor,puzzles:state.v51Puzzles?.length||0,treasures:state.v51Caches?.length||0,rooms:state.v51RoomsLoot?.length||0})};
+ window.PokemonGame.world51={version:'5.1.0',interiorsPerRegion:2,regions:AREAS.length,location:specialAt,open:(kind)=>enterHouse(kind),activate:(type)=>interactSpecial(type),leave:leaveHouse,inspect:()=>({interior:state.v51Indoor,puzzles:state.v51Puzzles?.length||0,treasures:state.v51Caches?.length||0,rooms:state.v51RoomsLoot?.length||0})};
  ensure();showIndoor();
 })();
