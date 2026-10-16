@@ -176,11 +176,28 @@ with sync_playwright() as pw:
    bounds=player_canvas.bounding_box()
    assert bounds,"Phone camera is absent when touch test begins"
    # Real browser pointer click at the center of the adjacent map field.
-   page.mouse.click(bounds["x"]+(2.5/9)*bounds["width"],
-                    bounds["y"]+(6.5/12)*bounds["height"])
+   px=bounds["x"]+(2.5/9)*bounds["width"]
+   py=bounds["y"]+(6.5/12)*bounds["height"]
+   prep=page.evaluate("""({x,y})=>({
+     hit:document.elementFromPoint(x,y)?.id||document.elementFromPoint(x,y)?.className||'none',
+     currentPage:typeof currentPage!=='undefined'?currentPage:'unknown',
+     modalOpen:typeof modalOpen!=='undefined'?modalOpen:'unknown',
+     battle:typeof battle!=='undefined'?Boolean(battle):'unknown',
+     tile:window.PokemonGame.world50.getMap(20)[6][2],
+     stage:window.PokemonGame.world50.getStage()
+   })""",{"x":px,"y":py})
+   page.mouse.click(px,py)
    tap=page.evaluate("()=>({x:state.x,y:state.y})")
+   if tap["x"]!=2:
+    direct=page.evaluate("""()=>{
+      const before=[state.x,state.y];walk(1,0);
+      return {before,after:[state.x,state.y],
+        modalOpen:typeof modalOpen!=='undefined'?modalOpen:'unknown',
+        currentPage:typeof currentPage!=='undefined'?currentPage:'unknown'};
+    }""")
+   else: direct=None
    check(tap["x"]==2 and tap["y"]==6,
-         "Mobile touchscreen map coordinates are wrong: "+str(tap)+"; camera bounds: "+str(bounds))
+         "Phone click did not walk: "+str(tap)+"; hit="+str(prep)+"; direct="+str(direct)+"; bounds="+str(bounds))
    page.evaluate("()=>{state.x=18;render()}")
    rightmost=page.evaluate("""()=>{
      const b=document.querySelector('#aur50-mobile-map-canvas');
