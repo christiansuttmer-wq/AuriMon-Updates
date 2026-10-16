@@ -109,7 +109,7 @@
     extras.npcs=[{x:8,y:8,name:'Arenatrainer Kian',kind:'trainer',j:66},{x:5,y:5,name:'Sanitäterin',kind:'heal'}];
     extras.loot=[{x:15,y:8,id:'9:50',item:'superpotion'}];
    }else if(s>=10){
-    const z=Math.floor(s/5),k=s%5,terrain=z===2||z===6||z===8?'#':z===4||z===7||z===9?'~':'t';
+    const z=Math.floor(s/5),k=s%5,terrain=z===2||z===6?'#':z===4||z===7||z===8||z===9?'~':'t';
     // Shared tiles drive terrain, collisions, buildings, pickups and path-finding.
     ROW(g,6,0,19,'p');ROW(g,3,1,18,'p');ROW(g,9,1,18,'p');
     COL(g,4,3,9,'p');COL(g,11,3,9,'p');COL(g,16,3,9,'p');
