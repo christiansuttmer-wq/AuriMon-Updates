@@ -238,7 +238,6 @@
  function grass(x,y,wx,wy,s,tick){
   const n=rnd(wx,wy,s*11), g=c.createLinearGradient(x,y,x+T,y+T);
   if((s%5===3)){g.addColorStop(0,s===8?'#748493':'#837f79');g.addColorStop(1,s===8?'#9caab6':'#a6a398')}
-  else if(s>=5){g.addColorStop(0,n>.48?'#87c7a5':'#95d9b4');g.addColorStop(1,n>.48?'#60ac96':'#78c4a1')}
   else{const pal=REGION_PALETTES[Math.floor(s/5)]||REGION_PALETTES[0];g.addColorStop(0,pal[0]);g.addColorStop(1,pal[1])}
   fill(x,y,T,T,g);
   if(s%5===3){for(let k=0;k<3;k++){const px=x+7+k*15,py=y+8+((wx+k*7+wy)%3)*11;fill(px,py,10,2,'#c6bba1')}return}
@@ -252,7 +251,7 @@
  } 
  function path(x,y,t,s,wx,wy){
   // Path edge shading and cobblestones remain derived from walkable cells.
-  const mud=(s%5===3)?'#b3a698':s===2?'#d9c7a8':s>=5?'#d5c8ab':'#ddc6a0';
+  const mud=s%5===3?'#b3a698':Math.floor(s/5)===6?'#b6a7c4':Math.floor(s/5)===8?'#af8d75':Math.floor(s/5)===7?'#bad1d6':'#ddc6a0';
   fill(x,y,48,48,mud);
   fill(x+1,y+1,46,3,s%5===3?'#beb8ae':'#e7d2ad');
   for(let k=0;k<12;k++){
@@ -366,7 +365,7 @@
    if(['p','=','E'].includes(kind))path(px,py,kind,s,x,y);
    if(kind==='s'||kind==='R'||kind==='G') {fill(px,py,T,T,'#aaa99e');for(let k=0;k<4;k++){fill(px+2+k*11,py+8+(k%2)*12,9,2,'#d2c7b2')}}
    if(kind==='#')wall(px,py,x,y);
-   if(kind==='t')(s%5===3)?rock(px,py,x,y):rnd(x,y,s+7)>.37?bigTree(px,py,x,y,tick):pine(px,py,x,y,tick);
+   if(kind==='t')(s%5===3||Math.floor(s/5)===2||Math.floor(s/5)===8)?rock(px,py,x,y):rnd(x,y,s+7)>.37?bigTree(px,py,x,y,tick):pine(px,py,x,y,tick);
    if(kind==='w')shrub(px,py,x,y);
    if(kind==='E'){rounded(px+8,py+10,32,34,6,'#a88363','#eee4bf');rounded(px+15,py+14,18,28,4,'#355e64');ellipse(px+24,py+7,11,3,'#fff0bd',.6)}
   }
@@ -446,8 +445,8 @@
   const runeCount=maps[s].extras.runes.filter(r=>w.runestones.includes(r.id)).length;
   $('zone-step').textContent=`${region} · EBENE ${s+1} / 50`;
   $('zone-name').textContent=TITLES[s];$('zone-desc').textContent=DESCS[s];
-  $('goal-title').textContent=(s%5===3)?`${s===3?'Aktiviere die Wurzelrunen':'Flutrunen: West → Mitte → Ost'} (${runeCount}/3)`:s===4?(state.badges.includes(0)?'Sonnenorden errungen!':'Besiege Arenaleiterin Lina'):s===9?(state.badges.includes(1)?'Seeorden errungen!':'Besiege Arenaleiter Finn'):`Erreiche Ebene ${s+2}`;
-  $('goal-desc').textContent=(s===4||s===9)?'Die Prüfhalle liegt im Nordosten.':(s%5===3)?s===8?'Die Bibliothek erwacht nur bei West → Mitte → Ost.':'Drei Runen öffnen das Tor im Osten.':'Erkunde die Karte und folge dem Weg nach Osten.';
+  $('goal-title').textContent=s%5===3?`Aktiviere drei Runen (${runeCount}/3)`:s%5===4?(state.badges.includes(Math.floor(s/5))?'Orden errungen!':'Besiege '+AREAS[Math.floor(s/5)].leader):`Erreiche Ebene ${Math.min(50,s+2)}`;
+  $('goal-desc').textContent=s%5===4?'Die Prüfhalle liegt im Nordosten.':s%5===3?'Drei Zeichen öffnen das Tor im Osten.':'Erkunde die Karte und folge dem Weg nach Osten.';
   const sub=$('camera-position');if(sub)sub.textContent=`20 × 12 Felder · Abschnitt ${s+1}/50`;
   const title=document.querySelector('.maptop b');if(title)title.textContent=`${region} · ${TITLES[s].toUpperCase()}`;
  }
@@ -475,7 +474,7 @@
    if(n.kind==='heal')healCenter();else modal('📜 Hinweis in '+REGIONS[Math.floor(w.stage/5)],d.extras.runes.length?'„Die Zeichen gehören in diese Reihenfolge: '+((d.extras.runeOrder||d.extras.runes.map(q=>q.id)).map(id=>id.endsWith('east')?'Ost':id.endsWith('middle')?'Mitte':'West')).join(' → ')+'.“':'„Folge dem Weg nach Osten. Hier warten Trainer, Geheimnisse und neue Pokémon.“',[['Danke!','close','gold']]);return true}
   if(r){if(!w.runestones.includes(r.id)){
      const order=d.extras.runes;const done=order.filter(a=>w.runestones.includes(a.id)).length;
-     if(w.stage!==3&&(d.extras.runeOrder||order.map(a=>a.id))[done]!==r.id){toast('🌊 Fluträtsel: zuerst West, dann Mitte, zuletzt Ost!');return true}
+     if(w.stage!==3&&(d.extras.runeOrder||order.map(a=>a.id))[done]!==r.id){toast('🔮 Falsche Reihenfolge! Sprich mit dem Runenforscher.');return true}
      w.runestones.push(r.id);save();toast(`💎 Rune aktiviert! ${done+1}/3`);render()}
     else toast('💎 Diese Rune leuchtet bereits.');return true}
   if(b){if(b.kind==='gym'){if(w.stage%5!==4)return true;enterGym();return true}
