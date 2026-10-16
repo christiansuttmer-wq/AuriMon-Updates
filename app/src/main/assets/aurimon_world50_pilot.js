@@ -161,8 +161,12 @@
     if([3,5,7,8,9].includes(zone))extras.npcs.push({x:13,y:8,kind:'shadow',name:'Schatten-Späher'});
     if([7,8,9].includes(zone))extras.npcs.push({x:11,y:9,kind:'temple',name:'Legendenforscher'});
     extras.npcs.push({x:9,y:8,kind:'side',name:'Auftraggeber'});
+    extras.npcs.push({x:10,y:5,kind:'runeA',name:'Erster Ortsrunenstein'});
+    extras.npcs.push({x:15,y:8,kind:'runeB',name:'Zweiter Ortsrunenstein'});
+    extras.npcs.push({x:3,y:8,kind:'cache',name:'Verschlossene Truhe'});
    }
    if(s>=10&&s%5===3&&[2,3,4,5,6,8,9].includes(zone))extras.npcs.push({x:5,y:5,kind:'ruin',name:'Runenwächter'});
+   if(s%5===2&&[2,3,4,5,6,8,9].includes(zone))extras.npcs.push({x:8,y:5,kind:'cave',name:'Geheimhöhle'});
    // All authored interactives take precedence over random decorations.
    for(const n of extras.npcs)g[n.y][n.x]=s%5===3?'s':'p';
    for(const l of extras.loot)g[l.y][l.x]=(s%5===3)?'s':'p';
@@ -442,6 +446,10 @@
    else{ellipse(x+24,y+25,18,18,'#9bffe4',.34);ellipse(x+24,y+25,9,12,'#d3fff1',.55)}
   }
   for(const q of d.extras.loot){if(state.found.includes('aur50:'+q.id))continue;const x=q.x*T+24,y=q.y*T+22;rounded(x-12,y-2,24,16,5,'#a66847','#ffe1a0');fill(x-12,y+3,24,3,'#e6c168');fill(x-3,y,6,14,'#fff0a9');ellipse(x,y-14+Math.sin(tick*.005)*2,3,4,'#fffbd9')}
+  const hidden=window.AriMons?.hiddenSpot?.(state.zone);
+  if(hidden){const x=hidden.x*T+T/2,y=hidden.y*T+T/2;
+   ellipse(x,y+6,15,7,'#523e6f',.21);ellipse(x,y-10+Math.sin(tick*.003)*2,13,13,'#ffeaa1',.27);
+   ellipse(x,y-10,5,7,'#fff5c1',.95);rounded(x-2,y-23,4,9,1,'#f6b85c');}
   for(const n of d.extras.npcs)character(n.x,n.y,n.kind,0,tick);
   sprite(state.x,state.y,tick);
   // Soft translucent scene frame gives the visual world a cohesive polish.
@@ -489,6 +497,8 @@
  function handleAt(x,y,walking){const w=ensure(),d=data(),n=npc(x,y),q=loot(x,y),r=rune(x,y),b=buildingAt(x,y);
   if(q){if(walking){state.x=x;state.y=y;}pick(q);return true}
   if(n){if(walking){toast('💬 Drücke A, um '+n.name+' anzusprechen.');return true}
+   if(['runeA','runeB','cache'].includes(n.kind)){window.PokemonGame.world51?.activate?.(n.kind);return true}
+   if(n.kind==='cave'){window.PokemonGame.v4?.goCave?.();return true}
    if(n.kind==='rival'){doAction('v52-rival-menu');return true}
    if(n.kind==='side'){doAction('v53-side');return true}
    if(n.kind==='ruin'){doAction('v53-ruin');return true}
