@@ -1,4 +1,4 @@
-/* AuriMon 1.3.12: new optional 20-chapter story, isolated from battles/saves. */
+/* AuriMon 1.3.12: new optional 10-chapter story, isolated from battles/saves. */
 (() => {
 'use strict';
 const chapters = [
