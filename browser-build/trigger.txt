@@ -1,1 +1,3 @@
 AuriMon v1.4.24 QA: quest integrations, unique maps, safe rewards, offline browser review - 2026-10-17
+
+Chrome smoke test after closing starter dialogue
