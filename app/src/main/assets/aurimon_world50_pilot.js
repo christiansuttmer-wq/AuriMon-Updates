@@ -119,6 +119,8 @@
       BLOCK(g,x,y,x+2,y+1,'b');g[3][x+1]='p';
       extras.buildings.push({kind,x,y,w:3,h:2,door:[x+1,2],step:[x+1,3],name:label});
      }
+     BLOCK(g,15,1,17,2,'b');g[3][16]='p';
+     extras.buildings.push({kind:'atelier',x:15,y:1,w:3,h:2,door:[16,2],step:[16,3],name:'Fossilienwerkstatt'});
      extras.npcs=[{x:8,y:8,name:'Reiseführerin',kind:'guide'},{x:5,y:9,name:'Sanitäterin',kind:'heal'},{x:14,y:6,name:'Trainer '+REGIONS[z],kind:'trainer',j:s*10}];
      extras.loot=[{x:16,y:9,id:s+':treasure',item:'potion'}];
     }else if(k===1||k===2){
@@ -132,8 +134,15 @@
      BLOCK(g,1,1,18,10,'s');COL(g,7,1,4,'#');COL(g,12,8,10,'#');
      ROW(g,6,0,19,'p');COL(g,4,3,6,'s');COL(g,10,6,8,'s');COL(g,15,3,6,'s');
      ROW(g,3,3,16,'s');ROW(g,8,8,16,'s');
-     for(const [x,y] of [[2,2],[3,2],[13,9],[14,9]])g[y][x]=terrain;
-     extras.runes=[{x:4,y:3,id:'rune:'+s+':west'},{x:10,y:8,id:'rune:'+s+':middle'},{x:15,y:3,id:'rune:'+s+':east'}];
+     for(const [x,y] of [[2,2],[3,2],[13,9],[14,9],[1+z%5,10],[13+z%3,1]])g[y][x]=terrain;
+     // Each temple has a different nave, wall shape and safe paths.
+     const west=3+z%3,middle=9+z%2,east=14+z%3;
+     ROW(g,3,west,6,'s');ROW(g,8,9,16,'s');
+     g[1][3+z%6]='#';g[10][8+z%7]='#';
+     if(z%3===0){g[2][9]='~';g[9][3]='#'}
+     else if(z%3===1){g[2][14]='~';g[9][6]='#'}
+     else{g[2][3]='~';g[9][14]='#'}
+     extras.runes=[{x:west,y:3,id:'rune:'+s+':west'},{x:middle,y:8,id:'rune:'+s+':middle'},{x:east,y:3,id:'rune:'+s+':east'}];
      extras.runeOrder=(z%2===0?[0,1,2]:[2,1,0]).map(i=>extras.runes[i].id);
      COL(g,17,1,10,'#');g[6][17]='G';extras.gate={x:17,y:6};
      extras.npcs=[{x:8,y:5,name:'Runenforscher',kind:'guide'},{x:13,y:7,name:'Tempelwächter',kind:'trainer',j:s*10+3}];
@@ -145,6 +154,15 @@
      extras.loot=[{x:15,y:9,id:s+':reward',item:'superpotion'}];
     }
    }
+   // World encounters are mapped onto visible NPCs; no invisible legacy coordinates.
+   const zone=Math.floor(s/5),first=s%5===0;
+   if(first){
+    if([0,2,4,6,8,9].includes(zone))extras.npcs.push({x:8,y:6,kind:'rival',name:'Alex, dein Rivale'});
+    if([3,5,7,8,9].includes(zone))extras.npcs.push({x:13,y:8,kind:'shadow',name:'Schatten-Späher'});
+    if([7,8,9].includes(zone))extras.npcs.push({x:11,y:9,kind:'temple',name:'Legendenforscher'});
+    extras.npcs.push({x:9,y:8,kind:'side',name:'Auftraggeber'});
+   }
+   if(s>=10&&s%5===3&&[2,3,4,5,6,8,9].includes(zone))extras.npcs.push({x:5,y:5,kind:'ruin',name:'Runenwächter'});
    // All authored interactives take precedence over random decorations.
    for(const n of extras.npcs)g[n.y][n.x]=s%5===3?'s':'p';
    for(const l of extras.loot)g[l.y][l.x]=(s%5===3)?'s':'p';
@@ -470,7 +488,16 @@
  }
  function handleAt(x,y,walking){const w=ensure(),d=data(),n=npc(x,y),q=loot(x,y),r=rune(x,y),b=buildingAt(x,y);
   if(q){if(walking){state.x=x;state.y=y;}pick(q);return true}
-  if(n){if(n.kind==='trainer'){if(walking){toast('💬 Drücke A, um '+n.name+' anzusprechen.');return true}return interactTrainer(trainers(state.zone).find(t=>t.x===x&&t.y===y)),true}
+  if(n){if(walking){toast('💬 Drücke A, um '+n.name+' anzusprechen.');return true}
+   if(n.kind==='rival'){doAction('v52-rival-menu');return true}
+   if(n.kind==='side'){doAction('v53-side');return true}
+   if(n.kind==='ruin'){doAction('v53-ruin');return true}
+   if(n.kind==='temple'){doAction('v53-temple');return true}
+   if(n.kind==='shadow'){
+    if(state.rocketWins?.includes(state.zone)){doAction('v53-story');return true}
+    modal('🕶️ Schatten-Team','Ein Kommandant bedroht diese Region. Besiege ihn, um die Schattenchronik fortzusetzen.',[['Kommandant herausfordern','rocket:'+state.zone,'gold'],['Später','close']]);return true
+   }
+   if(n.kind==='trainer'){if(walking){toast('💬 Drücke A, um '+n.name+' anzusprechen.');return true}return interactTrainer(trainers(state.zone).find(t=>t.x===x&&t.y===y)),true}
    if(n.kind==='heal')healCenter();else modal('📜 Hinweis in '+REGIONS[Math.floor(w.stage/5)],d.extras.runes.length?'„Die Zeichen gehören in diese Reihenfolge: '+((d.extras.runeOrder||d.extras.runes.map(q=>q.id)).map(id=>id.endsWith('east')?'Ost':id.endsWith('middle')?'Mitte':'West')).join(' → ')+'.“':'„Folge dem Weg nach Osten. Hier warten Trainer, Geheimnisse und neue Pokémon.“',[['Danke!','close','gold']]);return true}
   if(r){if(!w.runestones.includes(r.id)){
      const order=d.extras.runes;const done=order.filter(a=>w.runestones.includes(a.id)).length;
@@ -478,7 +505,7 @@
      w.runestones.push(r.id);save();toast(`💎 Rune aktiviert! ${done+1}/3`);render()}
     else toast('💎 Diese Rune leuchtet bereits.');return true}
   if(b){if(b.kind==='gym'){if(w.stage%5!==4)return true;enterGym();return true}
-   if(b.kind==='center')healCenter();else if(b.kind==='market')showShop();else modal('🏡 '+b.name,'Ein gemütliches Haus in '+REGIONS[Math.floor(w.stage/5)]+'.',[['Weiter','close']]);return true}
+   if(b.kind==='center')healCenter();else if(b.kind==='market')showShop();else if(b.kind==='atelier'){window.PokemonGame.world51?.open?.('atelier');return true}else modal('🏡 '+b.name,'Ein gemütliches Haus in '+REGIONS[Math.floor(w.stage/5)]+'.',[['Weiter','close']]);return true}
   return false;
  }
  function step(dx,dy){if(!active()||modalOpen||battle||currentPage!=='world')return;const w=ensure();state.facing=dx>0?'right':dx<0?'left':dy>0?'down':'up';const nx=state.x+dx,ny=state.y+dy;
@@ -501,13 +528,14 @@
   const dirs={up:[0,-1],right:[1,0],down:[0,1],left:[-1,0]};const d=dirs[state.facing]||dirs.up;
   const px=state.x+d[0],py=state.y+d[1];if(safe(px,py)&&handleAt(px,py,false))return;
   if(handleAt(state.x,state.y,false))return;
+  if(window.AriMons?.tryDiscover?.())return;
   modal('🧭 '+REGIONS[Math.floor(ensure().stage/5)],`Du erkundest <b>Ebene ${ensure().stage+1}: ${TITLES[ensure().stage]}</b>. Folge den begehbaren Wegen. Tippe A vor Häusern, Trainern und Runen.`,[['Weiter','close','gold']]);
  };
  battleDefeat=function(){oldDefeat();if(state.zone>=0&&state.zone<10&&state.aurWorld50){const p=maps[clampStage(state.aurWorld50.stage)].extras.entry;state.x=p[0];state.y=p[1];save();render()}};
  // The original controls reference global walk/interact dynamically.
  window.PokemonGame.walk=(dx,dy)=>walk(dx,dy);
  window.PokemonGame.world50={pilot:true,revision:'Zehn-Regionen-50-Ebenen',names:TITLES.slice(),getStage:()=>state?.aurWorld50?.stage??0,
-  getMap:(i)=>maps[clampStage(i)].g.map(row=>row.slice()),getRegion:(i)=>REGIONS[Math.floor(clampStage(i)/5)],getCount:()=>maps.length,getPlayer:()=>[state.x,state.y],getSpawn:()=>maps[clampStage(state?.aurWorld50?.stage)].extras.entry.slice(),
+  getMap:(i)=>maps[clampStage(i)].g.map(row=>row.slice()),getFeatures:(i)=>({npcs:maps[clampStage(i)].extras.npcs.map(n=>({...n})),runes:maps[clampStage(i)].extras.runes.map(n=>({...n})),buildings:maps[clampStage(i)].extras.buildings.map(n=>({...n}))}),getRegion:(i)=>REGIONS[Math.floor(clampStage(i)/5)],getCount:()=>maps.length,getPlayer:()=>[state.x,state.y],getSpawn:()=>maps[clampStage(state?.aurWorld50?.stage)].extras.entry.slice(),
   // Route checker is read-only and works without a save or profile.
   validate:()=>maps.map((m,s)=>{
    const seen=new Set(),queue=[m.extras.entry];const pass=(x,y)=>safe(x,y)&&((m.g[y][x]==='G')||passable(m.g[y][x]));
