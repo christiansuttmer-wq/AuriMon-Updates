@@ -148,12 +148,44 @@ with sync_playwright() as pw:
  for width,height in [(390,844),(768,1024),(1440,900)]:
   page.set_viewport_size({"width":width,"height":height})
   visit(20)
-  view=page.evaluate("""()=>{const b=document.querySelector('#game-map').getBoundingClientRect();
-    return {canvas:document.querySelector('#game-map canvas').getBoundingClientRect().width,map:b.width,
-            body:document.body.scrollWidth,viewport:innerWidth,visible:b.height}}""")
+  view=page.evaluate("""()=>{
+    const b=document.querySelector('#game-map').getBoundingClientRect();
+    const canvas=document.querySelector('#game-map canvas');
+    return {canvas:canvas.getBoundingClientRect().width,map:b.width,
+            body:document.body.scrollWidth,viewport:innerWidth,visible:b.height,
+            heightOverWidth:b.height/b.width,
+            canvasId:canvas.id,logicalWidth:canvas.width,logicalHeight:canvas.height};
+  }""")
   report["viewports"].append({"width":width,"height":height,**view})
   check(view["map"]>150 and view["canvas"]>150 and view["visible"]>120,
         "Map collapsed at "+str(width)+"px: "+str(view))
+  if width==390:
+   check(view["canvasId"]=="aur50-mobile-map-canvas",
+         "Portrait viewport should use tracked camera: "+str(view))
+   check(view["visible"]>390 and 1.27<view["heightOverWidth"]<1.40,
+         "Portrait field is not taller than wide: "+str(view))
+   check(view["logicalWidth"]*12==view["logicalHeight"]*9,
+         "Phone pixels not proportional to the 9x12 camera map: "+str(view))
+   phone=root/"SPIELFELD_HANDY_HOCHFORMAT.png"
+   page.screenshot(path=str(phone))
+   report["screenshots"].append(phone.name)
+   # Player at x=1: tapping right on a neighboring path cell must use 9-column coordinates.
+   tap=page.evaluate("""()=>{
+      state.x=1;state.y=6;state.facing='right';render();
+      const b=document.querySelector('#aur50-mobile-map-canvas').getBoundingClientRect();
+      const px=b.left+(2.5/9)*b.width, py=b.top+(6.5/12)*b.height;
+      document.elementFromPoint(px,py)?.dispatchEvent(new MouseEvent('click',{
+        bubbles:true,cancelable:true,clientX:px,clientY:py}));
+      return {x:state.x,y:state.y};
+   }""")
+   check(tap["x"]==2 and tap["y"]==6,"Mobile touchscreen map coordinates are wrong: "+str(tap))
+   page.evaluate("()=>{state.x=18;render()}")
+   rightmost=page.evaluate("""()=>{
+     const b=document.querySelector('#aur50-mobile-map-canvas');
+     return {exists:!!b,canvasWidth:b.width,drawn:b.getContext('2d').getImageData(1,1,1,1).data[3]};
+   }""")
+   check(rightmost["exists"] and rightmost["drawn"]>0,
+         "Camera fails to draw when player walks to the right edge: "+str(rightmost))
   if view["body"]>width+25:report["warnings"].append("Horizontal scrolling at "+str(width)+"px (document width "+str(view["body"])+")")
  # Save persistence after close/reopen, still in a private test browser context.
  page.set_viewport_size({"width":1440,"height":900})
