@@ -131,8 +131,8 @@ body.auri130 #page-world #game-map.aur50-active > #aur50-map-canvas {
     position:relative!important;flex:0 1 auto!important;
     width:min(100%, calc((100dvh - 100px)*5/3))!important;
     max-width:100%!important;
-    height:auto!important;max-height:calc(100% - 22px)!important;
-    aspect-ratio:5 / 3!important;
+    height:auto!important;max-height:none!important;min-height:0!important;
+    flex:0 0 auto!important;aspect-ratio:5 / 3!important;
     margin:auto!important;
     border-radius:10px!important;
   }
