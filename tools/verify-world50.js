@@ -32,4 +32,27 @@ for(let i=0;i<50;i++){
  'Sonnenwiese','Mondsee','Felsenwald','Blumenpfad','Windküste','Bernsteinwald',
  'Flüsterdorf','Kristallsee','Vulkanpass','Wolkenhöhe'][i/5]);
 }
-console.log('[PASS] 50 maps / 10 dungeons / 10 regions / all targets accessible.');
+const identities=new Map();
+for(let stage=0;stage<50;stage++){
+ const grid=api.getMap(stage),events=api.getFeatures(stage),key=grid.map(row=>row.join('')).join('/');
+ assert(!identities.has(key),'Duplicate terrain layout: levels '+(identities.get(key)+1)+' and '+(stage+1));
+ identities.set(key,stage);
+ const blocked=new Set(events.npcs.map(n=>n.x+','+n.y));
+ const queue=[stage===0?[9,9]:[1,6]],seen=new Set();
+ while(queue.length){
+  const [x,y]=queue.pop(),k=x+','+y;
+  if(x<0||x>=20||y<0||y>=12||seen.has(k)||blocked.has(k)||'t#ba~'.includes(grid[y][x]))continue;
+  seen.add(k);
+  for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]])queue.push([x+dx,y+dy]);
+ }
+ if(stage%5!==3)assert(seen.has('19,6'),'NPC blocks exit on stage '+(stage+1));
+ const adjacent=(x,y)=>[[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>seen.has((x+dx)+','+(y+dy)));
+ for(const npc of events.npcs)assert(adjacent(npc.x,npc.y),'NPC unreachable on level '+(stage+1)+': '+npc.name);
+ if(stage%5===0){
+  for(const kind of ['side','runeA','runeB','cache'])
+   assert(events.npcs.some(n=>n.kind===kind),'Missing '+kind+' on region '+(Math.floor(stage/5)+1));
+ }
+ if(stage%5===2&&[2,3,4,5,6,8,9].includes(Math.floor(stage/5)))
+  assert(events.npcs.some(n=>n.kind==='cave'),'Missing cave in stage '+(stage+1));
+}
+console.log('[PASS] 50 maps / 10 dungeons / 10 regions / all quest NPCs reachable; 50 unique maps.');
