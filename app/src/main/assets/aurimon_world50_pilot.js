@@ -328,7 +328,7 @@
   polygon([[x+10,y+39],[x+w-13,y+39],[x+w-11,y+h-2],[x+10,y+h-2]],body);
   polygon([[x+w-13,y+39],[x+w-4,y+30],[x+w-3,y+h-12],[x+w-11,y+h-2]],'#a9957e');
   // Layered roofs with real eaves, chimney, tiles and highlights.
-  const colors={center:['#d45a74','#eaa0aa'],market:['#4c92b5','#94d8dd'],house:['#b276c7','#dcb1e3'],gym:['#8d63b2','#c9a0dc']};const [roof,light]=colors[b.kind];
+  const colors={center:['#d45a74','#eaa0aa'],market:['#4c92b5','#94d8dd'],house:['#b276c7','#dcb1e3'],gym:['#8d63b2','#c9a0dc'],atelier:['#ac8357','#e4c396']};const [roof,light]=colors[b.kind]||colors.house;
   polygon([[x-4,y+44],[x+30,y+3],[x+w-33,y+3],[x+w+5,y+44],[x+w-3,y+52],[x+3,y+52]],'#635060');
   const g=c.createLinearGradient(x,y,x,y+49);g.addColorStop(0,light);g.addColorStop(.66,roof);g.addColorStop(1,'#704b70');
   polygon([[x-2,y+42],[x+32,y+4],[x+w-34,y+4],[x+w+2,y+42],[x+w-4,y+47],[x+4,y+47]],g);
