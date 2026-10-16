@@ -148,68 +148,80 @@ with sync_playwright() as pw:
   check(result["found"] and result["interacted"] and "Ortsauftrag" in result["text"],
         "Side quest in "+str(z+1)+" not interactive: "+str(result)[:220])
   report["quests_tested"]+=1
- # Test sizing and rendering without altering player data.
- for width,height in [(390,844),(768,1024),(1440,900)]:
+ # Landscape is required. Test the real right-side menu and large world canvas.
+ for width,height in [(915,412),(844,390),(740,360),(1280,800),(1440,900)]:
   page.set_viewport_size({"width":width,"height":height})
   visit(20)
   view=page.evaluate("""()=>{
-    const b=document.querySelector('#game-map').getBoundingClientRect();
+    const map=document.querySelector('#game-map').getBoundingClientRect();
     const canvas=document.querySelector('#game-map canvas');
-    return {canvas:canvas.getBoundingClientRect().width,map:b.width,
-            body:document.body.scrollWidth,viewport:innerWidth,visible:b.height,
-            heightOverWidth:b.height/b.width,
-            canvasId:canvas.id,logicalWidth:canvas.width,logicalHeight:canvas.height};
+    const nav=document.querySelector('#app .tabs').getBoundingClientRect();
+    const main=document.querySelector('#app .main').getBoundingClientRect();
+    const tabs=[...document.querySelectorAll('#app .tabs button')].map(el=>el.getBoundingClientRect().toJSON());
+    return {canvas:canvas.getBoundingClientRect().width,map:map.width,visible:map.height,
+      heightOverWidth:map.height/map.width,canvasId:canvas.id,
+      logicalWidth:canvas.width,logicalHeight:canvas.height,
+      navLeft:nav.left,navRight:nav.right,navHeight:nav.height,
+      mainRight:main.right,body:document.body.scrollWidth,viewport:innerWidth,
+      verticalTabs:tabs.every((b,i)=>i===0||b.top>tabs[i-1].top)};
   }""")
   report["viewports"].append({"width":width,"height":height,**view})
-  check(view["map"]>150 and view["canvas"]>150 and view["visible"]>120,
-        "Map collapsed at "+str(width)+"px: "+str(view))
-  if width==390:
-   check(view["canvasId"]=="aur50-mobile-map-canvas",
-         "Portrait viewport should use tracked camera: "+str(view))
-   check(view["visible"]>390 and 1.27<view["heightOverWidth"]<1.40,
-         "Portrait field is not taller than wide: "+str(view))
-   check(view["logicalWidth"]*12==view["logicalHeight"]*9,
-         "Phone pixels not proportional to the 9x12 camera map: "+str(view))
-   phone=root/"SPIELFELD_HANDY_HOCHFORMAT.png"
-   page.screenshot(path=str(phone))
-   report["screenshots"].append(phone.name)
-   # Player at x=1: tapping right on a neighboring path cell must use 9-column coordinates.
-   player_canvas=page.locator("#aur50-mobile-map-canvas")
-   player_canvas.scroll_into_view_if_needed()
-   page.evaluate("()=>{state.x=1;state.y=6;state.facing='right';render()}")
-   bounds=player_canvas.bounding_box()
-   assert bounds,"Phone camera is absent when touch test begins"
-   # Real browser pointer click at the center of the adjacent map field.
-   px=bounds["x"]+(2.5/9)*bounds["width"]
-   py=bounds["y"]+(6.5/12)*bounds["height"]
-   prep=page.evaluate("""({x,y})=>({
-     hit:document.elementFromPoint(x,y)?.id||document.elementFromPoint(x,y)?.className||'none',
-     currentPage:typeof currentPage!=='undefined'?currentPage:'unknown',
-     modalOpen:typeof modalOpen!=='undefined'?modalOpen:'unknown',
-     battle:typeof battle!=='undefined'?Boolean(battle):'unknown',
-     tile:window.PokemonGame.world50.getMap(20)[6][2],
-     stage:window.PokemonGame.world50.getStage()
-   })""",{"x":px,"y":py})
-   page.mouse.click(px,py)
-   tap=page.evaluate("()=>({x:state.x,y:state.y})")
-   if tap["x"]!=2:
-    direct=page.evaluate("""()=>{
-      const before=[state.x,state.y];walk(1,0);
-      return {before,after:[state.x,state.y],
-        modalOpen:typeof modalOpen!=='undefined'?modalOpen:'unknown',
-        currentPage:typeof currentPage!=='undefined'?currentPage:'unknown'};
-    }""")
-   else: direct=None
-   check(tap["x"]==2 and tap["y"]==6,
-         "Phone click did not walk: "+str(tap)+"; hit="+str(prep)+"; direct="+str(direct)+"; bounds="+str(bounds))
-   page.evaluate("()=>{state.x=18;render()}")
-   rightmost=page.evaluate("""()=>{
-     const b=document.querySelector('#aur50-mobile-map-canvas');
-     return {exists:!!b,canvasWidth:b.width,drawn:b.getContext('2d').getImageData(1,1,1,1).data[3]};
+  check(view["navLeft"]>=view["mainRight"]-5 and view["verticalTabs"],
+        "Welt/Team/AuriDex/Tasche/Reise are not vertically placed on the right: "+str(view))
+  check(view["map"]>180 and view["visible"]>min(210,height*.50),
+        "Map too flat/small at "+str(width)+"x"+str(height)+": "+str(view))
+  if width<=1100 and height<=650:
+   check(view["canvasId"]=="aur50-landscape-map-canvas",
+         "Landscape phone must show tracked 16x12 world camera: "+str(view))
+   check(1.25<view["heightOverWidth"]**-1<1.43,
+         "Landscape camera aspect is distorted: "+str(view))
+   check(view["logicalWidth"]*12==view["logicalHeight"]*16,
+         "Landscape camera pixels are not 16x12: "+str(view))
+  if width==915:
+   phone=root/"SPIELFELD_HANDY_QUERFORMAT.png"
+   page.screenshot(path=str(phone));report["screenshots"].append(phone.name)
+   player=page.locator("#aur50-landscape-map-canvas")
+   player.scroll_into_view_if_needed()
+   page.evaluate("""()=>{
+     state.x=1;state.y=6;state.facing='right';render();
    }""")
-   check(rightmost["exists"] and rightmost["drawn"]>0,
-         "Camera fails to draw when player walks to the right edge: "+str(rightmost))
-  if view["body"]>width+25:report["warnings"].append("Horizontal scrolling at "+str(width)+"px (document width "+str(view["body"])+")")
+   bounds=player.bounding_box()
+   check(bool(bounds),"Landscape canvas missing during touch test")
+   if bounds:
+    x=bounds["x"]+(2.5/16)*bounds["width"]
+    y=bounds["y"]+(6.5/12)*bounds["height"]
+    hit=page.evaluate("""({x,y})=>({
+      target:document.elementFromPoint(x,y)?.id||'none',
+      modal:typeof modalOpen!=='undefined'?modalOpen:null,
+      battle:typeof battle!=='undefined'?Boolean(battle):null})""",{"x":x,"y":y})
+    page.mouse.click(x,y)
+    position=page.evaluate("()=>[state.x,state.y]")
+    check(position==[2,6],"Touch on landscape game map did not move to expected neighbor: "+str(position)+", target="+str(hit))
+   page.evaluate("()=>{state.x=18;render()}")
+   edge=page.evaluate("""()=>{
+    const c=document.querySelector('#aur50-landscape-map-canvas');
+    return {alpha:c.getContext('2d').getImageData(2,2,1,1).data[3],exists:!!c};
+   }""")
+   check(edge["exists"] and edge["alpha"]>0,"Landscape camera fails at the right map edge: "+str(edge))
+   # Make sure the newly relocated nav works for another page too.
+   page.locator('.tabs button[data-page="team"]').click()
+   check(page.locator("#page-team").evaluate("(el)=>el.classList.contains('active')"),
+         "Right hand Team navigation button does not change the page")
+   page.locator('.tabs button[data-page="world"]').click()
+  if view["body"]>width+25:
+   report["warnings"].append("Horizontal document scrolling at "+str(width)+"px")
+ # When held upright, AuriMon MUST demand rotation and block gameplay.
+ page.set_viewport_size({"width":390,"height":844})
+ page.wait_for_timeout(150)
+ upright=page.evaluate("""()=>{
+  const el=document.querySelector('#auri-rotate-notice'),cs=el&&getComputedStyle(el);
+  return {exists:!!el,display:cs?.display,events:cs?.pointerEvents,
+          message:el?.textContent?.trim()||''};
+ }""")
+ check(upright["exists"] and upright["display"]=="flex" and upright["events"]!="none",
+       "Portrait lock is not protecting the game: "+str(upright))
+ page.set_viewport_size({"width":1440,"height":900})
+ page.wait_for_timeout(100)
  # Save persistence after close/reopen, still in a private test browser context.
  page.set_viewport_size({"width":1440,"height":900})
  visit(35)
