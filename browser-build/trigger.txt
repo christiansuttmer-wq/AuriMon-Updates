@@ -5,3 +5,5 @@ Chrome smoke test after closing starter dialogue
 Strict all 50 map render rerun + atelier roof fix 2026-10-17
 
 Portrait camera pointer diagnostics, no release
+
+Retest portrait after removing forced landscape overlay
