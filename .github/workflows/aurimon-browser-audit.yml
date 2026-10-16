@@ -74,6 +74,7 @@ jobs:
             browser-dist/REGIONEN_50_PRUEFUNG.md
             browser-dist/REGIONEN_50_PRUEFUNG.json
             browser-dist/REGIONEN_10_KARTENVORSCHAU.png
+            browser-dist/SPIELFELD_HANDY_HOCHFORMAT.png
             browser-dist/REGION_*.png
 
       - name: Gepruefte Browserfassung und alle 10 Regionenbilder als Release bereitstellen
@@ -97,6 +98,7 @@ jobs:
             browser-dist/REGIONEN_50_PRUEFUNG.md \
             browser-dist/REGIONEN_50_PRUEFUNG.json \
             browser-dist/REGIONEN_10_KARTENVORSCHAU.png \
+            browser-dist/SPIELFELD_HANDY_HOCHFORMAT.png \
             browser-dist/REGION_*.png \
             browser-dist/QA_*.png \
             --clobber
