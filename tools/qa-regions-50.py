@@ -195,10 +195,18 @@ with sync_playwright() as pw:
    if bounds:
     x=bounds["x"]+(2.5/16)*bounds["width"]
     y=bounds["y"]+(6.5/12)*bounds["height"]
-    hit=page.evaluate("""({x,y})=>({
-      target:document.elementFromPoint(x,y)?.id||'none',
+    hit=page.evaluate("""({x,y})=>{
+      const el=document.elementFromPoint(x,y),canvas=document.querySelector('#aur50-landscape-map-canvas');
+      const world=document.querySelector('#page-world'),frame=canvas.closest('.aur-map-frame');
+      const rect=el=>el?.getBoundingClientRect().toJSON();
+      return {target:el?.id||el?.className||'none',
+      x,y,viewport:[innerWidth,innerHeight],canvas:rect(canvas),
+      map:rect(document.querySelector('#game-map')),frame:rect(frame),
+      mapColumn:rect(world.querySelector('.tablet-map-column')),
+      world:rect(world),scroll:[scrollX,scrollY],pageScroll:world.scrollTop,
       modal:typeof modalOpen!=='undefined'?modalOpen:null,
-      battle:typeof battle!=='undefined'?Boolean(battle):null})""",{"x":x,"y":y})
+      battle:typeof battle!=='undefined'?Boolean(battle):null};
+    }""",{"x":x,"y":y})
     page.mouse.click(x,y)
     position=page.evaluate("()=>[state.x,state.y]")
     check(position==[2,6],"Touch on landscape game map did not move to expected neighbor: "+str(position)+", target="+str(hit))
