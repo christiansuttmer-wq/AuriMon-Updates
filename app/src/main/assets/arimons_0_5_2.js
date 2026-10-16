@@ -12,7 +12,7 @@
      progress:()=>Array.isArray(state.v51Puzzles)?state.v51Puzzles.length:0, label:'gelöste Ortsrunen'},
     {id:'schatten', zone:7, title:'Die Schattenprüfung', hint:'Man erzählt von einer unbekannten Gestalt im Schatten.', clue:'Wo die Dunkelheit ihre Spuren hinterlässt, verlangt die Prüfung nach Mut.', target:2,
      progress:()=>Array.isArray(state.rocketWins)?state.rocketWins.length:0, label:'Schattenbund-Siege'},
-    {id:'tempel', zone:11, title:'Das Echo der Tempel', hint:'Manche Ruinen erzählen von Echos aus längst vergessenen Zeiten.', clue:'Mehr als ein alter Schrein muss deine Entschlossenheit erkennen.', target:2,
+    {id:'tempel', zone:8, title:'Das Echo der Tempel', hint:'Manche Ruinen erzählen von Echos aus längst vergessenen Zeiten.', clue:'Mehr als ein alter Schrein muss deine Entschlossenheit erkennen.', target:2,
      progress:()=>Array.isArray(state.v53Temples)?state.v53Temples.length:0, label:'entschlüsselte Tempel'}
   ];
   const LEGENDS = Object.keys(V4_LEGENDS).map(Number);
@@ -124,7 +124,7 @@
     const start=seeds.map(([x,y])=>({x,y})).find(p=>passable(p.x,p.y))||fallback();
     if(!start)return null;
     const queue=[start],seenCells=new Set([`${start.x}:${start.y}`]);let best=null;
-    const anchors={0:[9,7],3:[4,8],5:[11,8],7:[9,8],11:[4,7]};const anchor=anchors[zone]||[7,8];
+    const anchors={0:[9,7],3:[4,8],5:[11,8],7:[9,8],8:[13,7]};const anchor=anchors[zone]||[7,8];
     while(queue.length){
       const p=queue.shift(),dist=Math.abs(p.x-anchor[0])+Math.abs(p.y-anchor[1]);
       if(passable(p.x,p.y)&&Math.abs(p.x-start.x)+Math.abs(p.y-start.y)>=2){
@@ -199,6 +199,7 @@
   }
   function travelQuest(zone,action){
     if(!Number.isInteger(zone)||zone<0||zone>=AREAS.length||!state.starterChosen||battle)return;
+    if(zone!==state.zone&&!state.visited?.includes(zone)){toast('🔒 Entdecke diese Region zuerst auf dem normalen Reiseweg!');return;}
     closeModal();state.dungeon=null;state.v51Indoor=null;state.safariActive=false;
     state.zone=zone;state.x=7;state.y=5;state.facing='up';
     window.PokemonWorld56?.repairOldPosition?.();
