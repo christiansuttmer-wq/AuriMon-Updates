@@ -22,7 +22,7 @@ public class MainActivity extends Activity {
     private AuriMonUpdateManager updateManager;
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         // ECHTER Vollbildmodus: Status- und Navigationsleiste standardmäßig ausblenden.
         // Transiente Systemleisten können durch Wischen vom Rand angezeigt werden.
         enableImmersiveFullscreen();
