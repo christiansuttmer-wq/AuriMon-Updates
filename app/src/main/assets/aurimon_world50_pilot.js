@@ -6,7 +6,7 @@
 (() => {
  const W=20,H=12,T=48;
  const TITLES=['Starterdorf','Blumenlichtung','Bachpfad','Wurzelruine','Sonnenarena','Seedorf','Schilfufer','Holzsteginseln','Versunkene Bibliothek','Mondarena'];
- const DESCS=['Professorin Mira erwartet dich im Dorf.','Über die Lichtung führt ein Weg zum Bach.','Zwei Holzbrücken queren das Wasser.','Aktiviere drei Wurzelrunen.','Bestehe Linas erste Arenaprüfung.','Lerne die Fischer des Mondsees kennen.','Im Schilf verstecken sich seltene Pokémon.','Folge den Stegen über das tiefblaue Wasser.','Aktiviere drei Flutrunen und öffne das alte Tor.','Finn erwartet dich zur zweiten Arenaprüfung.'];
+ const DESCS=['Professorin Mira erwartet dich im Dorf.','Über die Lichtung führt ein Weg zum Bach.','Zwei Holzbrücken queren das Wasser.','Aktiviere drei Wurzelrunen.','Bestehe Linas erste Arenaprüfung.','Lerne die Fischer des Mondsees kennen.','Im Schilf verstecken sich seltene Pokémon.','Folge den Stegen über das tiefblaue Wasser.','Aktiviere die Flutrunen in der Reihenfolge West, Mitte, Ost.','Finn erwartet dich zur zweiten Arenaprüfung.'];
  const DIRS=[[0,-1],[1,0],[0,1],[-1,0]];
  const clampStage=s=>Math.max(0,Math.min(9,Number(s)||0));
  const mapKey=(x,y)=>x+','+y;
@@ -397,8 +397,8 @@
   const runeCount=maps[s].extras.runes.filter(r=>w.runestones.includes(r.id)).length;
   $('zone-step').textContent=`${region} · EBENE ${s+1} / 50`;
   $('zone-name').textContent=TITLES[s];$('zone-desc').textContent=DESCS[s];
-  $('goal-title').textContent=(s===3||s===8)?`Aktiviere die ${s===3?'Wurzel':'Flut'}runen (${runeCount}/3)`:s===4?(state.badges.includes(0)?'Sonnenorden errungen!':'Besiege Arenaleiterin Lina'):s===9?(state.badges.includes(1)?'Seeorden errungen!':'Besiege Arenaleiter Finn'):`Erreiche Ebene ${s+2}`;
-  $('goal-desc').textContent=(s===4||s===9)?'Die Prüfhalle liegt im Nordosten.':(s===3||s===8)?'Drei Runen öffnen das Tor im Osten.':'Erkunde die Karte und folge dem Weg nach Osten.';
+  $('goal-title').textContent=(s===3||s===8)?`${s===3?'Aktiviere die Wurzelrunen':'Flutrunen: West → Mitte → Ost'} (${runeCount}/3)`:s===4?(state.badges.includes(0)?'Sonnenorden errungen!':'Besiege Arenaleiterin Lina'):s===9?(state.badges.includes(1)?'Seeorden errungen!':'Besiege Arenaleiter Finn'):`Erreiche Ebene ${s+2}`;
+  $('goal-desc').textContent=(s===4||s===9)?'Die Prüfhalle liegt im Nordosten.':(s===3||s===8)?s===8?'Die Bibliothek erwacht nur bei West → Mitte → Ost.':'Drei Runen öffnen das Tor im Osten.':'Erkunde die Karte und folge dem Weg nach Osten.';
   const sub=$('camera-position');if(sub)sub.textContent=`20 × 12 Felder · Abschnitt ${s+1}/50`;
   const title=document.querySelector('.maptop b');if(title)title.textContent=`${region} · ${TITLES[s].toUpperCase()}`;
  }
@@ -422,11 +422,14 @@
  function handleAt(x,y,walking){const w=ensure(),d=data(),n=npc(x,y),q=loot(x,y),r=rune(x,y),b=buildingAt(x,y);
   if(q){if(walking){state.x=x;state.y=y;}pick(q);return true}
   if(n){if(n.kind==='trainer'){if(walking){toast('💬 Drücke A, um '+n.name+' anzusprechen.');return true}return interactTrainer(trainers(state.zone).find(t=>t.x===x&&t.y===y)),true}
-   if(n.kind==='heal')healCenter();else modal(state.zone===0?'📚 Professorin Mira':'🐟 Willkommen am Mondsee',state.zone===0?'„Willkommen in Sonnenwiese! Folge den Wegen nach Osten. Jeder Abschnitt hat seine eigenen Geheimnisse.“':'„Achte auf die Stege und die drei Flutrunen in der Versunkenen Bibliothek.“',[['Danke!','close','gold']]);return true}
-  if(r){if(!w.runestones.includes(r.id)){w.runestones.push(r.id);save();toast(`💎 Rune aktiviert! ${w.runestones.length}/3`);render()}
+   if(n.kind==='heal')healCenter();else modal(state.zone===0?'📚 Professorin Mira':'🐟 Willkommen am Mondsee',state.zone===0?'„Willkommen in Sonnenwiese! Folge den Wegen nach Osten. Jeder Abschnitt hat seine eigenen Geheimnisse.“':'„Am Mondsee braucht die Bibliothek den Flutgesang: zuerst die westliche Rune, dann die mittlere, zuletzt die östliche.“',[['Danke!','close','gold']]);return true}
+  if(r){if(!w.runestones.includes(r.id)){
+     const order=d.extras.runes;const done=order.filter(a=>w.runestones.includes(a.id)).length;
+     if(w.stage===8&&order[done]?.id!==r.id){toast('🌊 Fluträtsel: zuerst West, dann Mitte, zuletzt Ost!');return true}
+     w.runestones.push(r.id);save();toast(`💎 Rune aktiviert! ${done+1}/3`);render()}
     else toast('💎 Diese Rune leuchtet bereits.');return true}
   if(b){if(b.kind==='gym'){if(w.stage!==4&&w.stage!==9)return true;enterGym();return true}
-   if(b.kind==='center')healCenter();else if(b.kind==='market')showShop();else modal('🏡 '+b.name,'Ein gemütliches Haus in Sonnenwiese. Die Türen funktionieren unabhängig von der Landschaftsgrafik.',[['Weiter','close']]);return true}
+   if(b.kind==='center')healCenter();else if(b.kind==='market')showShop();else modal('🏡 '+b.name,'Ein gemütliches Haus am '+(state.zone===1?'Mondsee.':'Rand der Sonnenwiese.'),[['Weiter','close']]);return true}
   return false;
  }
  function step(dx,dy){if(!active()||modalOpen||battle||currentPage!=='world')return;const w=ensure();state.facing=dx>0?'right':dx<0?'left':dy>0?'down':'up';const nx=state.x+dx,ny=state.y+dy;
