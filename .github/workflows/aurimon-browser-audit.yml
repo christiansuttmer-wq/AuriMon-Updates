@@ -1,0 +1,70 @@
+name: AuriMon Browser-Test und Inhaltsaudit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'browser-build/trigger.txt'
+      - '.github/workflows/aurimon-browser-audit.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: aurimon-browser-audit
+  cancel-in-progress: false
+
+jobs:
+  browser-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Aktuellen AuriMon-Stand auschecken
+        uses: actions/checkout@v4
+
+      - name: JavaScript-Syntax und Gebietslogik pruefen
+        shell: bash
+        run: |
+          set -euo pipefail
+          find app/src/main/assets -maxdepth 1 -name '*.js' -print0 | xargs -0 -n1 node --check
+          node tools/verify-world50.js
+
+      - name: Python-Browser-Builder pruefen
+        shell: bash
+        run: python3 -m py_compile tools/build-browser.py
+
+      - name: Browser-Testversion offline erstellen
+        shell: bash
+        run: |
+          set -euo pipefail
+          AURIMON_BROWSER_VERSION=1.4.24 python3 tools/build-browser.py
+
+      - name: Quests und doppelte Inhalte auditiert dokumentieren
+        shell: bash
+        run: node tools/audit-content.mjs
+
+      - name: Offline-Browser-Paket als Action-Artefakt bereitstellen
+        uses: actions/upload-artifact@v4
+        with:
+          name: AuriMon-v1.4.24-Browser-und-Pruefbericht
+          path: |
+            browser-dist/AuriMon_v1.4.24_BROWSER_OFFLINE.html
+            browser-dist/AuriMon_v1.4.24_BROWSER_KOMPLETT.zip
+            browser-dist/PRUEFBERICHT.md
+            browser-dist/PRUEFBERICHT.json
+            browser-dist/browser_build.json
+
+      - name: Browser-Downloads zum bestehenden GitHub-Release hinzufuegen
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release view v1.4.24 >/dev/null
+          gh release upload v1.4.24 \
+            browser-dist/AuriMon_v1.4.24_BROWSER_OFFLINE.html \
+            browser-dist/AuriMon_v1.4.24_BROWSER_KOMPLETT.zip \
+            browser-dist/PRUEFBERICHT.md \
+            browser-dist/PRUEFBERICHT.json \
+            --clobber
