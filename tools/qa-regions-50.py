@@ -42,6 +42,10 @@ with sync_playwright() as pw:
     state.x=s===0?9:1;state.y=s===0?9:6;
     state.facing='right';state.badges=Array.from({length:10},(_,i)=>i);
     state.dungeon=null;state.v51Indoor=null;
+    // Isolate each test section: random encounters during earlier map traversals
+    // must not leave an unrelated battle modal blocking all subsequent checks.
+    if(typeof battle!=='undefined')battle=null;
+    document.querySelector('#battle-overlay')?.classList.add('hidden');
     if(typeof closeModal==='function')closeModal();
     render();
     return {stage:window.PokemonGame.world50.getStage(),region:window.PokemonGame.world50.getRegion(s),
