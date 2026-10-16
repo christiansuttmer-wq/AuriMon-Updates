@@ -1,4 +1,4 @@
-/* AuriMon 1.4.26: update button always available in the global header. */
+/* AuriMon 1.4.27: update button always available in the global header. */
 (() => {
   'use strict';
   const button = document.getElementById('aurimon-check-updates');
@@ -46,7 +46,7 @@
 
   const brand = document.querySelector('.brand span');
   const updateVersion = () => {
-    if (brand) brand.textContent = '10 REGIONEN · 50 EBENEN · 151 AURIMON · VERSION 1.4.26';
+    if (brand) brand.textContent = '10 REGIONEN · 50 EBENEN · 151 AURIMON · VERSION 1.4.27';
   };
   updateVersion();
   // Old layout handlers also update the label on resize, so register last.
