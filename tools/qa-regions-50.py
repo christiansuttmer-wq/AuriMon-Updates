@@ -72,7 +72,11 @@ with sync_playwright() as pw:
  # Actual portal step on all 49 borders, plus their reverse transitions.
  for i in range(49):
   visit(i)
-  before=page.evaluate("""()=>{state.x=18;state.y=6;state.facing='right';state.badges=Array.from({length:10},(_,j)=>j);return state.aurWorld50.stage}""")
+  before=page.evaluate("""()=>{state.x=18;state.y=6;state.facing='right';state.badges=Array.from({length:10},(_,j)=>j);
+    // The separate rune test below validates the puzzle. Here we test traversing an already solved gate.
+    if(state.aurWorld50.stage%5===3)for(const r of window.PokemonGame.world50.getFeatures(state.aurWorld50.stage).runes)
+      if(!state.aurWorld50.runestones.includes(r.id))state.aurWorld50.runestones.push(r.id);
+    return state.aurWorld50.stage;}""")
   after=page.evaluate("""()=>{walk(1,0);return {stage:state.aurWorld50.stage,zone:state.zone,x:state.x,y:state.y}}""")
   check(after["stage"]==i+1 and after["zone"]==(i+1)//5,
         "East border "+str(i+1)+"→"+str(i+2)+" failed: "+str(after))
