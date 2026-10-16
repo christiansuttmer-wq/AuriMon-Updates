@@ -68,3 +68,42 @@ body.auri130 #page-world #game-map.aur50-active > #aur50-map-canvas {
     margin:10px 0 0!important;overflow:visible!important;
   }
 }
+
+/* AuriMon Hochformatkamera: 9 x 12 unverzerrte Kacheln, 75% Breite/Hoehe.
+   Die Spielfigur bleibt dank Kamera beim Laufen sichtbar, auch am Kartenrand. */
+@media (max-width:700px) and (orientation:portrait){
+  body.auri130 #page-world .mapwrap:has(#game-map.aur50-portrait){
+    max-width:none!important;
+    width:100%!important;
+    margin-inline:auto!important;
+  }
+  body.auri130 #page-world .aur-map-frame:has(#game-map.aur50-portrait){
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    aspect-ratio:3 / 4!important;
+    overflow:hidden!important;
+  }
+  body.auri130 #page-world #game-map.aur50-active.aur50-portrait{
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    position:relative!important;
+    aspect-ratio:3 / 4!important;
+    overflow:hidden!important;
+  }
+  body.auri130 #page-world #game-map.aur50-portrait > #aur50-mobile-map-canvas{
+    display:block!important;
+    position:absolute!important;
+    inset:0!important;
+    width:100%!important;
+    height:100%!important;
+    max-width:none!important;
+    max-height:none!important;
+    object-fit:contain!important;
+    image-rendering:auto!important;
+    touch-action:manipulation;
+    z-index:4;
+  }
+}
