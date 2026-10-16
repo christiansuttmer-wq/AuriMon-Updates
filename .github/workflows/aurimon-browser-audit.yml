@@ -76,19 +76,3 @@ jobs:
             browser-dist/REGIONEN_10_KARTENVORSCHAU.png
             browser-dist/REGION_*.png
 
-      - name: Browser-Downloads zum bestehenden GitHub-Release hinzufuegen
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          gh release view v1.4.25 >/dev/null
-          gh release upload v1.4.25 \
-            browser-dist/AuriMon_v1.4.25_BROWSER_OFFLINE.html \
-            browser-dist/AuriMon_v1.4.25_BROWSER_KOMPLETT.zip \
-            browser-dist/PRUEFBERICHT.md \
-            browser-dist/PRUEFBERICHT.json \
-            browser-dist/REGIONEN_50_PRUEFUNG.md \
-            browser-dist/REGIONEN_50_PRUEFUNG.json \
-            browser-dist/REGIONEN_10_KARTENVORSCHAU.png \
-            --clobber
