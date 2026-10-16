@@ -39,6 +39,13 @@ jobs:
           # Das Repository enthaelt einen eigenen, nicht offiziell signierten Wrapper.
           # Der CI-Build nutzt ausschliesslich die verifizierte Gradle-Distribution.
           validate-wrappers: false
+      - name: JavaScript und alle 50 Karten pruefen
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check app/src/main/assets/game.js
+          node --check app/src/main/assets/aurimon_world50_pilot.js
+          node tools/verify-world50.js
       - name: Vorbedingungen pruefen (noch kein Release)
         id: check
         env:
