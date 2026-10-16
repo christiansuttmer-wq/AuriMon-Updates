@@ -160,10 +160,10 @@
     if([0,2,4,6,8,9].includes(zone))extras.npcs.push({x:8,y:6,kind:'rival',name:'Alex, dein Rivale'});
     if([3,5,7,8,9].includes(zone))extras.npcs.push({x:13,y:8,kind:'shadow',name:'Schatten-Späher'});
     if([7,8,9].includes(zone))extras.npcs.push({x:11,y:9,kind:'temple',name:'Legendenforscher'});
-    extras.npcs.push({x:9,y:8,kind:'side',name:'Auftraggeber'});
+    extras.npcs.push({x:9,y:s===5?9:8,kind:'side',name:'Auftraggeber'});
     extras.npcs.push({x:10,y:5,kind:'runeA',name:'Erster Ortsrunenstein'});
     extras.npcs.push({x:15,y:8,kind:'runeB',name:'Zweiter Ortsrunenstein'});
-    extras.npcs.push({x:3,y:8,kind:'cache',name:'Verschlossene Truhe'});
+    extras.npcs.push({x:3,y:s===5?7:8,kind:'cache',name:'Verschlossene Truhe'});
    }
    if(s>=10&&s%5===3&&[2,3,4,5,6,8,9].includes(zone))extras.npcs.push({x:5,y:5,kind:'ruin',name:'Runenwächter'});
    if(s%5===2&&[2,3,4,5,6,8,9].includes(zone))extras.npcs.push({x:8,y:5,kind:'cave',name:'Geheimhöhle'});
