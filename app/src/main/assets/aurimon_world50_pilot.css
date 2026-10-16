@@ -33,3 +33,38 @@ body.auri130 #page-world #game-map.aur50-active > #aur50-map-canvas {
   max-height: none !important;
   object-fit: fill !important;
 }
+
+/* World50 portrait phone layout: legacy tablet grid reserved 255px for controls
+   even on 390px screens, crushing the whole map to an ~87px strip.
+   Stack game board and controls ONLY when the World50 canvas is active. */
+@media (max-width:700px) and (orientation:portrait){
+  body.auri130 #page-world .exploration-layout:has(#game-map.aur50-active){
+    display:block!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    width:100%!important;
+    max-width:100%!important;
+    height:auto!important;
+    min-width:0!important;
+    min-height:0!important;
+  }
+  body.auri130 #page-world .tablet-map-column:has(#game-map.aur50-active){
+    display:block!important;width:100%!important;min-width:0!important;
+    max-width:100%!important;grid-column:auto!important;grid-row:auto!important;
+  }
+  body.auri130 #page-world .mapwrap:has(#game-map.aur50-active),
+  body.auri130 #page-world .aur-map-frame:has(#game-map.aur50-active){
+    display:block!important;width:100%!important;max-width:100%!important;
+    min-width:0!important;max-height:none!important;height:auto!important;
+    aspect-ratio:auto!important;
+  }
+  body.auri130 #page-world .aur-map-frame:has(#game-map.aur50-active){
+    aspect-ratio:5/3!important;overflow:visible!important;
+  }
+  body.auri130 #page-world .tablet-controls:has(~ #game-map.aur50-active),
+  body.auri130 #page-world .exploration-layout:has(#game-map.aur50-active) .tablet-controls{
+    display:flex!important;position:relative!important;grid-column:auto!important;
+    grid-row:auto!important;width:100%!important;max-width:100%!important;
+    min-width:0!important;min-height:0!important;max-height:none!important;
+    margin:10px 0 0!important;overflow:visible!important;
+  }
+}
