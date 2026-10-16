@@ -2,11 +2,11 @@
    Trainingsarena und Kampfanimationen. Ergänzung zur unveränderten 151er-Datenbank. */
 'use strict';
 (() => {
-  const RIVAL_ZONES=[0,4,8,12,16,19],RX=8,RY=6;
+  const RIVAL_ZONES=[0,2,4,6,8,9],RX=8,RY=6;
   const TOURNEYS=[
     {name:'Wiesen-Cup',min:3,icon:'🌿',zone:2,bonus:750,teams:[[16,21],[25,43,37],[3,6,9]]},
     {name:'Kristall-Cup',min:10,icon:'💎',zone:9,bonus:2250,teams:[[75,95,112],[121,134,131],[65,94,130,142]]},
-    {name:'Meister-Cup',min:20,icon:'👑',zone:19,bonus:7500,teams:[[143,149,130,145],[146,144,150,94],[3,6,9,149,150]]}
+    {name:'Meister-Cup',min:10,icon:'👑',zone:9,bonus:7500,teams:[[143,149,130,145],[146,144,150,94],[3,6,9,149,150]]}
   ];
   function data(){
     if(!Array.isArray(state.v52RivalWins))state.v52RivalWins=[];
@@ -19,7 +19,7 @@
   const hadDefault=defaultState;
   defaultState=function(){return {...hadDefault(),v52RivalWins:[],v52Tournaments:{0:0,1:0,2:0},v52Rematches:{},v52TrainingWins:0,v52TournamentWins:0}};
   function ready(){return Number.isInteger(window.PokemonProfiles?.activeSlot)&&!!state.starterChosen&&!!state.party.length}
-  function rivalAt(z,x,y){return RIVAL_ZONES.includes(z)&&x===RX&&y===RY}
+  function rivalAt(z,x,y){return RIVAL_ZONES.includes(z)&&x===RX&&y===RY&&(!window.PokemonGame?.world50?.getStage||window.PokemonGame.world50.getStage()===z*5)}
   const prevTile=atPosition;
   atPosition=function(z,x,y){
     const t=prevTile(z,x,y);
