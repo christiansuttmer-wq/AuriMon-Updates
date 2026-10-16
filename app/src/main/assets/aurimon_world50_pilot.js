@@ -7,8 +7,13 @@
  const W=20,H=12,T=48;
  const TITLES=['Starterdorf','Blumenlichtung','Bachpfad','Wurzelruine','Sonnenarena','Seedorf','Schilfufer','Holzsteginseln','Versunkene Bibliothek','Mondarena'];
  const DESCS=['Professorin Mira erwartet dich im Dorf.','Über die Lichtung führt ein Weg zum Bach.','Zwei Holzbrücken queren das Wasser.','Aktiviere drei Wurzelrunen.','Bestehe Linas erste Arenaprüfung.','Lerne die Fischer des Mondsees kennen.','Im Schilf verstecken sich seltene Pokémon.','Folge den Stegen über das tiefblaue Wasser.','Aktiviere die Flutrunen in der Reihenfolge West, Mitte, Ost.','Finn erwartet dich zur zweiten Arenaprüfung.'];
+
+ const REGIONS=['Sonnenwiese','Mondsee','Felsenwald','Blumenpfad','Windküste','Bernsteinwald','Flüsterdorf','Kristallsee','Vulkanpass','Wolkenhöhe'];
+ const REGION_PALETTES=[['#94cf83','#72b875'],['#80c5a0','#5da08e'],['#84b7a1','#578d7b'],['#b5d88a','#8ebf83'],['#c1d8a1','#a2c48e'],['#e5b477','#b97d50'],['#828d9b','#626f87'],['#87bed2','#5e99b7'],['#9a897a','#6b6160'],['#cbd9cf','#a0bfca']];
+ TITLES.push(...["Tannenlager","Steinsteig","Wasserfallbrücke","Bergwerksstollen","Gipfelarena","Blütendorf","Wildblumenfelder","Windmühlenwiese","Gewächshauslabyrinth","Blütenarena","Küstenhafen","Brandungsstrand","Leuchtturmklippen","Schmugglergrotten","Sturmarena","Herbstlichtung","Pilzwald","Baumkronenstege","Bernsteintempel","Waldarena","Nebelmarkt","Verlassene Gassen","Geisterbrunnen","Schattenkatakomben","Schattenarena","Kristallhafen","Schimmerufer","Frostfallpass","Resonanzgrotte","Kristallarena","Aschefeste","Glutpfad","Basaltbrücken","Magmakern","Flammenarena","Himmelstor","Wolkenstege","Sternenplateau","Himmelstempel","Kronenarena"]);
+ DESCS.push(...["Raste vor dem felsigen Aufstieg.","Folge dem schmalen Gebirgspfad.","Überquere die Wasserfallstege.","Entschlüssele die Zeichen des Bergwerks.","Rika wartet auf dem Gipfel.","Das Dorf bereitet ein Blütenfest vor.","Suche Pokémon in den Blumen.","Folge den Windmühlen und Geheimpfaden.","Öffne das verwachsene Gewächshaus.","Ellys Blütenprüfung wartet.","Besuche Händler im Hafen.","Weiche Wellen und Sandbänken aus.","Erreiche den Leuchtturm.","Finde die verschlossenen Schmugglergänge.","Noah fordert dich im Sturm heraus.","Das Laub funkelt golden.","Zwischen den Pilzen liegen Geheimnisse.","Erkunde die Baumkronenstege.","Drei Zeichen wecken den Tempel.","Mia bewacht den Waldorden.","Auf dem Nebelmarkt kursieren Gerüchte.","Schatten verstecken sich in den Gassen.","Finde die Hinweise am Geisterbrunnen.","Entschlüssele Team Schattens Katakomben.","Leons Schattenprüfung wartet.","Kristalle beleuchten das Dorf.","Spiegelungen weisen verborgene Wege.","Eis und Felsen versperren den Pass.","Aktiviere die Resonanzkristalle.","Ada erwartet dich.","In der Aschefeste wird es heiß.","Entkomme den Glutfeldern.","Überquere die Basaltbrücken.","Finde den Weg durch den Magmakern.","Bruno erwartet dich.","Ein Tor führt über die Wolken.","Folge den Wolkenstegen.","Auf dem Plateau warten Rivalen.","Löse die letzten Himmelszeichen.","Champion Nova wartet im Finale."]);
  const DIRS=[[0,-1],[1,0],[0,1],[-1,0]];
- const clampStage=s=>Math.max(0,Math.min(9,Number(s)||0));
+ const clampStage=s=>Math.max(0,Math.min(49,Number(s)||0));
  const mapKey=(x,y)=>x+','+y;
  const rnd=(x,y,k=0)=>{let a=Math.imul(x+117,374761393)^Math.imul(y+79,668265263)^Math.imul(k+7,1274126177);a=Math.imul(a^(a>>>13),2246822519);return ((a^(a>>>15))>>>0)/4294967295};
  const GRID=()=>Array.from({length:H},()=>Array(W).fill('g'));
@@ -19,7 +24,7 @@
  const maps=[];
  function buildMaps(){
   // Draw the whole terrain BEFORE objects: no decorative image masks walkable geometry.
-  for(let s=0;s<10;s++){
+  for(let s=0;s<50;s++){
    const g=GRID();for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(x===0||y===0||x===W-1||y===H-1)g[y][x]=(s===3||s===8)?'#':'t';
    for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++){const n=rnd(x,y,20+s*71);if(n>.89)g[y][x]='t';else if(n>.70)g[y][x]='w'}
    const extras={buildings:[],npcs:[],loot:[],runes:[],gate:null,exit:[19,6],entry:[1,6],decor:[]};
@@ -103,6 +108,42 @@
     BLOCK(g,2,2,3,4,'~');BLOCK(g,17,2,18,4,'~');
     extras.npcs=[{x:8,y:8,name:'Arenatrainer Kian',kind:'trainer',j:66},{x:5,y:5,name:'Sanitäterin',kind:'heal'}];
     extras.loot=[{x:15,y:8,id:'9:50',item:'superpotion'}];
+   }else if(s>=10){
+    const z=Math.floor(s/5),k=s%5,terrain=z===2||z===6||z===8?'#':z===4||z===7||z===9?'~':'t';
+    // Shared tiles drive terrain, collisions, buildings, pickups and path-finding.
+    ROW(g,6,0,19,'p');ROW(g,3,1,18,'p');ROW(g,9,1,18,'p');
+    COL(g,4,3,9,'p');COL(g,11,3,9,'p');COL(g,16,3,9,'p');
+    if(k===0){
+     BLOCK(g,1,1,2,3,z===8?'#':'~');BLOCK(g,17,1,18,3,z===2?'#':'~');
+     for(const [kind,x,y,label] of [['center',4,1,'AuriCenter '+REGIONS[z]],['market',11,1,'Markt '+REGIONS[z]]]){
+      BLOCK(g,x,y,x+2,y+1,'b');g[3][x+1]='p';
+      extras.buildings.push({kind,x,y,w:3,h:2,door:[x+1,2],step:[x+1,3],name:label});
+     }
+     extras.npcs=[{x:8,y:8,name:'Reiseführerin',kind:'guide'},{x:5,y:9,name:'Sanitäterin',kind:'heal'},{x:14,y:6,name:'Trainer '+REGIONS[z],kind:'trainer',j:s*10}];
+     extras.loot=[{x:16,y:9,id:s+':treasure',item:'potion'}];
+    }else if(k===1||k===2){
+     const left=k===1?7:10,right=left+2;
+     BLOCK(g,left,1,right,10,terrain);
+     for(const y of [3,6,9])ROW(g,y,left,right,terrain==='~'?'=':'p');
+     if(k===2){COL(g,3,2,9,'p');ROW(g,2,2,5,'p');ROW(g,8,12,17,'p');}
+     extras.npcs=[{x:5,y:3,name:'Wegtrainer '+(s+1),kind:'trainer',j:s*10+1},{x:15,y:9,name:'Pfadwächter '+(s+1),kind:'trainer',j:s*10+2}];
+     extras.loot=[{x:15,y:3,id:s+':chest',item:k===1?'greatball':'revive'}];
+    }else if(k===3){
+     BLOCK(g,1,1,18,10,'s');COL(g,7,1,4,'#');COL(g,12,8,10,'#');
+     ROW(g,6,0,19,'p');COL(g,4,3,6,'s');COL(g,10,6,8,'s');COL(g,15,3,6,'s');
+     ROW(g,3,3,16,'s');ROW(g,8,8,16,'s');
+     for(const [x,y] of [[2,2],[3,2],[13,9],[14,9]])g[y][x]=terrain;
+     extras.runes=[{x:4,y:3,id:'rune:'+s+':west'},{x:10,y:8,id:'rune:'+s+':middle'},{x:15,y:3,id:'rune:'+s+':east'}];
+     extras.runeOrder=(z%2===0?[0,1,2]:[2,1,0]).map(i=>extras.runes[i].id);
+     COL(g,17,1,10,'#');g[6][17]='G';extras.gate={x:17,y:6};
+     extras.npcs=[{x:8,y:5,name:'Runenforscher',kind:'guide'},{x:13,y:7,name:'Tempelwächter',kind:'trainer',j:s*10+3}];
+     extras.loot=[{x:15,y:8,id:s+':relic',item:'candy'}];
+    }else{
+     BLOCK(g,12,2,16,3,'a');g[4][14]='p';
+     extras.buildings=[{kind:'gym',x:12,y:2,w:5,h:2,door:[14,3],step:[14,4],name:TITLES[s]}];
+     extras.npcs=[{x:8,y:8,name:'Arenatrainer '+REGIONS[z],kind:'trainer',j:s*10+4},{x:5,y:5,name:'Sanitäterin',kind:'heal'}];
+     extras.loot=[{x:15,y:9,id:s+':reward',item:'superpotion'}];
+    }
    }
    // All authored interactives take precedence over random decorations.
    for(const n of extras.npcs)g[n.y][n.x]=s===8?'s':'p';
