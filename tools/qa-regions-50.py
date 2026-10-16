@@ -170,15 +170,17 @@ with sync_playwright() as pw:
    page.screenshot(path=str(phone))
    report["screenshots"].append(phone.name)
    # Player at x=1: tapping right on a neighboring path cell must use 9-column coordinates.
-   tap=page.evaluate("""()=>{
-      state.x=1;state.y=6;state.facing='right';render();
-      const b=document.querySelector('#aur50-mobile-map-canvas').getBoundingClientRect();
-      const px=b.left+(2.5/9)*b.width, py=b.top+(6.5/12)*b.height;
-      document.elementFromPoint(px,py)?.dispatchEvent(new MouseEvent('click',{
-        bubbles:true,cancelable:true,clientX:px,clientY:py}));
-      return {x:state.x,y:state.y};
-   }""")
-   check(tap["x"]==2 and tap["y"]==6,"Mobile touchscreen map coordinates are wrong: "+str(tap))
+   player_canvas=page.locator("#aur50-mobile-map-canvas")
+   player_canvas.scroll_into_view_if_needed()
+   page.evaluate("()=>{state.x=1;state.y=6;state.facing='right';render()}")
+   bounds=player_canvas.bounding_box()
+   assert bounds,"Phone camera is absent when touch test begins"
+   # Real browser pointer click at the center of the adjacent map field.
+   page.mouse.click(bounds["x"]+(2.5/9)*bounds["width"],
+                    bounds["y"]+(6.5/12)*bounds["height"])
+   tap=page.evaluate("()=>({x:state.x,y:state.y})")
+   check(tap["x"]==2 and tap["y"]==6,
+         "Mobile touchscreen map coordinates are wrong: "+str(tap)+"; camera bounds: "+str(bounds))
    page.evaluate("()=>{state.x=18;render()}")
    rightmost=page.evaluate("""()=>{
      const b=document.querySelector('#aur50-mobile-map-canvas');
