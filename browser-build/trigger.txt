@@ -1,1 +1,1 @@
-AuriMon v1.4.24 browser/content audit
+AuriMon v1.4.24 browser/content audit with duplicate map detection
