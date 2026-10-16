@@ -3,17 +3,14 @@
    Erweiterung der originalen 151 Arten; ältere Spielstände bleiben lesbar. */
 'use strict';
 (() => {
- const TEAM_ZONES=[3,7,8,9],RUIN_ZONES=[2,5,8,9];
+ const TEAM_ZONES=[3,5,7,8,9],RUIN_ZONES=[2,3,4,5,6,8,9];
  const TEMPLE_ENTRIES=Object.entries(V4_LEGENDS).map(([id,q])=>({id:+id,...q}));
  const GLYPHS=['☀️','🌙','⭐','💎'];
  const SIDESTORIES=[
   'Ein verlorenes Paket für das Forschungslabor','Eine geheimnisvolle Spur im hohen Gras',
   'Der verschwundene Wanderstab','Blumen für die Gastgeberin','Flaschenpost vom Leuchtturm',
   'Ein schimmernder Bernsteinstein','Das Rätsel des alten Wegweisers','Der letzte Kristallsplitter',
-  'Ein Brief aus dem Vulkanlager','Der verschwundene Bergkompass','Eine Nachricht aus dem Gewitter',
-  'Die Stimmen aus dem Moor','Die Karte des Ruinenforschers','Das verschwundene Winterlicht',
-  'Ein Fund aus der Tiefenhöhle','Das Sternenlicht des Hafens','Die Spuren des Drachenforschers',
-  'Ein heilendes Kraut aus den Wolken','Die uralte Schatteninschrift','Die letzte Nachricht des Champions'];
+  'Ein Brief aus dem Vulkanlager','Der verschwundene Bergkompass'];
  const SHADOW_STORY=[
   ['Das gestohlene Tagebuch','Das Schatten-Team stiehlt Aufzeichnungen der Professorin. Spüre den Kommandanten auf und hole die Seiten zurück.'],
   ['Das Kristallsignal','Aus Kristallen wird Energie gestohlen. Stelle den Sender in der Nähe des Außenpostens ab.'],
@@ -31,6 +28,10 @@
   if(!state.v53RuinsProgress||typeof state.v53RuinsProgress!=='object'||Array.isArray(state.v53RuinsProgress))state.v53RuinsProgress={};
   if(!state.v53TemplesProgress||typeof state.v53TemplesProgress!=='object'||Array.isArray(state.v53TemplesProgress))state.v53TemplesProgress={};
   if(!state.v53SideActive||typeof state.v53SideActive!=='object'||Array.isArray(state.v53SideActive))state.v53SideActive={};
+  state.v53SideDone=[...new Set(state.v53SideDone.filter(z=>Number.isInteger(z)&&z>=0&&z<AREAS.length))];
+  state.v53StoryWins=[...new Set(state.v53StoryWins.filter(z=>TEAM_ZONES.includes(z)))];
+  state.v53Ruins=[...new Set(state.v53Ruins.filter(z=>RUIN_ZONES.includes(z)))];
+  state.v53Temples=[...new Set(state.v53Temples.filter(id=>TEMPLE_ENTRIES.some(t=>t.id===id)))];
   state.bag.helixfossil=Math.max(0,Number(state.bag.helixfossil)||0);
   state.bag.domfossil=Math.max(0,Number(state.bag.domfossil)||0);
  }
@@ -78,12 +79,14 @@
   if(g!==seq[cur]){state.v53RuinsProgress[z]=0;save();return modal('🪨 Die Schrift verblasst','Die Reihenfolge war falsch. Die Symbole setzen sich zurück.',[['Noch einmal','v53-ruin','gold'],['Zurück','close']])}
   if(cur<2){state.v53RuinsProgress[z]=cur+1;save();return ruinDialog()}
   state.v53Ruins.push(z);state.v53RuinsProgress[z]=3;
-  const treasure=z===2?'helixfossil':z===5?'domfossil':z===18?'Tausch-Kabel':'candy';
+  const treasure=z===2?'helixfossil':z===5?'domfossil':z===4?'Tausch-Kabel':'candy';
   gainItem(treasure,treasure==='candy'?3:1);state.coins+=200+z*17;save();render();
   modal('💎 Ruine entschlüsselt!',`Du entdeckst ${esc(ITEM_INFO[treasure]?.[0]||treasure)} und ${200+z*17} Münzen. Insgesamt ${state.v53Ruins.length}/7 Ruinen gelöst.`,[['Großartig!','close','gold']]);
  }
  function templePattern(id){return [(id+1)%4,(id+3)%4,(id+2)%4]}
- function templeDialog(){if(!ready())return;checkData();const q=TEMPLE_ENTRIES.find(t=>t.zone===state.zone);
+ function templeDialog(id=null){if(!ready())return;checkData();const here=TEMPLE_ENTRIES.filter(t=>t.zone===state.zone);
+  if(id===null&&here.length>1)return modal('✨ Legendäre Tempel',`<p>Wähle den Schrein, dessen Geheimnis du erforschen möchtest.</p><div class="v53-glyphs">${here.map(t=>ebtn((state.v53Temples.includes(t.id)?'✅ ':'🔮 ')+esc(POKE[t.id].name),'v53-temple:'+t.id)).join('')}</div>`,[['Zurück','close']]);
+  const q=id===null?here[0]:here.find(t=>t.id===id);
   if(!q)return modal('✨ Legendäre Tempel','Die Legenden erzählen von fünf verborgenen Schreinen. Erforsche die Welt und folge den Spuren der Elemente.',[['Zurück','close']]);
   const done=state.v53Temples.includes(q.id),progress=state.v53TemplesProgress[q.id]||0;
   const silent=['Sonne','Mond','Stern','Kristall'][q.id%4];
@@ -93,9 +96,9 @@
  }
  function templeGlyph(id,g){checkData();const q=TEMPLE_ENTRIES.find(t=>t.id===id);if(!q||q.zone!==state.zone||state.v53Temples.includes(id))return;
   const cur=Number(state.v53TemplesProgress[id])||0;if(g!==templePattern(id)[cur]){state.v53TemplesProgress[id]=0;save();return modal('🔮 Die Energie erlischt','Die Reihenfolge war falsch. Versuche es erneut.',[['Noch einmal','v53-temple','gold'],['Zurück','close']])}
-  if(cur<2){state.v53TemplesProgress[id]=cur+1;save();return templeDialog()}
+  if(cur<2){state.v53TemplesProgress[id]=cur+1;save();return templeDialog(id)}
   state.v53TemplesProgress[id]=3;state.v53Temples.push(id);gainItem('greatball',5);save();render();
-  modal('🌟 Legendärer Schrein erwacht!',`Der Tempel für ${POKE[id].name} ist geöffnet. Du erhältst fünf Superbälle. Um ${POKE[id].name} zu begegnen, gelten weiterhin die bisherigen Siegel- und AuriDex-Voraussetzungen.`,[['Zum Tempel','v53-temple','gold'],['Weiterreisen','close']]);
+  modal('🌟 Legendärer Schrein erwacht!',`Der Tempel für ${POKE[id].name} ist geöffnet. Du erhältst fünf Superbälle. Um ${POKE[id].name} zu begegnen, gelten weiterhin die bisherigen Siegel- und AuriDex-Voraussetzungen.`,[['Zum Tempel','v53-temple:'+id,'gold'],['Weiterreisen','close']]);
  }
  function legendary(id){const q=TEMPLE_ENTRIES.find(t=>t.id===id);if(!q||q.zone!==state.zone||!state.v53Temples.includes(id))return toast('🔒 Entschlüssele zuerst den Tempel dieser Region.');
   if(!v4CanLegend(id))return toast('🔒 Die Voraussetzungen für diese legendäre Begegnung fehlen noch.');
@@ -138,7 +141,7 @@
  doAction=function(act,el){if(!act)return;
   if(act==='v53-overview')return overview();if(act==='v53-side')return sideDialog();if(act==='v53-side-progress')return sideProgress();
   if(act==='v53-ruin')return ruinDialog();if(act.startsWith('v53-glyph:'))return selectGlyph(Number(act.split(':')[1]));
-  if(act==='v53-temple')return templeDialog();if(act.startsWith('v53-temple-glyph:')){const parts=act.split(':');return templeGlyph(+parts[1],+parts[2])}
+  if(act==='v53-temple')return templeDialog();if(act.startsWith('v53-temple:'))return templeDialog(+act.split(':')[1]);if(act.startsWith('v53-temple-glyph:')){const parts=act.split(':');return templeGlyph(+parts[1],+parts[2])}
   if(act.startsWith('v53-legend:'))return legendary(+act.split(':')[1]);
   if(act==='v53-story')return storyDialog();if(act==='v53-shadow')return shadowFight();
   if(act==='v53-fossils')return fossilDialog();if(act.startsWith('v53-fossil:'))return reviveFossil(act.split(':')[1]);
@@ -150,7 +153,7 @@
   if(b.kind==='v53-shadow'){
    checkData();const z=Number(b.key.split(':')[2]);if(!TEAM_ZONES.includes(z)||state.v53StoryWins.includes(z))return origWin();
    state.v53StoryWins.push(z);state.coins+=b.reward;state.battleWins++;
-   gainItem('candy',z===18?4:2);save();
+   gainItem('candy',z===9?4:2);save();
    origWin();$('modal-content')?.insertAdjacentHTML('beforeend',`<p>🕶️ Das Kapitel wurde abgeschlossen! ${state.v53StoryWins.length}/5 Schattenkommandanten besiegt. Du erhältst ${b.reward} Münzen und Sonderbonbons.</p>`);return;
   }
   return origWin();
