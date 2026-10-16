@@ -14,14 +14,14 @@ for rel,p in files.items():
 def rewrite_css(css,rel):
  base=Path(rel).parent
  def fix(m):
-  name=m.group(1).strip().strip('\\'"')
+  name=m.group(1).strip().strip(chr(34)+chr(39))
   if name.startswith(('http:','https:','data:','#')):return m.group(0)
   resolved=(base/name).as_posix().removeprefix('./')
   return 'url('+images[resolved]+')' if resolved in images else m.group(0)
  return re.sub(r'url\(\s*([^)]*?)\s*\)',fix,css,flags=re.I)
 csscount=[0];jscount=[0]
 def inline_css(m):
- tag=m.group(0);mat=re.search(r'href=[\\"\\']([^\\"\\']+)',tag)
+ tag=m.group(0);mat=re.search(r"""href=['"]([^'"]+)['"]""",tag)
  if 'stylesheet' not in tag.lower() or not mat:return tag
  name=mat.group(1);p=files.get(name)
  if not p:return tag
@@ -33,8 +33,8 @@ def inline_js(m):
  if not p:return m.group(0)
  jscount[0]+=1
  return '<script data-source="'+name+'">\n'+p.read_text('utf-8').replace('</script','<\\/script')+'\n</script>'
-index=re.sub(r'<script\s+src=[\\"\\']([^\\"\\']+)[\\"\\']\s*>\s*</script>',inline_js,index,flags=re.I)
-index=re.sub(r'(\bsrc=[\\"\\'])([^\\"\\']+)([\\"\\'])',lambda m:m.group(1)+images.get(m.group(2),m.group(2))+m.group(3),index,flags=re.I)
+index=re.sub(r"""<script\s+src=['"]([^'"]+)['"]\s*>\s*</script>""",inline_js,index,flags=re.I)
+index=re.sub(r"""(\bsrc=['"])([^'"]+)(['"])""",lambda m:m.group(1)+images.get(m.group(2),m.group(2))+m.group(3),index,flags=re.I)
 assetjson=json.dumps(images,separators=(',',':')).replace('</','<\\/')
 prelude='''<script>
 (()=>{const assets=__ASSETS__;const desc=Object.getOwnPropertyDescriptor(HTMLImageElement.prototype,'src');
