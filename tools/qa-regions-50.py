@@ -163,6 +163,11 @@ with sync_playwright() as pw:
       logicalWidth:canvas.width,logicalHeight:canvas.height,
       navLeft:nav.left,navRight:nav.right,navHeight:nav.height,
       mainRight:main.right,body:document.body.scrollWidth,viewport:innerWidth,
+      frame:document.querySelector('.aur-map-frame').getBoundingClientRect().toJSON(),
+      wrap:document.querySelector('.mapwrap').getBoundingClientRect().toJSON(),
+      column:document.querySelector('#page-world .tablet-map-column').getBoundingClientRect().toJSON(),
+      frameCSS:{height:getComputedStyle(document.querySelector('.aur-map-frame')).height,
+                maxHeight:getComputedStyle(document.querySelector('.aur-map-frame')).maxHeight},
       verticalTabs:tabs.every((b,i)=>i===0||b.top>tabs[i-1].top)};
   }""")
   report["viewports"].append({"width":width,"height":height,**view})
