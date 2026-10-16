@@ -110,6 +110,12 @@
   // BFS avoids walls, houses, NPCs and unwalkable dead ends.
   const spots=new Map();
   function passable(x,y){
+    const world=window.PokemonGame?.world50;
+    if(world&&state.aurWorld50&&!state.dungeon&&!state.v51Indoor){
+      const map=world.getMap(world.getStage());
+      if(x<0||x>=20||y<0||y>=12)return false;
+      return ['g','w','p','s','=','R'].includes(map[y]?.[x]);
+    }
     if(x<0||x>=14||y<0||y>=11)return false;
     if(window.PokemonWorld56?.buildingAt?.(x,y))return false;
     if(window.PokemonWorld56?.npcAt?.(state.zone,x,y))return false;
@@ -144,6 +150,19 @@
     state.v052Start[q.id]={steps:state.steps,wins:state.trainerWins.length};
     save();
     modal('✨ Geheime Aufgabe entdeckt!',`<b>${q.title}</b><p>${q.clue}</p><p>Wenn du glaubst, das Geheimnis verstanden zu haben, prüfe deine Entdeckung später im Auftragsbuch.</p>`,[['Ich nehme an!','close','gold']]);
+  }
+  // Read-only location hints and safe discovery bridge for the new 50-map renderer.
+  function hiddenSpot(z){
+    if(window.PokemonGame?.world50?.getStage?.()%5!==0)return null;
+    const q=QUESTS.find(q=>q.zone===z&&!state.v052Found?.includes(q.id));
+    return q?questSpot(z):null;
+  }
+  function tryDiscover(){
+    ensure();const q=QUESTS.find(q=>q.zone===state.zone&&!state.v052Found.includes(q.id));
+    if(!q)return false;
+    const pos=hiddenSpot(state.zone);
+    if(!pos||Math.abs(state.x-pos.x)+Math.abs(state.y-pos.y)>1)return false;
+    findQuest(q);return true;
   }
   window.__debugQuestSpot=questSpot;
   const oldInteract=interact;
@@ -200,6 +219,8 @@
   function travelQuest(zone,action){
     if(!Number.isInteger(zone)||zone<0||zone>=AREAS.length||!state.starterChosen||battle)return;
     if(zone!==state.zone&&!state.visited?.includes(zone)){toast('🔒 Entdecke diese Region zuerst auf dem normalen Reiseweg!');return;}
+    // Questreisen dürfen keine fehlenden Orden oder ganze Kapitel überspringen.
+    if(zone>state.badges.length&&zone!==state.zone){toast('🔒 Für diese Region fehlen noch die nötigen Orden.');return;}
     closeModal();state.dungeon=null;state.v51Indoor=null;state.safariActive=false;
     state.zone=zone;state.x=7;state.y=5;state.facing='up';
     window.PokemonWorld56?.repairOldPosition?.();
@@ -237,5 +258,5 @@
   showGuide=function(){oldGuide();const el=$('modal-content');el?.querySelector('.dialog-actions')?.insertAdjacentHTML('beforebegin','<p><b>🟣 Meisterball:</b> Du startest mit einem; fünf weitere sind in geheimen Aufgaben versteckt. Legendäre AuriMon lassen sich nur mit diesem Ball fangen.</p><p><b>🌟 EP-Verteiler:</b> Einmalig im AuriMarkt kaufen und in der Tasche an- oder ausschalten.</p>');};
   const oldRenderTravel=renderTravel;
   renderTravel=function(){oldRenderTravel();const el=$('journal');el?.insertAdjacentHTML('beforeend',`<p>🟣 Meisterbälle: ${bagCount('masterball')} · Geheime Aufgaben: ${(state.v052Claimed||[]).length}/5</p><button class="smallbtn gold" data-action="quests">📜 Alle Aufgaben öffnen</button>`);};
-  window.AriMons=Object.assign(window.AriMons||{}, {version:'1.0.0',masterballQuests:5,masterballOnlyLegends:true,shareAvailable:true,questBoard:true});
+  window.AriMons=Object.assign(window.AriMons||{}, {version:'1.0.0',masterballQuests:5,masterballOnlyLegends:true,shareAvailable:true,questBoard:true,tryDiscover,hiddenSpot});
 })();
