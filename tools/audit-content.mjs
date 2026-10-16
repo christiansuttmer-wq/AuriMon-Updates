@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 'use strict';
-const fs=require('node:fs'),path=require('node:path'),cp=require('node:child_process'),vm=require('node:vm');
+import fs from 'node:fs';
+import path from 'node:path';
+import cp from 'node:child_process';
+import vm from 'node:vm';
 const root='app/src/main/assets';
 const files=fs.readdirSync(root).filter(n=>n.endsWith('.js'));
 const findings=[];const counts={javascriptFiles:files.length,syntaxErrors:0,missingAssets:0,duplicateScriptIncludes:0,questIds:0,uniqueQuestIds:0,storyChapters:0,worldMaps:0,dungeons:0,regions:0};
@@ -37,7 +40,7 @@ const chapterTitles=[...chapters.matchAll(/^\s*\['([^']+)'/gm)].map(m=>m[1]);
 counts.storyChapters=chapterTitles.length;
 if(new Set(chapterTitles).size!==chapterTitles.length)warn('high','Story','Duplicate chapter title');
 if(chapterTitles.length!==10)warn('high','Story','Expected 10 chapter titles but found '+chapterTitles.length);
-if(/zone\\s*>=\\s*14/.test(qtext))warn('medium','Legacy coordinates','Hidden quest search uses the old 14-cell width; new maps are 20 cells wide. Gameplay interaction needs manual testing.');
+if(/zone\s*>=\s*14/.test(qtext))warn('medium','Legacy coordinates','Hidden quest search uses the old 14-cell width; new maps are 20 cells wide. Gameplay interaction needs manual testing.');
 const code=fs.readFileSync(path.join(root,'aurimon_world50_pilot.js'),'utf8');
 const ctx={window:{PokemonGame:{},PokemonProfiles:{activeSlot:1},addEventListener(){}},document:{createElement:()=>({setAttribute(){},getContext:()=>({scale(){}})}),addEventListener(){}},state:{starterChosen:true,zone:0,x:9,y:9,aurWorld50:{stage:0,completed:[],runestones:[]}}};
 for(const n of ['renderMap','walk','interact','trainerParty','randomWild','gymParty','enterZone','battleDefeat','atPosition','trainers','drops','render','doAction','requestAnimationFrame'])ctx[n]=()=>{};
