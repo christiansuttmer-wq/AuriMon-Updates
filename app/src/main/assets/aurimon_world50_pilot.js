@@ -25,7 +25,7 @@
  function buildMaps(){
   // Draw the whole terrain BEFORE objects: no decorative image masks walkable geometry.
   for(let s=0;s<50;s++){
-   const g=GRID();for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(x===0||y===0||x===W-1||y===H-1)g[y][x]=(s===3||s===8)?'#':'t';
+   const g=GRID();for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(x===0||y===0||x===W-1||y===H-1)g[y][x]=(s%5===3?'#':'t';
    for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++){const n=rnd(x,y,20+s*71);if(n>.89)g[y][x]='t';else if(n>.70)g[y][x]='w'}
    const extras={buildings:[],npcs:[],loot:[],runes:[],gate:null,exit:[19,6],entry:[1,6],decor:[]};
    if(s===0){
@@ -146,8 +146,8 @@
     }
    }
    // All authored interactives take precedence over random decorations.
-   for(const n of extras.npcs)g[n.y][n.x]=s===8?'s':'p';
-   for(const l of extras.loot)g[l.y][l.x]=(s===3||s===8)?'s':'p';
+   for(const n of extras.npcs)g[n.y][n.x]=s%5===3?'s':'p';
+   for(const l of extras.loot)g[l.y][l.x]=(s%5===3)?'s':'p';
    for(const r of extras.runes)g[r.y][r.x]='R';
    g[6][0]=s===0?'t':'E';g[6][19]='E';
    for(let x=1;x<19;x++){g[6][x]=g[6][x]==='G'?'G':g[6][x]==='R'?'R':g[6][x]==='#'?'s':g[6][x]==='~'?'=':'p'}
@@ -166,16 +166,16 @@
    state.x=maps[0].extras.entry[0];state.y=maps[0].extras.entry[1];state.facing='up';
   }
   const w=state.aurWorld50;w.stage=clampStage(w.stage);
-  if(state.zone===1&&w.stage<5){w.stage=5;state.x=1;state.y=6;}
-  if(state.zone===0&&w.stage>4){w.stage=4;state.x=18;state.y=6;}
+  // Keep every profile's existing collection, badges and rune state.
+  if(state.zone>=0&&state.zone<10&&Math.floor(w.stage/5)!==state.zone){w.stage=state.zone*5;state.x=1;state.y=6;}
   if(!Array.isArray(w.runestones))w.runestones=[];
   if(!Array.isArray(w.completed))w.completed=[];
-  if(!Number.isInteger(state.x)||!Number.isInteger(state.y)||!(passable(maps[w.stage].g[state.y]?.[state.x]||'t')||(maps[w.stage].g[state.y]?.[state.x]==='G'&&w.runestones.length>=3))){
+  if(!Number.isInteger(state.x)||!Number.isInteger(state.y)||!(passable(maps[w.stage].g[state.y]?.[state.x]||'t')||(maps[w.stage].g[state.y]?.[state.x]==='G'&&maps[w.stage].extras.runes.every(r=>w.runestones.includes(r.id))))){
    const pos=maps[w.stage].extras.entry;state.x=pos[0];state.y=pos[1];
   }
   return w;
  }
- const active=()=>[0,1].includes(state?.zone)&&!state?.dungeon&&!state?.v51Indoor&&state?.starterChosen&&profileActive();
+ const active=()=>Number.isInteger(state?.zone)&&state.zone>=0&&state.zone<10&&!state?.dungeon&&!state?.v51Indoor&&state?.starterChosen&&profileActive();
  const data=()=>maps[clampStage(state.aurWorld50?.stage)];
  const tile=(x,y)=>data().g[y]?.[x]??'#';
  const npc=(x,y)=>data().extras.npcs.find(n=>n.x===x&&n.y===y);
@@ -184,7 +184,7 @@
  const buildingAt=(x,y)=>data().extras.buildings.find(b=>x>=b.x&&x<b.x+b.w&&y>=b.y&&y<b.y+b.h);
  const safe=(x,y)=>x>=0&&x<W&&y>=0&&y<H;
  const oldRender=renderMap,oldWalk=walk,oldInteract=interact,oldTrainerParty=trainerParty,oldRandomWild=randomWild,oldGymParty=gymParty,oldEnterZone=enterZone,oldDefeat=battleDefeat;
- const canvas=document.createElement('canvas');canvas.id='aur50-map-canvas';canvas.width=W*T*1.5;canvas.height=H*T*1.5;canvas.setAttribute('role','img');canvas.setAttribute('aria-label','Spielbare AuriMon-Welt mit Sonnenwiese und Mondsee, zehn Abschnitten');
+ const canvas=document.createElement('canvas');canvas.id='aur50-map-canvas';canvas.width=W*T*1.5;canvas.height=H*T*1.5;canvas.setAttribute('role','img');canvas.setAttribute('aria-label','Spielbare AuriMon-Welt mit zehn Regionen und fünfzig Abschnitten');
  const c=canvas.getContext('2d',{alpha:false});c.scale(1.5,1.5);
  // Existing AuriMon character SVGs, not fabricated character placeholders.
  const people={};
@@ -237,11 +237,11 @@
  }
  function grass(x,y,wx,wy,s,tick){
   const n=rnd(wx,wy,s*11), g=c.createLinearGradient(x,y,x+T,y+T);
-  if((s===3||s===8)){g.addColorStop(0,s===8?'#748493':'#837f79');g.addColorStop(1,s===8?'#9caab6':'#a6a398')}
+  if((s%5===3)){g.addColorStop(0,s===8?'#748493':'#837f79');g.addColorStop(1,s===8?'#9caab6':'#a6a398')}
   else if(s>=5){g.addColorStop(0,n>.48?'#87c7a5':'#95d9b4');g.addColorStop(1,n>.48?'#60ac96':'#78c4a1')}
   else{g.addColorStop(0,n>.48?'#94cf83':'#9cd78b');g.addColorStop(1,n>.48?'#72b875':'#89c97b')}
   fill(x,y,T,T,g);
-  if(s===3||s===8){for(let k=0;k<3;k++){const px=x+7+k*15,py=y+8+((wx+k*7+wy)%3)*11;fill(px,py,10,2,'#c6bba1')}return}
+  if(s%5===3){for(let k=0;k<3;k++){const px=x+7+k*15,py=y+8+((wx+k*7+wy)%3)*11;fill(px,py,10,2,'#c6bba1')}return}
   // Tiny gradients of grass and flowering meadow create continuous organic field.
   for(let k=0;k<5;k++){const xx=x+6+rnd(wx,wy,k+23)*36,yy=y+5+rnd(wx,wy,k+71)*37;
    c.strokeStyle=k%2?'#b8df8a':'#559e66';c.lineWidth=1.2;c.beginPath();c.moveTo(xx,yy+4);c.lineTo(xx+2,yy-3);c.stroke();
@@ -252,7 +252,7 @@
  } 
  function path(x,y,t,s,wx,wy){
   // Path edge shading and cobblestones remain derived from walkable cells.
-  const mud=(s===3||s===8)?'#b3a698':s===2?'#d9c7a8':s>=5?'#d5c8ab':'#ddc6a0';
+  const mud=(s%5===3)?'#b3a698':s===2?'#d9c7a8':s>=5?'#d5c8ab':'#ddc6a0';
   fill(x,y,48,48,mud);
   fill(x+1,y+1,46,3,s===3?'#beb8ae':'#e7d2ad');
   for(let k=0;k<12;k++){
@@ -366,7 +366,7 @@
    if(['p','=','E'].includes(kind))path(px,py,kind,s,x,y);
    if(kind==='s'||kind==='R'||kind==='G') {fill(px,py,T,T,'#aaa99e');for(let k=0;k<4;k++){fill(px+2+k*11,py+8+(k%2)*12,9,2,'#d2c7b2')}}
    if(kind==='#')wall(px,py,x,y);
-   if(kind==='t')(s===3||s===8)?rock(px,py,x,y):rnd(x,y,s+7)>.37?bigTree(px,py,x,y,tick):pine(px,py,x,y,tick);
+   if(kind==='t')(s%5===3)?rock(px,py,x,y):rnd(x,y,s+7)>.37?bigTree(px,py,x,y,tick):pine(px,py,x,y,tick);
    if(kind==='w')shrub(px,py,x,y);
    if(kind==='E'){rounded(px+8,py+10,32,34,6,'#a88363','#eee4bf');rounded(px+15,py+14,18,28,4,'#355e64');ellipse(px+24,py+7,11,3,'#fff0bd',.6)}
   }
@@ -426,20 +426,20 @@
  }
  function draw(){if(!active())return;ensure();makeScene(performance.now())}
  const oldAt=atPosition;
- atPosition=function(z,x,y){if([0,1].includes(z)&&active()){const t=tile(x,y);if(npc(x,y))return 'trainer';if(loot(x,y))return 'loot';if(t==='w'||t==='g')return 'wild';if(t==='~')return 'water';if(t==='t')return 'tree';if(t==='#'||t==='b'||t==='a'||t==='G')return 'wall';if(t==='E')return 'portal';return 'path'}return oldAt(z,x,y)};
+ atPosition=function(z,x,y){if(z>=0&&z<10&&active()){const t=tile(x,y);if(npc(x,y))return 'trainer';if(loot(x,y))return 'loot';if(t==='w'||t==='g')return 'wild';if(t==='~')return 'water';if(t==='t')return 'tree';if(t==='#'||t==='b'||t==='a'||t==='G')return 'wall';if(t==='E')return 'portal';return 'path'}return oldAt(z,x,y)};
  const oldTrainers=trainers,oldDrops=drops;
- trainers=function(z){if([0,1].includes(z)&&active()){const s=ensure().stage;return maps[s].extras.npcs.filter(n=>n.kind==='trainer').map(n=>({id:`${z}:${n.j}`,x:n.x,y:n.y,j:n.j,name:n.name,defeated:state.trainerWins.includes(`${z}:${n.j}`)}));}return oldTrainers(z)};
- drops=function(z){if([0,1].includes(z)&&active())return maps[ensure().stage].extras.loot.filter(q=>!state.found.includes('aur50:'+q.id)).map(q=>({...q,picked:false}));return oldDrops(z)};
- trainerParty=function(z,j){const mons=oldTrainerParty(z,j);if([0,1].includes(z)&&active()){const s=ensure().stage;for(let i=0;i<mons.length;i++){mons[i].level=Math.min(100,4+s*2+i);mons[i].hp=hpMax(mons[i].id,mons[i].level)}}return mons};
- gymParty=function(z){const mons=oldGymParty(z);if([0,1].includes(z)&&active()&&(ensure().stage===4||ensure().stage===9)){const mond=state.zone===1;mons.forEach((m,i)=>{m.level=(mond?19:11)+i*2;m.hp=hpMax(m.id,m.level)})}return mons};
- randomWild=function(z){const m=oldRandomWild(z);if([0,1].includes(z)&&active()){m.level=clamp(3+ensure().stage*2+rand(0,2),3,22);m.hp=hpMax(m.id,m.level)}return m};
+ trainers=function(z){if(z>=0&&z<10&&active()){const s=ensure().stage;return maps[s].extras.npcs.filter(n=>n.kind==='trainer').map(n=>({id:`${z}:${n.j}`,x:n.x,y:n.y,j:n.j,name:n.name,defeated:state.trainerWins.includes(`${z}:${n.j}`)}));}return oldTrainers(z)};
+ drops=function(z){if(z>=0&&z<10&&active())return maps[ensure().stage].extras.loot.filter(q=>!state.found.includes('aur50:'+q.id)).map(q=>({...q,picked:false}));return oldDrops(z)};
+ trainerParty=function(z,j){const mons=oldTrainerParty(z,j);if(z>=0&&z<10&&active()){const s=ensure().stage;for(let i=0;i<mons.length;i++){mons[i].level=Math.min(100,4+s*2+i);mons[i].hp=hpMax(mons[i].id,mons[i].level)}}return mons};
+ gymParty=function(z){const mons=oldGymParty(z);if(z>=0&&z<10&&active()&&(ensure().stage===4||ensure().stage===9)){const mond=state.zone===1;mons.forEach((m,i)=>{m.level=(mond?19:11)+i*2;m.hp=hpMax(m.id,m.level)})}return mons};
+ randomWild=function(z){const m=oldRandomWild(z);if(z>=0&&z<10&&active()){m.level=clamp(3+ensure().stage*2+rand(0,2),3,22);m.hp=hpMax(m.id,m.level)}return m};
  function updateHud(){const w=ensure();if(!w)return;const s=w.stage,z=state.zone;
   const region=z===0?'SONNENWIESE':'MONDSEE';
   const runeCount=maps[s].extras.runes.filter(r=>w.runestones.includes(r.id)).length;
   $('zone-step').textContent=`${region} · EBENE ${s+1} / 50`;
   $('zone-name').textContent=TITLES[s];$('zone-desc').textContent=DESCS[s];
-  $('goal-title').textContent=(s===3||s===8)?`${s===3?'Aktiviere die Wurzelrunen':'Flutrunen: West → Mitte → Ost'} (${runeCount}/3)`:s===4?(state.badges.includes(0)?'Sonnenorden errungen!':'Besiege Arenaleiterin Lina'):s===9?(state.badges.includes(1)?'Seeorden errungen!':'Besiege Arenaleiter Finn'):`Erreiche Ebene ${s+2}`;
-  $('goal-desc').textContent=(s===4||s===9)?'Die Prüfhalle liegt im Nordosten.':(s===3||s===8)?s===8?'Die Bibliothek erwacht nur bei West → Mitte → Ost.':'Drei Runen öffnen das Tor im Osten.':'Erkunde die Karte und folge dem Weg nach Osten.';
+  $('goal-title').textContent=(s%5===3)?`${s===3?'Aktiviere die Wurzelrunen':'Flutrunen: West → Mitte → Ost'} (${runeCount}/3)`:s===4?(state.badges.includes(0)?'Sonnenorden errungen!':'Besiege Arenaleiterin Lina'):s===9?(state.badges.includes(1)?'Seeorden errungen!':'Besiege Arenaleiter Finn'):`Erreiche Ebene ${s+2}`;
+  $('goal-desc').textContent=(s===4||s===9)?'Die Prüfhalle liegt im Nordosten.':(s%5===3)?s===8?'Die Bibliothek erwacht nur bei West → Mitte → Ost.':'Drei Runen öffnen das Tor im Osten.':'Erkunde die Karte und folge dem Weg nach Osten.';
   const sub=$('camera-position');if(sub)sub.textContent=`20 × 12 Felder · Abschnitt ${s+1}/50`;
   const title=document.querySelector('.maptop b');if(title)title.textContent=`${region} · ${TITLES[s].toUpperCase()}`;
  }
@@ -449,41 +449,42 @@
   updateHud();draw();};
  function pick(q){state.found.push('aur50:'+q.id);gainItem(q.item,1);state.coins+=25;toast('✨ Schatz gefunden: '+ITEM_INFO[q.item][0]+'!');save();render()}
  function advance(dest,back){const w=ensure();if(dest<0){toast('🌿 Hier beginnt dein Abenteuer.');return}
-  if(dest===5&&!state.badges.includes(0)){toast('🏅 Gewinne zuerst den Sonnenorden!');return}
-  if(dest>9){if(!state.badges.includes(1)){toast('🏅 Gewinne zuerst den Seeorden!');return}
-   if(!w.completed.includes(9))w.completed.push(9);save();return oldEnterZone(2)}
-  const nextZone=dest<5?0:1;
-  if(dest>0&&!back&&!w.completed.includes(dest-1))w.completed.push(dest-1);
+  if(dest>=50){if(!state.badges.includes(9)){toast('👑 Besiege zuerst Champion Nova!');return}
+   w.completed=Array.from(new Set([...w.completed,49]));save();modal('👑 Alle 50 Ebenen gemeistert!','Du hast alle zehn Regionen bereist und alle Prüfungen gemeistert. Alle Orte bleiben zugänglich.',[['Weiter erforschen','close','gold']]);return}
+  const nextZone=Math.floor(dest/5),currentZone=Math.floor(w.stage/5);
+  if(nextZone>currentZone&&!state.badges.includes(currentZone)){toast('🏅 Besiege zuerst '+AREAS[currentZone].leader+' und gewinne den Orden!');return}
+  if(!back&&dest>0&&!w.completed.includes(dest-1))w.completed.push(dest-1);
   w.stage=dest;
   if(nextZone!==state.zone)oldEnterZone(nextZone);
   const pos=back?[18,6]:dest===0?maps[0].extras.entry:[1,6];
   state.x=pos[0];state.y=pos[1];state.facing=back?'left':'right';
-  state.dungeon=null;state.v51Indoor=null;save();render();toast(`🗺️ Ebene ${dest+1}: ${TITLES[dest]}`);
+  state.dungeon=null;state.v51Indoor=null;if(!state.visited.includes(nextZone))state.visited.push(nextZone);
+  save();render();toast(`🗺️ Ebene ${dest+1}: ${TITLES[dest]}`);
  }
  function handleAt(x,y,walking){const w=ensure(),d=data(),n=npc(x,y),q=loot(x,y),r=rune(x,y),b=buildingAt(x,y);
   if(q){if(walking){state.x=x;state.y=y;}pick(q);return true}
   if(n){if(n.kind==='trainer'){if(walking){toast('💬 Drücke A, um '+n.name+' anzusprechen.');return true}return interactTrainer(trainers(state.zone).find(t=>t.x===x&&t.y===y)),true}
-   if(n.kind==='heal')healCenter();else modal(state.zone===0?'📚 Professorin Mira':'🐟 Willkommen am Mondsee',state.zone===0?'„Willkommen in Sonnenwiese! Folge den Wegen nach Osten. Jeder Abschnitt hat seine eigenen Geheimnisse.“':'„Am Mondsee braucht die Bibliothek den Flutgesang: zuerst die westliche Rune, dann die mittlere, zuletzt die östliche.“',[['Danke!','close','gold']]);return true}
+   if(n.kind==='heal')healCenter();else modal('📜 Hinweis in '+REGIONS[Math.floor(w.stage/5)],d.extras.runes.length?'„Die Zeichen gehören in diese Reihenfolge: '+((d.extras.runeOrder||d.extras.runes.map(q=>q.id)).map(id=>id.endsWith('east')?'Ost':id.endsWith('middle')?'Mitte':'West')).join(' → ')+'.“':'„Folge dem Weg nach Osten. Hier warten Trainer, Geheimnisse und neue Pokémon.“',[['Danke!','close','gold']]);return true}
   if(r){if(!w.runestones.includes(r.id)){
      const order=d.extras.runes;const done=order.filter(a=>w.runestones.includes(a.id)).length;
-     if(w.stage===8&&order[done]?.id!==r.id){toast('🌊 Fluträtsel: zuerst West, dann Mitte, zuletzt Ost!');return true}
+     if(w.stage!==3&&(d.extras.runeOrder||order.map(a=>a.id))[done]!==r.id){toast('🌊 Fluträtsel: zuerst West, dann Mitte, zuletzt Ost!');return true}
      w.runestones.push(r.id);save();toast(`💎 Rune aktiviert! ${done+1}/3`);render()}
     else toast('💎 Diese Rune leuchtet bereits.');return true}
-  if(b){if(b.kind==='gym'){if(w.stage!==4&&w.stage!==9)return true;enterGym();return true}
-   if(b.kind==='center')healCenter();else if(b.kind==='market')showShop();else modal('🏡 '+b.name,'Ein gemütliches Haus am '+(state.zone===1?'Mondsee.':'Rand der Sonnenwiese.'),[['Weiter','close']]);return true}
+  if(b){if(b.kind==='gym'){if(w.stage%5!==4)return true;enterGym();return true}
+   if(b.kind==='center')healCenter();else if(b.kind==='market')showShop();else modal('🏡 '+b.name,'Ein gemütliches Haus in '+REGIONS[Math.floor(w.stage/5)]+'.',[['Weiter','close']]);return true}
   return false;
  }
  function step(dx,dy){if(!active()||modalOpen||battle||currentPage!=='world')return;const w=ensure();state.facing=dx>0?'right':dx<0?'left':dy>0?'down':'up';const nx=state.x+dx,ny=state.y+dy;
   if(!safe(nx,ny)){toast('⛔ Dort geht es nicht weiter.');return}
   const t=tile(nx,ny);
-  if(t==='E') {if(nx===0){advance(w.stage-1,true);return}if(nx===19){const all=data().extras.runes;if((w.stage===3||w.stage===8)&&!all.every(r=>w.runestones.includes(r.id))){toast(`🔒 Aktiviere die drei Runen (${all.filter(r=>w.runestones.includes(r.id)).length}/3)!`);return}advance(w.stage+1,false);return}}
+  if(t==='E') {if(nx===0){advance(w.stage-1,true);return}if(nx===19){const all=data().extras.runes;if((w.stage%5===3)&&!all.every(r=>w.runestones.includes(r.id))){toast(`🔒 Aktiviere die drei Runen (${all.filter(r=>w.runestones.includes(r.id)).length}/3)!`);return}advance(w.stage+1,false);return}}
   if(t==='G'&&!data().extras.runes.every(r=>w.runestones.includes(r.id))){toast('🔒 Das Tor braucht alle drei Runen!');return}
   if(!passable(t)&&t!=='G'){const b=buildingAt(nx,ny);if(b&&b.step[0]===state.x&&b.step[1]===state.y&&dy===-1&&b.door[0]===nx){handleAt(nx,ny,false);return}toast(t==='~'?'🌊 Hier brauchst du eine Brücke.':'🌳 Dieser Weg ist versperrt.');return}
   if(npc(nx,ny)){toast('💬 Drücke A, um zu sprechen.');return}
   state.x=nx;state.y=ny;state.steps++;
   if(handleAt(nx,ny,true))return;
   if(state.repelSteps>0)state.repelSteps--;
-  if((t==='w'&&Math.random()<.16)||(w.stage===3&&Math.random()<.035))if(state.repelSteps===0){startWild();render();return}
+  if((t==='w'&&Math.random()<.16)||(w.stage%5===3&&Math.random()<.035))if(state.repelSteps===0){startWild();render();return}
   render();
  }
  walk=function(dx,dy){if(!active())return oldWalk(dx,dy);const count=state.bicycle?2:1;
@@ -493,13 +494,13 @@
   const dirs={up:[0,-1],right:[1,0],down:[0,1],left:[-1,0]};const d=dirs[state.facing]||dirs.up;
   const px=state.x+d[0],py=state.y+d[1];if(safe(px,py)&&handleAt(px,py,false))return;
   if(handleAt(state.x,state.y,false))return;
-  modal('🧭 '+(state.zone===0?'Sonnenwiese':'Mondsee'),`Du erkundest <b>Ebene ${ensure().stage+1}: ${TITLES[ensure().stage]}</b>. Folge den begehbaren Wegen. Tippe A vor Häusern, Trainern und Runen.`,[['Weiter','close','gold']]);
+  modal('🧭 '+REGIONS[Math.floor(ensure().stage/5)],`Du erkundest <b>Ebene ${ensure().stage+1}: ${TITLES[ensure().stage]}</b>. Folge den begehbaren Wegen. Tippe A vor Häusern, Trainern und Runen.`,[['Weiter','close','gold']]);
  };
- battleDefeat=function(){oldDefeat();if([0,1].includes(state.zone)&&state.aurWorld50){const p=maps[clampStage(state.aurWorld50.stage)].extras.entry;state.x=p[0];state.y=p[1];save();render()}};
+ battleDefeat=function(){oldDefeat();if(state.zone>=0&&state.zone<10&&state.aurWorld50){const p=maps[clampStage(state.aurWorld50.stage)].extras.entry;state.x=p[0];state.y=p[1];save();render()}};
  // The original controls reference global walk/interact dynamically.
  window.PokemonGame.walk=(dx,dy)=>walk(dx,dy);
- window.PokemonGame.world50={pilot:true,revision:'Sonnenwiese-und-Mondsee-10-Ebenen',names:TITLES.slice(),getStage:()=>state?.aurWorld50?.stage??0,
-  getMap:(i)=>maps[clampStage(i)].g.map(row=>row.slice()),getPlayer:()=>[state.x,state.y],getSpawn:()=>maps[clampStage(state?.aurWorld50?.stage)].extras.entry.slice(),
+ window.PokemonGame.world50={pilot:true,revision:'Zehn-Regionen-50-Ebenen',names:TITLES.slice(),getStage:()=>state?.aurWorld50?.stage??0,
+  getMap:(i)=>maps[clampStage(i)].g.map(row=>row.slice()),getRegion:(i)=>REGIONS[Math.floor(clampStage(i)/5)],getCount:()=>maps.length,getPlayer:()=>[state.x,state.y],getSpawn:()=>maps[clampStage(state?.aurWorld50?.stage)].extras.entry.slice(),
   // Route checker is read-only and works without a save or profile.
   validate:()=>maps.map((m,s)=>{
    const seen=new Set(),queue=[m.extras.entry];const pass=(x,y)=>safe(x,y)&&((m.g[y][x]==='G')||passable(m.g[y][x]));
@@ -510,7 +511,7 @@
  const originalRender=render;
  render=function(){originalRender();if(active())updateHud();};
  const priorEnterZone=enterZone;
- enterZone=function(z){const r=priorEnterZone(z);if([0,1].includes(z)&&active()){ensure();render();}return r};
+ enterZone=function(z){const r=priorEnterZone(z);if(z>=0&&z<10&&active()){ensure();render();}return r};
  // The emergency button must send the player to the real spawn, never onto a building.
  const oldAction=doAction;
  doAction=function(act,el){if(act==='stuck-center'&&active()){
