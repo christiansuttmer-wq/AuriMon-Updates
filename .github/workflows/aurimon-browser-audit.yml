@@ -38,7 +38,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          AURIMON_BROWSER_VERSION=1.4.25 python3 tools/build-browser.py
+          AURIMON_BROWSER_VERSION=1.4.26 python3 tools/build-browser.py
 
       - name: Quests und doppelte Inhalte auditiert dokumentieren
         shell: bash
@@ -62,10 +62,10 @@ jobs:
       - name: Offline-Browser-Paket als Action-Artefakt bereitstellen
         uses: actions/upload-artifact@v4
         with:
-          name: AuriMon-v1.4.25-Browser-und-Pruefbericht
+          name: AuriMon-v1.4.26-Browser-und-Pruefbericht
           path: |
-            browser-dist/AuriMon_v1.4.25_BROWSER_OFFLINE.html
-            browser-dist/AuriMon_v1.4.25_BROWSER_KOMPLETT.zip
+            browser-dist/AuriMon_v1.4.26_BROWSER_OFFLINE.html
+            browser-dist/AuriMon_v1.4.26_BROWSER_KOMPLETT.zip
             browser-dist/PRUEFBERICHT.md
             browser-dist/PRUEFBERICHT.json
             browser-dist/browser_build.json
