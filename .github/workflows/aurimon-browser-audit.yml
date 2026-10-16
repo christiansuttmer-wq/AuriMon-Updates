@@ -78,7 +78,6 @@ jobs:
             browser-dist/REGION_*.png
 
       - name: Gepruefte Browserfassung und alle 10 Regionenbilder als Release bereitstellen
-        if: ${{ false }} # Entwicklungspruefung: keine bestehenden v1.4.27 Dateien ueberschreiben
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
