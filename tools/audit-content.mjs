@@ -59,7 +59,7 @@ try{vm.runInNewContext(code,vm.createContext(ctx),{filename:'aurimon_world50_pil
  }
 }catch(e){warn('critical','World runtime',String(e));}
 const hard=findings.filter(x=>x.severity==='critical');
-const out={version:'1.4.24',counts,findings,hardFailures:hard.length,passedStructuralChecks:hard.length===0,limits:['Source-level and simulated map checks are not a full hands-on playthrough of every quest.','Android install and save migration are not tested by this browser package.']};
+const out={version:'1.4.25',counts,findings,hardFailures:hard.length,passedStructuralChecks:hard.length===0,limits:['Source-level and simulated map checks are not a full hands-on playthrough of every quest.','Android install and save migration are not tested by this browser package.']};
 fs.mkdirSync('browser-dist',{recursive:true});
 fs.writeFileSync('browser-dist/PRUEFBERICHT.json',JSON.stringify(out,null,2));
 let md='# AuriMon v1.4.24 – Browser- und Inhaltsprüfung\n\n';
