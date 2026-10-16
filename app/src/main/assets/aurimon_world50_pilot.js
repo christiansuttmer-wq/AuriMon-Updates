@@ -208,11 +208,29 @@
  const oldRender=renderMap,oldWalk=walk,oldInteract=interact,oldTrainerParty=trainerParty,oldRandomWild=randomWild,oldGymParty=gymParty,oldEnterZone=enterZone,oldDefeat=battleDefeat;
  const canvas=document.createElement('canvas');canvas.id='aur50-map-canvas';canvas.width=W*T*1.5;canvas.height=H*T*1.5;canvas.setAttribute('role','img');canvas.setAttribute('aria-label','Spielbare AuriMon-Welt mit zehn Regionen und fünfzig Abschnitten');
  const c=canvas.getContext('2d',{alpha:false});c.scale(1.5,1.5);
+ // Portrait phone: the world is still 20x12 tiles; display only 9x12 around
+ // the hero. Drawing stays 1:1 in tile proportions, without scaling people.
+ const VISIBLE_PHONE_COLS=9;
+ const mobileCanvas=document.createElement('canvas');
+ mobileCanvas.id='aur50-mobile-map-canvas';
+ mobileCanvas.width=VISIBLE_PHONE_COLS*T*1.5;
+ mobileCanvas.height=H*T*1.5;
+ mobileCanvas.setAttribute('role','img');
+ mobileCanvas.setAttribute('aria-label','Große, mitlaufende AuriMon-Karte fürs Handy');
+ const mobileContext=mobileCanvas.getContext('2d',{alpha:false});
+ let cameraColumn=0;
+ const portraitMap=()=>typeof window.matchMedia==='function'&&window.matchMedia('(max-width:700px) and (orientation:portrait)').matches;
+ function copyMobileFrame(){
+  if(!portraitMap()||!mobileContext)return;
+  cameraColumn=Math.max(0,Math.min(W-VISIBLE_PHONE_COLS,Math.floor(state.x)-Math.floor(VISIBLE_PHONE_COLS/2)));
+  mobileContext.drawImage(canvas,cameraColumn*T*1.5,0,VISIBLE_PHONE_COLS*T*1.5,H*T*1.5,
+    0,0,mobileCanvas.width,mobileCanvas.height);
+ }
  // Existing AuriMon character SVGs, not fabricated character placeholders.
  const people={};
  const npcSprites={guide:'researcher_girl_0_down.svg',trainer:'scout_boy_0_down.svg',heal:'medic_girl_0_down.svg'};
  function imageFor(name){if(!name||typeof Image==='undefined')return null;
-  if(!people[name]){const img=new Image();people[name]=img;img.onload=()=>{if(active()&&canvas.isConnected)draw()};img.onerror=()=>{people[name]=null};img.src='ari_sprites/'+name;}
+  if(!people[name]){const img=new Image();people[name]=img;img.onload=()=>{if(active()&&(canvas.isConnected||mobileCanvas.isConnected))draw()};img.onerror=()=>{people[name]=null};img.src='ari_sprites/'+name;}
   return people[name]?.complete && people[name]?.naturalWidth>0?people[name]:null;
  }
  function paintPerson(name,x,y,w,h){const im=imageFor(name);if(!im)return false;c.drawImage(im,x,y,w,h);return true;}
@@ -230,11 +248,24 @@
   c.moveTo(x,y+3*size);c.lineTo(x,y-8*size);c.moveTo(x+4*size,y+3*size);c.quadraticCurveTo(x+5*size,y-3*size,x+7*size,y-5*size);c.stroke();
  }
  function sign(x,y,label,accent){
-  ellipse(x+22,y+45,24,5,'#1f573f',.24);
-  rounded(x+18,y+10,7,33,2,'#895f3d','#bd915a');
-  rounded(x-7,y+3,55,25,5,'#805b40','#e4bb74');
-  rounded(x-3,y+6,47,19,4,'#e3c592','#fff2cc');
-  c.save();c.fillStyle=accent||'#50605e';c.font='bold 10px system-ui';c.textAlign='center';c.fillText(label,x+21,y+19);c.restore();
+  // Shared sign style across every area. Measure the full German name, do
+  // not truncate it to 9 chars or squeeze it into the old 47px text panel.
+  const name=String(label||'').toLocaleUpperCase('de-DE');
+  const center=x+21;
+  const size=name.length>11?9:name.length>8?10:11;
+  c.save();c.font='800 '+size+'px system-ui, sans-serif';
+  const widthMeasured=c.measureText?.(name)?.width;
+  const boardWidth=Math.min(136,Math.max(68,Math.ceil((Number.isFinite(widthMeasured)?widthMeasured:name.length*size*.65)+22)));
+  const left=center-boardWidth/2;
+  ellipse(center,y+44,boardWidth*.43,5,'#1f573f',.22);
+  rounded(center-3,y+25,6,18,2,'#875b34','#cda36c');
+  rounded(left,y+3,boardWidth,27,7,'#825636','#e1b97c');
+  rounded(left+3,y+6,boardWidth-6,21,5,'#e9d5a6','#fff0c8');
+  rounded(left+6,y+9,boardWidth-12,15,4,'#f4e7c9');
+  ellipse(left+8,y+16,1.6,1.6,'#986643');ellipse(left+boardWidth-8,y+16,1.6,1.6,'#986643');
+  c.fillStyle=accent||'#304b45';c.textAlign='center';c.textBaseline='middle';
+  c.fillText(name,center,y+17,boardWidth-21);
+  c.restore();
  }
  function lamp(x,y,tick){
   ellipse(x+24,y+43,13,4,'#275940',.25);
@@ -432,7 +463,7 @@
   if(s===7){sign(7*T,4*T,'STEG','#498ca1');lamp(13*T,5*T,tick)}
   if(s===8){for(const [x,y] of [[3,5],[13,5],[7,8]]){ellipse(x*T+24,y*T+22,13,13,'#83e9dd',.25);ellipse(x*T+24,y*T+20,7,10,'#65cbc9')}}
   if(s===9){sign(7*T,4*T,'MONDARENA','#367aae');lamp(11*T,4*T,tick);flags(12*T,1*T,'#6cb9da');flags(16*T,1*T,'#a2c7f1')}
-  if(s>=10){const region=Math.floor(s/5),chapter=s%5;sign(2*T,4*T,REGIONS[region].toUpperCase().slice(0,9),'#315e70');
+  if(s>=10){const region=Math.floor(s/5),chapter=s%5;sign(2*T,4*T,REGIONS[region].toLocaleUpperCase('de-DE'),'#315e70');
    if(chapter===0){lamp(10*T,4*T,tick);flowerbed(15*T,8*T,15,8)}
    if(chapter===1||chapter===2){for(const [x,y] of [[3,2],[14,4],[6,8]])if(d.g[y][x]==='g'||d.g[y][x]==='w')flowerbed(x*T,y*T,x,y)}
    if(chapter===3){for(const [x,y] of [[6,4],[14,8]]){ellipse(x*T+24,y*T+21,12,12,region%2?'#ffb981':'#84e9ec',.3)}}
@@ -455,7 +486,7 @@
   // Soft translucent scene frame gives the visual world a cohesive polish.
   const grad=c.createLinearGradient(0,0,0,H*T);grad.addColorStop(0,'rgba(255,251,203,.12)');grad.addColorStop(1,s===3?'rgba(26,28,44,.19)':'rgba(14,69,44,.06)');fill(0,0,W*T,H*T,grad);
  }
- function draw(){if(!active())return;ensure();makeScene(performance.now())}
+ function draw(){if(!active())return;ensure();makeScene(performance.now());copyMobileFrame()}
  const oldAt=atPosition;
  atPosition=function(z,x,y){if(z>=0&&z<10&&active()){const t=tile(x,y);if(npc(x,y))return 'trainer';if(loot(x,y))return 'loot';if(t==='w'||t==='g')return 'wild';if(t==='~')return 'water';if(t==='t')return 'tree';if(t==='#'||t==='b'||t==='a'||t==='G')return 'wall';if(t==='E')return 'portal';return 'path'}return oldAt(z,x,y)};
  const oldTrainers=trainers,oldDrops=drops;
@@ -477,8 +508,10 @@
   const title=document.querySelector('.maptop b');if(title)title.textContent=`${region} · ${TITLES[s].toUpperCase()}`;
  }
  renderMap=function(){if(!active()){document.getElementById('game-map')?.classList.remove('aur50-active');return oldRender()}
-  ensure();const map=$('game-map');if(!map.contains(canvas)){map.replaceChildren(canvas);}
-  map.className='map aur50-active';map.style.setProperty('--map-cols','20');map.style.setProperty('--map-rows','12');
+  ensure();const map=$('game-map');const screen=portraitMap()?mobileCanvas:canvas;
+  if(map.firstElementChild!==screen||map.children.length!==1)map.replaceChildren(screen);
+  map.className='map aur50-active';map.classList.toggle('aur50-portrait',screen===mobileCanvas);
+  map.style.setProperty('--map-cols',screen===mobileCanvas?'9':'20');map.style.setProperty('--map-rows','12');
   updateHud();draw();};
  function pick(q){state.found.push('aur50:'+q.id);gainItem(q.item,1);state.coins+=25;toast('✨ Schatz gefunden: '+ITEM_INFO[q.item][0]+'!');save();render()}
  function advance(dest,back){const w=ensure();if(dest<0){toast('🌿 Hier beginnt dein Abenteuer.');return}
@@ -564,8 +597,8 @@
   return oldAction(act,el)};
  // Intercept the original button's capture handler for this pilot only.
  document.addEventListener('click',e=>{const b=e.target.closest('button[data-action="stuck-center"]');if(!b||!active())return;e.preventDefault();e.stopImmediatePropagation();doAction('stuck-center',b)},true);
- document.addEventListener('click',e=>{if(!active())return;const b=e.target.closest('#aur50-map-canvas');if(!b)return;const r=canvas.getBoundingClientRect();const x=Math.floor((e.clientX-r.left)/r.width*W),y=Math.floor((e.clientY-r.top)/r.height*H);if(Math.abs(state.x-x)+Math.abs(state.y-y)===1)walk(x-state.x,y-state.y);else if(x===state.x&&y===state.y)interact()},true);
+ document.addEventListener('click',e=>{if(!active())return;const b=e.target.closest('#aur50-map-canvas, #aur50-mobile-map-canvas');if(!b)return;const r=b.getBoundingClientRect();const mobile=b===mobileCanvas;const x=Math.floor((e.clientX-r.left)/r.width*(mobile?VISIBLE_PHONE_COLS:W))+(mobile?cameraColumn:0),y=Math.floor((e.clientY-r.top)/r.height*H);if(Math.abs(state.x-x)+Math.abs(state.y-y)===1)walk(x-state.x,y-state.y);else if(x===state.x&&y===state.y)interact()},true);
  // Only redraw when visible and a pilot profile has been selected; avoids 60fps work on other maps.
- let prev=0;function raf(ms){requestAnimationFrame(raf);if(ms-prev>85&&active()&&currentPage==='world'&&canvas.isConnected){prev=ms;draw()}}requestAnimationFrame(raf);
+ let prev=0;function raf(ms){requestAnimationFrame(raf);if(ms-prev>85&&active()&&currentPage==='world'&&(canvas.isConnected||mobileCanvas.isConnected)){prev=ms;draw()}}requestAnimationFrame(raf);
  window.addEventListener('resize',()=>{if(active())renderMap()},{passive:true});
 })();
