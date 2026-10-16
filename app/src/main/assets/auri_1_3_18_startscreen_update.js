@@ -1,10 +1,10 @@
-/* AuriMon 1.4.25 - Kompakter Update-Button oben rechts im Startfenster.
+/* AuriMon 1.4.26 - Kompakter Update-Button oben rechts im Startfenster.
    Behebt WebView-Absturz durch den 1.3.18 MutationObserver.
    Keinerlei Aenderung an Spielstand oder Spielregeln.
 */
 (() => {
   'use strict';
-  const CURRENT = '1.4.25';
+  const CURRENT = '1.4.26';
   const HOME_BTN_ID = 'aurimon-updates-startscreen';
   let lastStatus = 'GitHub-Updates prüfen';
   let observedPicker = null;
