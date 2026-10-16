@@ -9,7 +9,7 @@ from PIL import Image,ImageDraw,ImageFont
 import shutil,json,io,hashlib,collections,math
 
 root=Path("browser-dist").resolve()
-html=root/"AuriMon_v1.4.26_BROWSER_OFFLINE.html"
+html=root/"AuriMon_v1.4.27_BROWSER_OFFLINE.html"
 assert html.exists()
 class Quiet(SimpleHTTPRequestHandler):
  def log_message(self,*args):pass
@@ -17,7 +17,7 @@ server=ThreadingHTTPServer(("127.0.0.1",0),partial(Quiet,directory=str(root)))
 Thread(target=server.serve_forever,daemon=True).start()
 browser_path=shutil.which("google-chrome") or shutil.which("chromium") or shutil.which("chromium-browser")
 assert browser_path,"Chromium missing"
-report={"version":"1.4.26 (working tree, browser QA)","tested_levels":0,"regions":[],"errors":[],"warnings":[],"screenshots":[],"real_portals":0,"dungeons_tested":0,"arenas_tested":0,"quests_tested":0,"viewports":[]}
+report={"version":"1.4.27 (working tree, browser QA)","tested_levels":0,"regions":[],"errors":[],"warnings":[],"screenshots":[],"real_portals":0,"dungeons_tested":0,"arenas_tested":0,"quests_tested":0,"viewports":[]}
 def bad(msg):report["errors"].append(msg)
 def check(test,msg):
  if not test:bad(msg)
