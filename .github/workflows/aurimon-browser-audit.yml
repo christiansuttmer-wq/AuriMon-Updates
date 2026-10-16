@@ -44,6 +44,13 @@ jobs:
         shell: bash
         run: node tools/audit-content.mjs
 
+      - name: Chromium-Browser installieren und E2E testen
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet playwright==1.55.0
+          python3 tools/e2e-browser.py
+
       - name: Offline-Browser-Paket als Action-Artefakt bereitstellen
         uses: actions/upload-artifact@v4
         with:
@@ -54,6 +61,8 @@ jobs:
             browser-dist/PRUEFBERICHT.md
             browser-dist/PRUEFBERICHT.json
             browser-dist/browser_build.json
+            browser-dist/BROWSER_E2E.json
+            browser-dist/QA_*.png
 
       - name: Browser-Downloads zum bestehenden GitHub-Release hinzufuegen
         env:
