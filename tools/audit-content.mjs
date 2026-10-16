@@ -49,8 +49,12 @@ try{vm.runInNewContext(code,vm.createContext(ctx),{filename:'aurimon_world50_pil
  if(api.names.length!==50)warn('critical','World','Not exactly 50 maps');
  const checked=api.validate();
  for(const row of checked)if(!row.reachable)warn('critical','World','Missing reachable objects on level '+row.stage);
+ const mapFingerprints=new Map();counts.duplicateLayouts=0;
  for(let i=0;i<50;i++){
   const grid=api.getMap(i);if(grid.length!==12||grid.some(r=>r.length!==20))warn('critical','World','Invalid dimensions on '+(i+1));
+  const fingerprint=grid.map(row=>row.join('')).join('|');
+  if(mapFingerprints.has(fingerprint)){counts.duplicateLayouts++;warn('medium','Map duplicates','Level '+(i+1)+' has exactly the same tile layout as level '+(mapFingerprints.get(fingerprint)+1));}
+  else mapFingerprints.set(fingerprint,i);
   if(i%5===3){counts.dungeons++;if(grid.flat().filter(t=>t==='R').length!==3||grid[6][17]!=='G')warn('critical','Dungeons','Rune/gate mismatch at '+(i+1));}
  }
 }catch(e){warn('critical','World runtime',String(e));}
