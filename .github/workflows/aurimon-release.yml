@@ -32,8 +32,13 @@ jobs:
           packages: 'platform-tools'
       - name: Android Plattform 35 und Build Tools
         run: sdkmanager --install 'platforms;android-35' 'build-tools;35.0.0'
-      - name: Gradle Cache
+      - name: Offizielles Gradle 8.13 (ohne projektspezifischen Wrapper)
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+          # Das Repository enthaelt einen eigenen, nicht offiziell signierten Wrapper.
+          # Der CI-Build nutzt ausschliesslich die verifizierte Gradle-Distribution.
+          validate-wrappers: false
       - name: Vorbedingungen pruefen (noch kein Release)
         id: check
         env:
@@ -77,8 +82,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          chmod +x ./gradlew
-          ./gradlew :app:assembleRelease --no-daemon
+          gradle :app:assembleRelease --no-daemon
       - name: Paketkennung, Version und Signatur mit vorherigem Release vergleichen
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
