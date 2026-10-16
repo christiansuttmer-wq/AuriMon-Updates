@@ -160,6 +160,8 @@ with sync_playwright() as pw:
  visit(35)
  page.evaluate("""()=>{state.coins=1237;save()}""")
  page.reload(wait_until="domcontentloaded")
+ page.locator('[data-profile-action="load"]').first.click()
+ page.locator('[data-profile-action="open:1"]').first.click()
  page.wait_for_timeout(250)
  persistence=page.evaluate("""()=>({stage:state.aurWorld50?.stage,zone:state.zone,coins:state.coins})""")
  check(persistence=={"stage":35,"zone":7,"coins":1237},"Save/reload damaged regional progress: "+str(persistence))
