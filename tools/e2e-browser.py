@@ -34,6 +34,7 @@ with sync_playwright() as pw:
  page.locator("#modal-content button").filter(has_text="Junge").first.click()
  page.locator("#modal-content button").filter(has_text="Abenteuer beginnen!").first.click()
  page.locator("#modal-content button").filter(has_text="Bisasam").first.click()
+ page.locator("#modal-content button").filter(has_text="Auf ins Abenteuer!").first.click()
  page.wait_for_timeout(700)
  state=page.evaluate("""() => ({
    activeSlot:window.PokemonProfiles?.activeSlot,
