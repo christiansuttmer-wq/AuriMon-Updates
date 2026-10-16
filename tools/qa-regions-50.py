@@ -179,13 +179,15 @@ lines=["# AuriMon – Vollprüfung aller zehn Regionen / 50 Ebenen","",
        "Dungeon-/Runenrätsel: "+str(report["dungeons_tested"])+"/10",
        "Arenazugänge: "+str(report["arenas_tested"])+"/10",
        "Ortsaufträge: "+str(report["quests_tested"])+"/10","",
-       "## Fehler",*(("- "+x) for x in report["errors"]) if report["errors"] else ["Keine im Testlauf."],
-       "","## Hinweise",*(("- "+x) for x in report["warnings"]) if report["warnings"] else ["Keine."],
-       "","## Einschränkungen",
+       "## Fehler"]
+lines.extend(["- "+x for x in report["errors"]] or ["Keine im Testlauf."])
+lines.extend(["","## Hinweise"])
+lines.extend(["- "+x for x in report["warnings"]] or ["Keine."])
+lines.extend(["","## Einschränkungen",
        "- Automatisierte Chromium-Prüfungen können einen vollständigen menschlichen Spieldurchlauf nicht ersetzen.",
        "- Schwierigkeitsbalance, Spielspaß und grafische Qualität bleiben teilweise subjektiv.",
        "- Testwerte für bereits freigeschaltete Orden dienen der isolierten Navigation; echtes Erspielen der Orden wird nicht durchgespielt.",
-       "- Keine Änderungen an der installierten Android-APK."]
+       "- Keine Änderungen an der installierten Android-APK."])
 (root/"REGIONEN_50_PRUEFUNG.md").write_text("\n".join(lines),encoding="utf-8")
 print(json.dumps({"status":report["status"],"checks":{k:report[k] for k in ["tested_levels","real_portals","dungeons_tested","arenas_tested","quests_tested"]},"errors":report["errors"],"warnings":report["warnings"]},ensure_ascii=False,indent=2))
 if report["errors"]:raise SystemExit(2)
