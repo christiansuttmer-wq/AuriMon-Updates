@@ -208,18 +208,18 @@
  const oldRender=renderMap,oldWalk=walk,oldInteract=interact,oldTrainerParty=trainerParty,oldRandomWild=randomWild,oldGymParty=gymParty,oldEnterZone=enterZone,oldDefeat=battleDefeat;
  const canvas=document.createElement('canvas');canvas.id='aur50-map-canvas';canvas.width=W*T*1.5;canvas.height=H*T*1.5;canvas.setAttribute('role','img');canvas.setAttribute('aria-label','Spielbare AuriMon-Welt mit zehn Regionen und fünfzig Abschnitten');
  const c=canvas.getContext('2d',{alpha:false});c.scale(1.5,1.5);
- // Portrait phone: the world is still 20x12 tiles; display only 9x12 around
- // the hero. Drawing stays 1:1 in tile proportions, without scaling people.
- const VISIBLE_PHONE_COLS=9;
+ // Compact LANDSCAPE screens show a movable 16x12 viewport of the original
+ // 20x12 level; original tiles keep their proportions (no stretched sprites).
+ const VISIBLE_PHONE_COLS=16;
  const mobileCanvas=document.createElement('canvas');
- mobileCanvas.id='aur50-mobile-map-canvas';
+ mobileCanvas.id='aur50-landscape-map-canvas';
  mobileCanvas.width=VISIBLE_PHONE_COLS*T*1.5;
  mobileCanvas.height=H*T*1.5;
  mobileCanvas.setAttribute('role','img');
- mobileCanvas.setAttribute('aria-label','Große, mitlaufende AuriMon-Karte fürs Handy');
+ mobileCanvas.setAttribute('aria-label','Große Querformat-Spielkarte mit mitlaufender Kamera');
  const mobileContext=mobileCanvas.getContext('2d',{alpha:false});
  let cameraColumn=0;
- const portraitMap=()=>typeof window.matchMedia==='function'&&window.matchMedia('(max-width:700px) and (orientation:portrait)').matches;
+ const portraitMap=()=>typeof window.matchMedia==='function'&&window.matchMedia('(max-width:1100px) and (max-height:650px) and (orientation:landscape)').matches;
  function copyMobileFrame(){
   if(!portraitMap()||!mobileContext)return;
   cameraColumn=Math.max(0,Math.min(W-VISIBLE_PHONE_COLS,Math.floor(state.x)-Math.floor(VISIBLE_PHONE_COLS/2)));
@@ -510,7 +510,7 @@
  renderMap=function(){if(!active()){document.getElementById('game-map')?.classList.remove('aur50-active');return oldRender()}
   ensure();const map=$('game-map');const screen=portraitMap()?mobileCanvas:canvas;
   if(map.firstElementChild!==screen||map.children.length!==1)map.replaceChildren(screen);
-  map.className='map aur50-active';map.classList.toggle('aur50-portrait',screen===mobileCanvas);
+  map.className='map aur50-active';map.classList.toggle('aur50-landscape',screen===mobileCanvas);
   map.style.setProperty('--map-cols',screen===mobileCanvas?'9':'20');map.style.setProperty('--map-rows','12');
   updateHud();draw();};
  function pick(q){state.found.push('aur50:'+q.id);gainItem(q.item,1);state.coins+=25;toast('✨ Schatz gefunden: '+ITEM_INFO[q.item][0]+'!');save();render()}
@@ -597,7 +597,7 @@
   return oldAction(act,el)};
  // Intercept the original button's capture handler for this pilot only.
  document.addEventListener('click',e=>{const b=e.target.closest('button[data-action="stuck-center"]');if(!b||!active())return;e.preventDefault();e.stopImmediatePropagation();doAction('stuck-center',b)},true);
- document.addEventListener('click',e=>{if(!active())return;const b=e.target.closest('#aur50-map-canvas, #aur50-mobile-map-canvas');if(!b)return;const r=b.getBoundingClientRect();const mobile=b===mobileCanvas;const x=Math.floor((e.clientX-r.left)/r.width*(mobile?VISIBLE_PHONE_COLS:W))+(mobile?cameraColumn:0),y=Math.floor((e.clientY-r.top)/r.height*H);if(Math.abs(state.x-x)+Math.abs(state.y-y)===1)walk(x-state.x,y-state.y);else if(x===state.x&&y===state.y)interact()},true);
+ document.addEventListener('click',e=>{if(!active())return;const b=e.target.closest('#aur50-map-canvas, #aur50-landscape-map-canvas');if(!b)return;const r=b.getBoundingClientRect();const mobile=b===mobileCanvas;const x=Math.floor((e.clientX-r.left)/r.width*(mobile?VISIBLE_PHONE_COLS:W))+(mobile?cameraColumn:0),y=Math.floor((e.clientY-r.top)/r.height*H);if(Math.abs(state.x-x)+Math.abs(state.y-y)===1)walk(x-state.x,y-state.y);else if(x===state.x&&y===state.y)interact()},true);
  // Only redraw when visible and a pilot profile has been selected; avoids 60fps work on other maps.
  let prev=0;function raf(ms){requestAnimationFrame(raf);if(ms-prev>85&&active()&&currentPage==='world'&&(canvas.isConnected||mobileCanvas.isConnected)){prev=ms;draw()}}requestAnimationFrame(raf);
  window.addEventListener('resize',()=>{if(active())renderMap()},{passive:true});
