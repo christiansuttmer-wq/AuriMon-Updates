@@ -239,7 +239,7 @@
   const n=rnd(wx,wy,s*11), g=c.createLinearGradient(x,y,x+T,y+T);
   if((s%5===3)){g.addColorStop(0,s===8?'#748493':'#837f79');g.addColorStop(1,s===8?'#9caab6':'#a6a398')}
   else if(s>=5){g.addColorStop(0,n>.48?'#87c7a5':'#95d9b4');g.addColorStop(1,n>.48?'#60ac96':'#78c4a1')}
-  else{g.addColorStop(0,n>.48?'#94cf83':'#9cd78b');g.addColorStop(1,n>.48?'#72b875':'#89c97b')}
+  else{const pal=REGION_PALETTES[Math.floor(s/5)]||REGION_PALETTES[0];g.addColorStop(0,pal[0]);g.addColorStop(1,pal[1])}
   fill(x,y,T,T,g);
   if(s%5===3){for(let k=0;k<3;k++){const px=x+7+k*15,py=y+8+((wx+k*7+wy)%3)*11;fill(px,py,10,2,'#c6bba1')}return}
   // Tiny gradients of grass and flowering meadow create continuous organic field.
@@ -254,7 +254,7 @@
   // Path edge shading and cobblestones remain derived from walkable cells.
   const mud=(s%5===3)?'#b3a698':s===2?'#d9c7a8':s>=5?'#d5c8ab':'#ddc6a0';
   fill(x,y,48,48,mud);
-  fill(x+1,y+1,46,3,s===3?'#beb8ae':'#e7d2ad');
+  fill(x+1,y+1,46,3,s%5===3?'#beb8ae':'#e7d2ad');
   for(let k=0;k<12;k++){
    const ox=4+rnd(wx,wy,k+120)*39,oy=3+rnd(wx,wy,k+200)*42;
    ellipse(x+ox,y+oy,2+rnd(wx,wy,k+223)*3,1.3,k%2?'#c5ad89':'#f3dfb7',.6);
@@ -263,7 +263,7 @@
   const gg=maps[s]?.g;
   const near=(dx,dy)=>{const tt=gg?.[wy+dy]?.[wx+dx];return ['p','E','=','G'].includes(tt)};
   const edgeSeed=(n)=>rnd(wx,wy,n+s*13);
-  const green=s===3?'#86877e':'#84c374';
+  const green=s%5===3?'#86877e':REGION_PALETTES[Math.floor(s/5)][1];
   if(!near(-1,0))for(let i=0;i<9;i++)ellipse(x+2+edgeSeed(i+36)*5,y+4+i*5,4+edgeSeed(i+126)*2,4,green,.5);
   if(!near(1,0))for(let i=0;i<9;i++)ellipse(x+46-edgeSeed(i+56)*5,y+4+i*5,4+edgeSeed(i+150)*2,4,green,.47);
   if(!near(0,-1))for(let i=0;i<9;i++)ellipse(x+4+i*5,y+2+edgeSeed(i+75)*5,4,4+edgeSeed(i+160)*2,green,.46);
@@ -279,7 +279,7 @@
    fill(x+1,y+3,4,43,'#725639');fill(x+43,y+3,4,43,'#725639');
   }
  }
- function lake(x,y,wx,wy,tick){const g=c.createLinearGradient(x,y,x+48,y+48);g.addColorStop(0,'#69c6d8');g.addColorStop(1,'#2d93bc');fill(x,y,48,48,g);
+ function lake(x,y,wx,wy,tick){const g=c.createLinearGradient(x,y,x+48,y+48);const volcanic=Math.floor((state.aurWorld50?.stage||0)/5)===8;g.addColorStop(0,volcanic?'#ffac53':'#69c6d8');g.addColorStop(1,volcanic?'#c02b22':'#2d93bc');fill(x,y,48,48,g);
   for(let k=0;k<3;k++){const ox=(rnd(wx,wy,k+91)*36+(tick*.013))%53-7,oy=11+k*14; c.strokeStyle='rgba(230,251,250,.45)';c.lineWidth=2;c.beginPath();c.moveTo(x+ox,y+oy);c.quadraticCurveTo(x+ox+7,y+oy-4,x+ox+16,y+oy);c.stroke()}
  }
  function pine(x,y,wx,wy,tick){
@@ -411,6 +411,12 @@
   if(s===7){sign(7*T,4*T,'STEG','#498ca1');lamp(13*T,5*T,tick)}
   if(s===8){for(const [x,y] of [[3,5],[13,5],[7,8]]){ellipse(x*T+24,y*T+22,13,13,'#83e9dd',.25);ellipse(x*T+24,y*T+20,7,10,'#65cbc9')}}
   if(s===9){sign(7*T,4*T,'MONDARENA','#367aae');lamp(11*T,4*T,tick);flags(12*T,1*T,'#6cb9da');flags(16*T,1*T,'#a2c7f1')}
+  if(s>=10){const region=Math.floor(s/5),chapter=s%5;sign(2*T,4*T,REGIONS[region].toUpperCase().slice(0,9),'#315e70');
+   if(chapter===0){lamp(10*T,4*T,tick);flowerbed(15*T,8*T,15,8)}
+   if(chapter===1||chapter===2){for(const [x,y] of [[3,2],[14,4],[6,8]])if(d.g[y][x]==='g'||d.g[y][x]==='w')flowerbed(x*T,y*T,x,y)}
+   if(chapter===3){for(const [x,y] of [[6,4],[14,8]]){ellipse(x*T+24,y*T+21,12,12,region%2?'#ffb981':'#84e9ec',.3)}}
+   if(chapter===4){flags(12*T,1*T,region%2?'#ebadd7':'#83d0e9');lamp(10*T,5*T,tick);flags(16*T,1*T,'#efdc91')}
+  }
   for(const b of d.extras.buildings)building(b,tick);
   for(const r of d.extras.runes){const activated=world.runestones.includes(r.id);const x=(r.x+.5)*T,y=(r.y+.58)*T;ellipse(x,y+11,20,9,'#4a5e5a',.22);rounded(x-14,y-21,28,37,7,activated?'#5b7f82':'#6e667b','#e6d4b1');
    ellipse(x,y-9,7,9,activated?'#7af6db':'#b3a0ff');if(activated)ellipse(x,y-9,17,17,'#8effdf',.23)}
@@ -430,11 +436,13 @@
  const oldTrainers=trainers,oldDrops=drops;
  trainers=function(z){if(z>=0&&z<10&&active()){const s=ensure().stage;return maps[s].extras.npcs.filter(n=>n.kind==='trainer').map(n=>({id:`${z}:${n.j}`,x:n.x,y:n.y,j:n.j,name:n.name,defeated:state.trainerWins.includes(`${z}:${n.j}`)}));}return oldTrainers(z)};
  drops=function(z){if(z>=0&&z<10&&active())return maps[ensure().stage].extras.loot.filter(q=>!state.found.includes('aur50:'+q.id)).map(q=>({...q,picked:false}));return oldDrops(z)};
- trainerParty=function(z,j){const mons=oldTrainerParty(z,j);if(z>=0&&z<10&&active()){const s=ensure().stage;for(let i=0;i<mons.length;i++){mons[i].level=Math.min(100,4+s*2+i);mons[i].hp=hpMax(mons[i].id,mons[i].level)}}return mons};
- gymParty=function(z){const mons=oldGymParty(z);if(z>=0&&z<10&&active()&&(ensure().stage===4||ensure().stage===9)){const mond=state.zone===1;mons.forEach((m,i)=>{m.level=(mond?19:11)+i*2;m.hp=hpMax(m.id,m.level)})}return mons};
- randomWild=function(z){const m=oldRandomWild(z);if(z>=0&&z<10&&active()){m.level=clamp(3+ensure().stage*2+rand(0,2),3,22);m.hp=hpMax(m.id,m.level)}return m};
+ trainerParty=function(z,j){const mons=oldTrainerParty(z,j);if(z>=0&&z<10&&active()){const s=ensure().stage;for(let i=0;i<mons.length;i++){mons[i].level=Math.min(99,5+s*2+i);mons[i].hp=hpMax(mons[i].id,mons[i].level)}}return mons};
+ gymParty=function(z){const mons=oldGymParty(z);if(z>=0&&z<10&&active()&&ensure().stage%5===4){const bossLevels=[11,20,30,40,50,60,70,80,90,96];
+   if(z===9&&mons.length<6){const ids=ZONE_POOLS[z];while(mons.length<6)mons.push(newMon(ids[(mons.length*3)%ids.length],98));}
+   mons.forEach((m,i)=>{m.level=Math.min(100,bossLevels[z]+i);m.hp=hpMax(m.id,m.level)})}return mons};
+ randomWild=function(z){const m=oldRandomWild(z);if(z>=0&&z<10&&active()){m.level=clamp(3+ensure().stage*2+rand(0,3),3,97);m.hp=hpMax(m.id,m.level)}return m};
  function updateHud(){const w=ensure();if(!w)return;const s=w.stage,z=state.zone;
-  const region=z===0?'SONNENWIESE':'MONDSEE';
+  const region=REGIONS[Math.floor(s/5)].toUpperCase();
   const runeCount=maps[s].extras.runes.filter(r=>w.runestones.includes(r.id)).length;
   $('zone-step').textContent=`${region} · EBENE ${s+1} / 50`;
   $('zone-name').textContent=TITLES[s];$('zone-desc').textContent=DESCS[s];
