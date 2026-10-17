@@ -1,0 +1,27 @@
+name: AuriMon Quest- und Texttests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/verify-quests.js'
+      - 'tools/verify-world50.js'
+      - '.github/workflows/aurimon-quest-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  full-quest-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript, Karten, Spieltexte und Aufgaben testen
+        run: |
+          set -euo pipefail
+          find app/src/main/assets -maxdepth 1 -name '*.js' -print0 | xargs -0 -n1 node --check
+          node tools/verify-hero-atlas.js
+          node tools/verify-world50.js
+          node tools/verify-quests.js

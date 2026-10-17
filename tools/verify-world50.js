@@ -8,6 +8,7 @@ const ctx={
  window:{PokemonGame:{},PokemonProfiles:{activeSlot:1},addEventListener(){}},
  document:{createElement:()=>({setAttribute(){},getContext:()=>({scale(){}})}),addEventListener(){}},
  state:st,requestAnimationFrame(){},
+ AREAS:[{"leader":"Lina","badge":"Wiesenorden"},{"leader":"Finn","badge":"Seeorden"},{"leader":"Rika","badge":"Felsorden"},{"leader":"Elly","badge":"Blütenorden"},{"leader":"Noah","badge":"Küstenorden"},{"leader":"Mia","badge":"Waldorden"},{"leader":"Leon","badge":"Dorforden"},{"leader":"Ada","badge":"Kristallorden"},{"leader":"Bruno","badge":"Flammenorden"},{"leader":"Champion Nova","badge":"Wolkenorden"}],
 };
 for(const n of ['renderMap','walk','interact','trainerParty','randomWild','gymParty','enterZone','battleDefeat','atPosition','trainers','drops','render','doAction'])
  ctx[n]=()=>{};
