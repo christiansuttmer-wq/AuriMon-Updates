@@ -177,6 +177,17 @@
   }
  }
  buildMaps();
+ // Jede Zielbeschreibung ist mit einem tatsächlich erreichbaren Spielobjekt verbunden.
+ for(let s=0;s<50;s++){
+  const z=Math.floor(s/5),k=s%5,m=maps[s];
+  if(k===0)DESCS[s]=s===0?'Sprich mit Professorin Mira und erkunde das Starterdorf. Folge dem Weg nach Osten.':'Erkunde '+REGIONS[z]+', sprich mit dem Auftraggeber und finde den Weg nach Osten.';
+  else if(k===1)DESCS[s]='Erkunde '+TITLES[s]+'. Kämpfe gegen Trainer, sammle Fundstücke und finde den Ostausgang.';
+  else if(k===2)DESCS[s]='Finde den Weg durch '+TITLES[s]+'. Nutze begehbare Pfade und Brücken zum Ostausgang.';
+  else if(k===3){
+   const rs=m.extras.runes.slice().sort((a,b)=>a.x-b.x),order=m.extras.runeOrder||m.extras.runes.map(r=>r.id);
+   DESCS[s]='Aktiviere drei Runen'+(s===3?' in beliebiger Reihenfolge':' in der Reihenfolge '+order.map(id=>['West','Mitte','Ost'][rs.findIndex(r=>r.id===id)]).join(' → '))+' und öffne das Osttor.';
+  }else DESCS[s]='Betritt die Arena im Nordosten und besiege '+AREAS[z].leader+', um das '+AREAS[z].badge+' zu gewinnen.';
+ }
  const passable=t=>!['t','#','b','a','~','G'].includes(t);
  const profileActive=()=>Number.isInteger(window.PokemonProfiles?.activeSlot)&&window.PokemonProfiles.activeSlot>=1;
  function ensure(){
@@ -519,7 +530,7 @@
   $('zone-step').textContent=`${region} · EBENE ${s+1} / 50`;
   $('zone-name').textContent=TITLES[s];$('zone-desc').textContent=DESCS[s];
   $('goal-title').textContent=s%5===3?`Aktiviere drei Runen (${runeCount}/3)`:s%5===4?(state.badges.includes(Math.floor(s/5))?'Orden errungen!':'Besiege '+AREAS[Math.floor(s/5)].leader):`Erreiche Ebene ${Math.min(50,s+2)}`;
-  $('goal-desc').textContent=s%5===4?'Die Prüfhalle liegt im Nordosten.':s%5===3?'Drei Zeichen öffnen das Tor im Osten.':'Erkunde die Karte und folge dem Weg nach Osten.';
+  $('goal-desc').textContent=s%5===4?'Drücke A am Arenaeingang im Nordosten.':s%5===3?'Aktiviere die drei Runen und öffne das Osttor.':'Erkunde die Karte und folge dem Weg nach Osten.';
   const sub=$('camera-position');if(sub)sub.textContent=`20 × 12 Felder · Abschnitt ${s+1}/50`;
   const title=document.querySelector('.maptop b');if(title)title.textContent=`${region} · ${TITLES[s].toUpperCase()}`;
  }
@@ -557,7 +568,13 @@
     modal('🕶️ Schatten-Team','Ein Kommandant bedroht diese Region. Besiege ihn, um die Schattenchronik fortzusetzen.',[['Kommandant herausfordern','rocket:'+state.zone,'gold'],['Später','close']]);return true
    }
    if(n.kind==='trainer'){if(walking){toast('💬 Drücke A, um '+n.name+' anzusprechen.');return true}return interactTrainer(trainers(state.zone).find(t=>t.x===x&&t.y===y)),true}
-   if(n.kind==='heal')healCenter();else modal('📜 Hinweis in '+REGIONS[Math.floor(w.stage/5)],d.extras.runes.length?'„Die Zeichen gehören in diese Reihenfolge: '+((d.extras.runeOrder||d.extras.runes.map(q=>q.id)).map(id=>id.endsWith('east')?'Ost':id.endsWith('middle')?'Mitte':'West')).join(' → ')+'.“':'„Folge dem Weg nach Osten. Hier warten Trainer, Geheimnisse und neue Pokémon.“',[['Danke!','close','gold']]);return true}
+   if(n.kind==='heal'){healCenter();return true}
+   if(n.name==='Professorin Mira'){modal('🔬 Professorin Mira','Willkommen in der Sonnenwiese! Erkunde die fünf Abschnitte. In der Sonnenarena wartet Lina mit dem ersten Siegel.',[['Auf geht’s!','close','gold']]);return true}
+   const order=d.extras.runeOrder||d.extras.runes.map(q=>q.id),sorted=d.extras.runes.slice().sort((a,b)=>a.x-b.x);
+   const hint=d.extras.runes.length?(w.stage===3?'„Die drei Wurzelrunen dürfen in beliebiger Reihenfolge aktiviert werden.“':
+      '„Berühre die Runen in dieser Reihenfolge: '+order.map(id=>['West','Mitte','Ost'][sorted.findIndex(r=>r.id===id)]).join(' → ')+'.“'):
+      '„Folge den Wegen nach Osten. Hier warten Trainer, Fundstücke und neue Pokémon.“';
+   modal('📜 Hinweis in '+REGIONS[Math.floor(w.stage/5)],hint,[['Danke!','close','gold']]);return true}
   if(r){if(!w.runestones.includes(r.id)){
      const order=d.extras.runes;const done=order.filter(a=>w.runestones.includes(a.id)).length;
      if(w.stage!==3&&(d.extras.runeOrder||order.map(a=>a.id))[done]!==r.id){toast('🔮 Falsche Reihenfolge! Sprich mit dem Runenforscher.');return true}
@@ -594,7 +611,7 @@
  // The original controls reference global walk/interact dynamically.
  window.PokemonGame.walk=(dx,dy)=>walk(dx,dy);
  window.PokemonGame.world50={pilot:true,revision:'Zehn-Regionen-50-Ebenen',names:TITLES.slice(),getStage:()=>state?.aurWorld50?.stage??0,
-  getMap:(i)=>maps[clampStage(i)].g.map(row=>row.slice()),getFeatures:(i)=>({npcs:maps[clampStage(i)].extras.npcs.map(n=>({...n})),runes:maps[clampStage(i)].extras.runes.map(n=>({...n})),buildings:maps[clampStage(i)].extras.buildings.map(n=>({...n}))}),getRegion:(i)=>REGIONS[Math.floor(clampStage(i)/5)],getCount:()=>maps.length,getPlayer:()=>[state.x,state.y],getSpawn:()=>maps[clampStage(state?.aurWorld50?.stage)].extras.entry.slice(),
+  getMap:(i)=>maps[clampStage(i)].g.map(row=>row.slice()),getFeatures:(i)=>({npcs:maps[clampStage(i)].extras.npcs.map(n=>({...n})),runes:maps[clampStage(i)].extras.runes.map(n=>({...n})),runeOrder:[...(maps[clampStage(i)].extras.runeOrder||maps[clampStage(i)].extras.runes.map(r=>r.id))],loot:maps[clampStage(i)].extras.loot.map(n=>({...n})),buildings:maps[clampStage(i)].extras.buildings.map(n=>({...n}))}),getDescriptions:()=>DESCS.slice(),getRegion:(i)=>REGIONS[Math.floor(clampStage(i)/5)],getCount:()=>maps.length,getPlayer:()=>[state.x,state.y],getSpawn:()=>maps[clampStage(state?.aurWorld50?.stage)].extras.entry.slice(),
   // Route checker is read-only and works without a save or profile.
   validate:()=>maps.map((m,s)=>{
    const seen=new Set(),queue=[m.extras.entry];const pass=(x,y)=>safe(x,y)&&((m.g[y][x]==='G')||passable(m.g[y][x]));
