@@ -158,7 +158,20 @@
     return true;
   }
 
+  // Gleiche Original-Pixelsprites auch auf klassischen Karten/Innenraeumen.
+  const heroAtlas = (typeof Image === 'function') ? new Image() : null;
+  if(heroAtlas){
+    heroAtlas.onload=()=>{window.PokemonGame?.hd?.forceRedraw?.();};
+    heroAtlas.src='ari_sprites/hero_design_atlas.png';
+  }
   world.character = function(c,cx,cy,gender,dir,walkTime,enemy){
+    if(!enemy && heroAtlas?.complete && heroAtlas.naturalWidth===224 && heroAtlas.naturalHeight===44){
+      const dirs={down:0,left:1,right:2,up:3};
+      const frame=(gender==='girl'?4:0)+(dirs[dir]??0);
+      c.save(); c.imageSmoothingEnabled=false;
+      c.drawImage(heroAtlas,frame*28,0,28,44,Math.round(cx)-20,Math.round(cy)-45,40,64);
+      c.restore(); return true;
+    }
     return drawCharacter(c,cx,cy,gender,dir,walkTime,enemy,0,0);
   };
 

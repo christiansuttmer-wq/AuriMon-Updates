@@ -234,6 +234,17 @@
   return people[name]?.complete && people[name]?.naturalWidth>0?people[name]:null;
  }
  function paintPerson(name,x,y,w,h){const im=imageFor(name);if(!im)return false;c.drawImage(im,x,y,w,h);return true;}
+ // Offizielles Character-Design: acht freigestellte Pixel-Sprites im 28x44-Atlas.
+ // Reihenfolge: Junge ↓ ← → ↑, Mädchen ↓ ← → ↑. Kein Einfluss auf Spiellogik/Speicher.
+ function paintHeroAtlas(x,y,gender,dir){
+   const im=imageFor('hero_design_atlas.png');
+   if(!im)return false;
+   const order={down:0,left:1,right:2,up:3};
+   const index=(gender==='girl'?4:0)+(order[dir]??0);
+   c.save();c.imageSmoothingEnabled=false;
+   c.drawImage(im,index*28,0,28,44,x*T+4,y*T-18,40,66);
+   c.restore();return true;
+ }
  const fill=(x,y,w,h,col)=>{c.fillStyle=col;c.fillRect(x,y,w,h)};
  const ellipse=(x,y,rx,ry,col,a=1)=>{c.save();c.globalAlpha=a;c.fillStyle=col;c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fill();c.restore()};
  function rounded(x,y,w,h,r,col,stroke){c.beginPath();c.roundRect(x,y,w,h,r);c.fillStyle=col;c.fill();if(stroke){c.strokeStyle=stroke;c.lineWidth=2;c.stroke()}}
@@ -406,7 +417,7 @@
  }
  function sprite(x,y,tick){
   const sex=state.profileGender==='girl'?'girl':'boy';const dir=['down','left','right','up'].includes(state.facing)?state.facing:'down';
-  if(paintPerson('vac_hero_'+sex+'_'+dir+'.svg',x*T+7,y*T-22,34,73) || paintPerson('hero_'+sex+'_'+dir+'.svg',x*T+7,y*T-22,34,73))return;
+  if(paintHeroAtlas(x,y,sex,dir) || paintPerson('vac_hero_'+sex+'_'+dir+'.svg',x*T+7,y*T-22,34,73) || paintPerson('hero_'+sex+'_'+dir+'.svg',x*T+7,y*T-22,34,73))return;
   const cx=x*T+24,cy=y*T+37;ellipse(cx,cy+8,16,6,'#244f3c',.29);const girl=state.profileGender==='girl';
   rounded(cx-11,cy-18,22,24,7,girl?'#d87ca8':'#3788c6','#3a5f74');
   fill(cx-9,cy+5,8,11,'#354a67');fill(cx+1,cy+5,8,11,'#354a67');

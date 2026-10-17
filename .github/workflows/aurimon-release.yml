@@ -46,6 +46,8 @@ jobs:
           node --check app/src/main/assets/game.js
           node --check app/src/main/assets/aurimon_world50_pilot.js
           node --check app/src/main/assets/aurimon_vacation_sprites.js
+          node --check app/src/main/assets/arimon_characters.js
+          node tools/verify-hero-atlas.js
           node tools/verify-world50.js
       - name: Vorbedingungen pruefen (noch kein Release)
         id: check
