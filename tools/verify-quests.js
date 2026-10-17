@@ -90,7 +90,7 @@ const start=sideSource.indexOf(' function sideTask(z)'),end=sideSource.indexOf('
 assert(start>=0&&end>start,'Missing side quest logic');
 const st={zone:0,steps:0,battleWins:0,coins:0,v53SideDone:[],v53SideActive:{},v51Puzzles:[],v51Caches:[],bag:{}};
 let saves=0,dialogues=0,draws=0;
-const sctx={state:st,AREAS:areas,ITEM_INFO:{candy:['EP-Bonbon'],greatball:['Superball'],superpotion:['Supertrank']},
+const sctx={state:st,SIDESTORIES:sideTitles,AREAS:areas,ITEM_INFO:{candy:['EP-Bonbon'],greatball:['Superball'],superpotion:['Supertrank']},
  ready:()=>true,checkData(){},esc:x=>String(x),modal(){dialogues++},save(){saves++},render(){draws++},
  gainItem(item,n){st.bag[item]=(st.bag[item]||0)+n}};
 vm.runInNewContext(sideSource.slice(start,end),vm.createContext(sctx),{timeout:2000});
