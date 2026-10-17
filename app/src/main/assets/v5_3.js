@@ -7,10 +7,17 @@
  const TEMPLE_ENTRIES=Object.entries(V4_LEGENDS).map(([id,q])=>({id:+id,...q}));
  const GLYPHS=['☀️','🌙','⭐','💎'];
  const SIDESTORIES=[
-  'Ein verlorenes Paket für das Forschungslabor','Eine geheimnisvolle Spur im hohen Gras',
-  'Der verschwundene Wanderstab','Blumen für die Gastgeberin','Flaschenpost vom Leuchtturm',
-  'Ein schimmernder Bernsteinstein','Das Rätsel des alten Wegweisers','Der letzte Kristallsplitter',
-  'Ein Brief aus dem Vulkanlager','Der verschwundene Bergkompass'];
+ "Die Sonnenwiese erkunden (24 Schritte)",
+ "Zwei Kämpfe am Mondsee gewinnen",
+ "Das regionale Runenrätsel im Felsenwald lösen",
+ "Den Runenschatz des Blumenpfads bergen",
+ "Die Windküste erkunden (24 Schritte)",
+ "Zwei Kämpfe im Bernsteinwald gewinnen",
+ "Das regionale Runenrätsel im Flüsterdorf lösen",
+ "Den Runenschatz am Kristallsee bergen",
+ "Den Vulkanpass erkunden (24 Schritte)",
+ "Zwei Kämpfe in Wolkenhöhe gewinnen"
+ ];
  const SHADOW_STORY=[
   ['Das gestohlene Tagebuch','Das Schatten-Team stiehlt Aufzeichnungen der Professorin. Spüre den Kommandanten auf und hole die Seiten zurück.'],
   ['Das Kristallsignal','Aus Kristallen wird Energie gestohlen. Stelle den Sender in der Nähe des Außenpostens ab.'],
@@ -55,7 +62,7 @@
   return z%4===0?state.steps-a.steps>=24:z%4===1?state.battleWins-a.wins>=2:z%4===2?state.v51Puzzles?.includes(z):state.v51Caches?.includes(z);
  }
  function sideDialog(){if(!ready())return;checkData();const z=state.zone,done=state.v53SideDone.includes(z),started=!!state.v53SideActive[z];
-  modal('📜 Ortsauftrag: '+AREAS[z].name,`<div class="v53-flavor"><strong>${esc(SIDESTORIES[z])}</strong><p>${done?'✅ Du hast dem Bewohner geholfen.':sideTask(z)}</p><small>Ort ${z+1} von ${AREAS.length} · Die Belohnung gibt es nur einmal pro Spielstand.</small></div>`,
+  modal('📜 Ortsauftrag: '+AREAS[z].name,`<div class="v53-flavor"><strong>${esc(SIDESTORIES[z])}</strong><p>${done?'✅ Du hast dem Bewohner geholfen.':sideTask(z)}</p><small>Ort ${z+1} von ${AREAS.length} · Nimm den Auftrag an, erfülle das angezeigte Ziel und hole die Belohnung ab. Einmal pro Spielstand.</small></div>`,
   done?[[ 'Zurück','close']]:[[started?(sideReady(z)?'🎁 Belohnung abholen':'Auftrag prüfen'):'Auftrag annehmen','v53-side-progress','gold'],['Zurück','close']]);
  }
  function sideProgress(){checkData();const z=state.zone;if(state.v53SideDone.includes(z))return sideDialog();
@@ -119,7 +126,7 @@
  }
  function fossilDialog(){if(!ready())return;checkData();
   const isWorkshop=state.v51Indoor?.kind==='atelier';
-  modal('🦴 Fossilien-Labor',`<p>Zwei verschollene Fossilien warten auf ihre Entdeckung. Ein kundiger Chronist könnte ihre Geheimnisse lüften.</p><p>Du besitzt <b>${bagCount('helixfossil')} Helixfossil</b> und <b>${bagCount('domfossil')} Domfossil</b>.</p><p>${isWorkshop?'✅ Du stehst in einer Werkstatt.':'🏠 Betritt eine Werkstatt in einer der 10 Regionen, um Fossilien wiederzubeleben.'}</p><p>Jede Wiederbelebung kostet 200 Münzen. Das AuriMon kommt bei vollem Team in die Box.</p><div class="v53-fossils">${ebtn('🐚 Amonitas wiederbeleben','v53-fossil:helixfossil',!isWorkshop||!bagCount('helixfossil')||state.coins<200)}${ebtn('🦴 Kabuto wiederbeleben','v53-fossil:domfossil',!isWorkshop||!bagCount('domfossil')||state.coins<200)}</div>`,[['Zurück','close']]);
+  modal('🦴 Fossilien-Labor',`<p>Zwei verschollene Fossilien warten auf ihre Entdeckung. Fossilien aus den Runenruinen lassen sich in Werkstätten wiederbeleben.</p><p>Du besitzt <b>${bagCount('helixfossil')} Helixfossil</b> und <b>${bagCount('domfossil')} Domfossil</b>.</p><p>${isWorkshop?'✅ Du stehst in einer Werkstatt.':'🏠 Betritt eine Werkstatt in einer der 10 Regionen, um Fossilien wiederzubeleben.'}</p><p>Jede Wiederbelebung kostet 200 Münzen. Das AuriMon kommt bei vollem Team in die Box.</p><div class="v53-fossils">${ebtn('🐚 Amonitas wiederbeleben','v53-fossil:helixfossil',!isWorkshop||!bagCount('helixfossil')||state.coins<200)}${ebtn('🦴 Kabuto wiederbeleben','v53-fossil:domfossil',!isWorkshop||!bagCount('domfossil')||state.coins<200)}</div>`,[['Zurück','close']]);
  }
  function reviveFossil(kind){checkData();if(!['helixfossil','domfossil'].includes(kind)||state.v51Indoor?.kind!=='atelier'||bagCount(kind)<1||state.coins<200)return toast('🔒 Du benötigst die Werkstatt, das Fossil und 200 Münzen.');
   const id=kind==='helixfossil'?138:140;state.bag[kind]--;state.coins-=200;
