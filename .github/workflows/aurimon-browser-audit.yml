@@ -38,7 +38,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          AURIMON_BROWSER_VERSION=1.4.27 python3 tools/build-browser.py
+          AURIMON_BROWSER_VERSION=1.4.28 python3 tools/build-browser.py
 
       - name: Quests und doppelte Inhalte auditiert dokumentieren
         shell: bash
@@ -62,10 +62,10 @@ jobs:
       - name: Offline-Browser-Paket als Action-Artefakt bereitstellen
         uses: actions/upload-artifact@v4
         with:
-          name: AuriMon-v1.4.27-Browser-und-Pruefbericht
+          name: AuriMon-v1.4.28-Browser-und-Pruefbericht
           path: |
-            browser-dist/AuriMon_v1.4.27_BROWSER_OFFLINE.html
-            browser-dist/AuriMon_v1.4.27_BROWSER_KOMPLETT.zip
+            browser-dist/AuriMon_v1.4.28_BROWSER_OFFLINE.html
+            browser-dist/AuriMon_v1.4.28_BROWSER_KOMPLETT.zip
             browser-dist/PRUEFBERICHT.md
             browser-dist/PRUEFBERICHT.json
             browser-dist/browser_build.json
@@ -78,20 +78,20 @@ jobs:
             browser-dist/REGION_*.png
 
       - name: Gepruefte Browserfassung und alle 10 Regionenbilder als Release bereitstellen
-        if: ${{ false }} # Testlauf: kein Überschreiben des bereits signierten v1.4.27-Releases
+        if: ${{ false }} # Testlauf: kein Überschreiben des bereits signierten v1.4.28-Releases
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
-          tag="v1.4.27"
+          tag="v1.4.28"
           gh release view "$tag" --json tagName --jq .tagName | grep -Fx "$tag"
-          for file in browser-dist/AuriMon_v1.4.27_BROWSER_OFFLINE.html browser-dist/AuriMon_v1.4.27_BROWSER_KOMPLETT.zip browser-dist/REGIONEN_50_PRUEFUNG.md browser-dist/REGIONEN_50_PRUEFUNG.json browser-dist/REGIONEN_10_KARTENVORSCHAU.png; do
+          for file in browser-dist/AuriMon_v1.4.28_BROWSER_OFFLINE.html browser-dist/AuriMon_v1.4.28_BROWSER_KOMPLETT.zip browser-dist/REGIONEN_50_PRUEFUNG.md browser-dist/REGIONEN_50_PRUEFUNG.json browser-dist/REGIONEN_10_KARTENVORSCHAU.png; do
             test -s "$file"
           done
           gh release upload "$tag" \
-            browser-dist/AuriMon_v1.4.27_BROWSER_OFFLINE.html \
-            browser-dist/AuriMon_v1.4.27_BROWSER_KOMPLETT.zip \
+            browser-dist/AuriMon_v1.4.28_BROWSER_OFFLINE.html \
+            browser-dist/AuriMon_v1.4.28_BROWSER_KOMPLETT.zip \
             browser-dist/PRUEFBERICHT.md \
             browser-dist/PRUEFBERICHT.json \
             browser-dist/BROWSER_E2E.json \
