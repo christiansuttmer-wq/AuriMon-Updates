@@ -42,7 +42,7 @@ if(new Set(chapterTitles).size!==chapterTitles.length)warn('high','Story','Dupli
 if(chapterTitles.length!==10)warn('high','Story','Expected 10 chapter titles but found '+chapterTitles.length);
 if(/zone\s*>=\s*14/.test(qtext))warn('medium','Legacy coordinates','Hidden quest search uses the old 14-cell width; new maps are 20 cells wide. Gameplay interaction needs manual testing.');
 const code=fs.readFileSync(path.join(root,'aurimon_world50_pilot.js'),'utf8');
-const ctx={window:{PokemonGame:{},PokemonProfiles:{activeSlot:1},addEventListener(){}},document:{createElement:()=>({setAttribute(){},getContext:()=>({scale(){}})}),addEventListener(){}},state:{starterChosen:true,zone:0,x:9,y:9,aurWorld50:{stage:0,completed:[],runestones:[]}}};
+const ctx={window:{PokemonGame:{},PokemonProfiles:{activeSlot:1},addEventListener(){}},document:{createElement:()=>({setAttribute(){},getContext:()=>({scale(){}})}),addEventListener(){}},state:{starterChosen:true,zone:0,x:9,y:9,aurWorld50:{stage:0,completed:[],runestones:[]}},AREAS:[{"leader":"Lina","badge":"Wiesenorden"},{"leader":"Finn","badge":"Seeorden"},{"leader":"Rika","badge":"Felsorden"},{"leader":"Elly","badge":"Blütenorden"},{"leader":"Noah","badge":"Küstenorden"},{"leader":"Mia","badge":"Waldorden"},{"leader":"Leon","badge":"Dorforden"},{"leader":"Ada","badge":"Kristallorden"},{"leader":"Bruno","badge":"Flammenorden"},{"leader":"Champion Nova","badge":"Wolkenorden"}]};
 for(const n of ['renderMap','walk','interact','trainerParty','randomWild','gymParty','enterZone','battleDefeat','atPosition','trainers','drops','render','doAction','requestAnimationFrame'])ctx[n]=()=>{};
 try{vm.runInNewContext(code,vm.createContext(ctx),{filename:'aurimon_world50_pilot.js',timeout:4000});
  const api=ctx.window.PokemonGame.world50;counts.worldMaps=api.names.length;counts.regions=10;
@@ -59,7 +59,7 @@ try{vm.runInNewContext(code,vm.createContext(ctx),{filename:'aurimon_world50_pil
  }
 }catch(e){warn('critical','World runtime',String(e));}
 const hard=findings.filter(x=>x.severity==='critical');
-const out={version:'1.4.28',counts,findings,hardFailures:hard.length,passedStructuralChecks:hard.length===0,limits:['Source-level and simulated map checks are not a full hands-on playthrough of every quest.','Android install and save migration are not tested by this browser package.']};
+const out={version:'1.4.30',counts,findings,hardFailures:hard.length,passedStructuralChecks:hard.length===0,limits:['Source-level and simulated map checks are not a full hands-on playthrough of every quest.','Android install and save migration are not tested by this browser package.']};
 fs.mkdirSync('browser-dist',{recursive:true});
 fs.writeFileSync('browser-dist/PRUEFBERICHT.json',JSON.stringify(out,null,2));
 let md='# AuriMon v'+out.version+' – Browser- und Inhaltsprüfung\n\n';
