@@ -228,9 +228,9 @@
  }
  // Existing AuriMon character SVGs, not fabricated character placeholders.
  const people={};
- const npcSprites={guide:'researcher_girl_0_down.svg',trainer:'scout_boy_0_down.svg',heal:'medic_girl_0_down.svg'};
+ const npcSprites={guide:'vac_sun_girl_down.svg',trainer:'vac_aloha_boy_down.svg',heal:'vac_medic_down.svg',rival:'vac_rival_down.svg',shadow:'vac_shadow_down.svg',side:'vac_explorer_down.svg',temple:'vac_explorer_down.svg'};
  function imageFor(name){if(!name||typeof Image==='undefined')return null;
-  if(!people[name]){const img=new Image();people[name]=img;img.onload=()=>{if(active()&&(canvas.isConnected||mobileCanvas.isConnected))draw()};img.onerror=()=>{people[name]=null};img.src='ari_sprites/'+name;}
+  if(!people[name]){const img=new Image();people[name]=img;img.onload=()=>{if(active()&&(canvas.isConnected||mobileCanvas.isConnected))draw()};img.onerror=()=>{people[name]=null};img.src=window.AuriMonVacationSprites?.(name)||'ari_sprites/'+name;}
   return people[name]?.complete && people[name]?.naturalWidth>0?people[name]:null;
  }
  function paintPerson(name,x,y,w,h){const im=imageFor(name);if(!im)return false;c.drawImage(im,x,y,w,h);return true;}
@@ -388,8 +388,13 @@
   // entrance marker at the actual approach tile
   ellipse((b.step[0]+.5)*T,(b.step[1]+.84)*T,15,3,'#fbecb5',.4);
  }
- function character(x,y,kind,step,tick){
-  const name=npcSprites[kind]||npcSprites.trainer;
+ function character(x,y,kind,step,tick,n){
+  let name=npcSprites[kind]||npcSprites.trainer;
+  if(kind==='trainer'){
+   const looks=['vac_aloha_boy_down.svg','vac_blue_boy_down.svg','vac_pink_girl_down.svg','vac_sun_boy_down.svg'];
+   let h=0;for(const ch of String(n?.name||''))h=(Math.imul(h,31)+ch.charCodeAt(0))>>>0;
+   name=looks[h%looks.length];
+  }
   if(paintPerson(name,x*T+10,y*T-10,29,60))return;
   const cx=x*T+24,cy=y*T+35;
   ellipse(cx,cy+10,13,4,'#244e3d',.27);
@@ -401,7 +406,7 @@
  }
  function sprite(x,y,tick){
   const sex=state.profileGender==='girl'?'girl':'boy';const dir=['down','left','right','up'].includes(state.facing)?state.facing:'down';
-  if(paintPerson('hero_'+sex+'_'+dir+'.svg',x*T+7,y*T-22,34,73))return;
+  if(paintPerson('vac_hero_'+sex+'_'+dir+'.svg',x*T+7,y*T-22,34,73) || paintPerson('hero_'+sex+'_'+dir+'.svg',x*T+7,y*T-22,34,73))return;
   const cx=x*T+24,cy=y*T+37;ellipse(cx,cy+8,16,6,'#244f3c',.29);const girl=state.profileGender==='girl';
   rounded(cx-11,cy-18,22,24,7,girl?'#d87ca8':'#3788c6','#3a5f74');
   fill(cx-9,cy+5,8,11,'#354a67');fill(cx+1,cy+5,8,11,'#354a67');
@@ -481,7 +486,7 @@
   if(hidden){const x=hidden.x*T+T/2,y=hidden.y*T+T/2;
    ellipse(x,y+6,15,7,'#523e6f',.21);ellipse(x,y-10+Math.sin(tick*.003)*2,13,13,'#ffeaa1',.27);
    ellipse(x,y-10,5,7,'#fff5c1',.95);rounded(x-2,y-23,4,9,1,'#f6b85c');}
-  for(const n of d.extras.npcs)character(n.x,n.y,n.kind,0,tick);
+  for(const n of d.extras.npcs)character(n.x,n.y,n.kind,0,tick,n);
   sprite(state.x,state.y,tick);
   // Soft translucent scene frame gives the visual world a cohesive polish.
   const grad=c.createLinearGradient(0,0,0,H*T);grad.addColorStop(0,'rgba(255,251,203,.12)');grad.addColorStop(1,s===3?'rgba(26,28,44,.19)':'rgba(14,69,44,.06)');fill(0,0,W*T,H*T,grad);
