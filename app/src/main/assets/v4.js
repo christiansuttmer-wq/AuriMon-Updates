@@ -87,7 +87,7 @@ function v4Daily(){const today=v4Time().date;if(!state.daily||state.daily.date!=
 function v4QuestRows(){const d=v4Daily();return [
  ['gehen','Wandere 30 Schritte',Math.min(30,state.steps-d.baseSteps),30,'candy',1],
  ['kaempfen','Gewinne drei Kämpfe',Math.min(3,state.battleWins-d.baseBattles),3,'greatball',3],
- ['fangen','Entdecke ein neues AuriMon',Math.min(1,state.caught.length-d.baseCaught),1,'candy',1],
+ ['fangen','Fange eine neue AuriMon-Art',Math.min(1,state.caught.length-d.baseCaught),1,'candy',1],
  ['trainer','Gewinne 10 Trainerkämpfe (gesamt)',Math.min(10,state.trainerWins.length),10,'revive',2]
  ]}
 function v4CanLegend(id){const q=V4_LEGENDS[id];if(!q)return false;const badges=state.badges.length;if(badges<q.badges)return false;if(id===151&&state.caught.filter(x=>x!==151).length<150)return false;if(id===150&&state.rocketWins.length<5)return false;return true}
