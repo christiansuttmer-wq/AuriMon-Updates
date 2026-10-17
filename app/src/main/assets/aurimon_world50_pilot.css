@@ -177,3 +177,28 @@ body.auri130 #page-world #game-map.aur50-active > #aur50-map-canvas {
   }
   body.auri130 #page-world .tablet-help{display:none!important}
 }
+
+
+/* On short landscape phones the legacy CSS hides the top banner.
+   When it does, remove its unused grid row too: otherwise the entire map
+   is mistakenly placed into the 30px banner row and drawn off-screen. */
+@media (orientation:landscape) and (max-height:520px){
+  body.auri130 #page-world .aur-world-shell{
+    grid-template-rows:minmax(0,1fr)!important;
+    gap:0!important;
+  }
+  body.auri130 #page-world .aur-world-top{
+    display:none!important;
+  }
+  body.auri130 #page-world .exploration-layout{
+    grid-row:1!important;
+    align-self:stretch!important;
+    height:100%!important;
+    min-height:0!important;
+  }
+  body.auri130 #page-world .tablet-map-column{
+    grid-row:1!important;
+    height:100%!important;
+    min-height:0!important;
+  }
+}
