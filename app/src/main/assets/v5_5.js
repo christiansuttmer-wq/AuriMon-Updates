@@ -36,8 +36,8 @@
     {id:'caught50',emoji:'📚',title:'AuriDex-Profi',goal:50,progress:()=>unique(state.caught).length,detail:'50 Arten sammeln'},
     {id:'caught100',emoji:'🔎',title:'AuriDex-Forscher',goal:100,progress:()=>unique(state.caught).length,detail:'100 Arten sammeln'},
     {id:'dex151',emoji:'🌟',title:'Alle 151',goal:151,progress:()=>unique(state.caught).length,detail:'Alle 151 Kanto-Arten sammeln'},
-    {id:'badge1',emoji:'🏅',title:'Erster Siegel',goal:1,progress:()=>length(state.badges),detail:'Ersten Siegel gewinnen'},
-    {id:'badge10',emoji:'🎖️',title:'Halbzeit',goal:10,progress:()=>length(state.badges),detail:'10 Siegel gewinnen'},
+    {id:'badge1',emoji:'🏅',title:'Erstes Siegel',goal:1,progress:()=>length(state.badges),detail:'Das erste Siegel gewinnen'},
+    {id:'badge5',emoji:'🎖️',title:'Halbzeit',goal:5,progress:()=>length(state.badges),detail:'Fünf von zehn Siegeln gewinnen'},
     {id:'badge10',emoji:'👑',title:'Arenenmeister',goal:AREAS.length,progress:()=>length(state.badges),detail:'Alle '+AREAS.length+' Siegel gewinnen'},
     {id:'league',emoji:'🏆',title:'Liga-Champion',goal:1,progress:()=>state.leagueDone?1:0,detail:'Meisterliga abschließen'},
     {id:'path',emoji:'💫',title:'Herr des Meisterpfads',goal:4,progress:()=>length(state.v55PathWins),detail:'Die vier neuen Prüfungen gewinnen'},
@@ -61,7 +61,7 @@
         if(state.v55Trophies.includes(t.id)||t.progress()<t.goal)continue;
         state.v55Trophies.push(t.id);earned++;
         state.coins+=t.id==='dex151'?1510:180;
-        if(['dex151','badge10','league','path'].includes(t.id))state.bag.candy=(state.bag.candy||0)+2;
+        if(['dex151','badge5','badge10','league','path'].includes(t.id))state.bag.candy=(state.bag.candy||0)+2;
       }
       if(earned){baseSave();if(earned<=2&&!modalOpen&&!battle)toast(`🏆 ${earned} neue Trophäe${earned===1?'':'n'} freigeschaltet!`)}
     }finally{syncing=false}
