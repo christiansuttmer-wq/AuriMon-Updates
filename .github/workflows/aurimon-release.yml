@@ -45,6 +45,7 @@ jobs:
           set -euo pipefail
           node --check app/src/main/assets/game.js
           node --check app/src/main/assets/aurimon_world50_pilot.js
+          node --check app/src/main/assets/aurimon_vacation_sprites.js
           node tools/verify-world50.js
       - name: Vorbedingungen pruefen (noch kein Release)
         id: check
