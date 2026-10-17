@@ -123,7 +123,7 @@ renderMap=function(){v41ApplyAvatar();const map=$('game-map');if(state.dungeon){
  map.innerHTML=html;v41UpdateWeather();
  const caption=$('camera-position');if(caption)caption.textContent=`Karte ${state.x+1}/${V41_W} · ${state.y+1}/${V41_H}`;
 };
-enterZone=function(z,entry){if(z<0||z>=AREAS.length){toast('⛔ Hier endet der Weg.');return}if(z>state.badges.length){toast('🔒 Gewinne erst den Siegel dieser Region!');return}
+enterZone=function(z,entry){if(z<0||z>=AREAS.length){toast('⛔ Hier endet der Weg.');return}if(z>state.badges.length){toast('🔒 Gewinne erst das Siegel dieser Region!');return}
  state.dungeon=null;state.safariActive=false;state.safariSteps=0;state.surfing=false;state.zone=z;
  state.x=entry==='from-left'?1:entry==='from-right'?V41_W-2:7;state.y=5;
  if(!state.visited.includes(z))state.visited.push(z);
