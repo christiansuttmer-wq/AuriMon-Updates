@@ -15,4 +15,13 @@ assert.match(world,/index\*28,0,28,44/);
 assert.match(world,/gender==='girl'\?4:0/);
 assert.match(characters,/hero_design_atlas\.png/);
 assert.match(characters,/frame\*28,0,28,44/);
-console.log('[PASS] 2 Spielfiguren x 4 Richtungen: Atlas 224x44, Transparenz und Anzeigeverknuepfung');
+/* Die PNG-Frames stehen rechts vor links; beide Renderer muessen
+ * dieselben korrekten Richtungs-Frames benutzen. Bewegung bleibt normal. */
+assert.match(world,/const order=\{down:0,left:2,right:1,up:3\}/,
+  'World map must face left using frame 2, right using frame 1');
+assert.match(characters,/const dirs=\{down:0,left:2,right:1,up:3\}/,
+  'Legacy map must use the same corrected direction mapping');
+assert.match(world,/state\.facing=dx>0\?'right':dx<0\?'left':dy>0\?'down':'up'/,
+  'Movement and facing must retain normal compass directions');
+
+console.log('[PASS] 2 Spielfiguren x 4 Richtungen: Atlas 224x44, korrigierte Links-Rechts-Zuordnung, Transparenz und Anzeigeverknuepfung');
