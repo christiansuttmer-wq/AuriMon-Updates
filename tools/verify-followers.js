@@ -45,7 +45,7 @@ assert.equal(f.x,9);assert.equal(f.y,10,'Initial companion stays behind north-fa
 api.paintFollower(f,0);
 assert(drawn.includes('text:💧'),'Sprite loading placeholder must make the Pokémon visible');
 assert.equal(images,1,'One image request per Pokémon and facing');
-const img=api.followerImage(f.mon,false);
+const img=api.followerImage(f.mon,true);
 img.complete=true;img.naturalWidth=96;
 drawn.length=0;api.paintFollower(f,100);
 assert(drawn.includes('image'),'Actual original Pokémon image must be drawn after loading');
