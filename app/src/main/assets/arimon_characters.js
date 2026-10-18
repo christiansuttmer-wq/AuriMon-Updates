@@ -166,7 +166,8 @@
   }
   world.character = function(c,cx,cy,gender,dir,walkTime,enemy){
     if(!enemy && heroAtlas?.complete && heroAtlas.naturalWidth===224 && heroAtlas.naturalHeight===44){
-      const dirs={down:0,left:1,right:2,up:3};
+      // Atlas hat rechts vor links: Figuren blicken in Bewegungsrichtung.
+      const dirs={down:0,left:2,right:1,up:3};
       const frame=(gender==='girl'?4:0)+(dirs[dir]??0);
       c.save(); c.imageSmoothingEnabled=false;
       c.drawImage(heroAtlas,frame*28,0,28,44,Math.round(cx)-20,Math.round(cy)-45,40,64);
