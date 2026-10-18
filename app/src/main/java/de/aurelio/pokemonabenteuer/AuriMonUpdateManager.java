@@ -46,7 +46,9 @@ public final class AuriMonUpdateManager {
     }
 
     public final class Bridge {
-        @JavascriptInterface public void checkForUpdates() { check(true); }
+        @JavascriptInterface public void checkForUpdates() {
+            main.post(() -> ((MainActivity) activity).requestMandatoryCheck());
+        }
         @JavascriptInterface public String getVersion() { return installedVersion(); }
     }
     public Bridge bridge() { return new Bridge(); }
