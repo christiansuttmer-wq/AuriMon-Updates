@@ -15,11 +15,23 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebSettings;
 import android.view.View;
+import android.view.Gravity;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.content.res.Configuration;
 
 public class MainActivity extends Activity {
     private WebView webView;
     private AuriMonUpdateManager updateManager;
+    private LinearLayout updateGate;
+    private TextView gateMessage;
+    private Button gateAction;
+    private ProgressBar gateProgress;
+    private boolean gameLoaded = false;
+    private boolean checkingGate = false;
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -54,14 +66,93 @@ public class MainActivity extends Activity {
                 }
                 return true;
             }
-            @Override public void onPageFinished(WebView view, String url) {
-                if (url != null && url.startsWith("file:///android_asset/index.html")) {
-                    updateManager.check(false);
+        });
+        webView.setVisibility(View.INVISIBLE);
+        FrameLayout screen = new FrameLayout(this);
+        screen.setBackgroundColor(Color.rgb(9,27,46));
+        screen.addView(webView, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        updateGate = new LinearLayout(this);
+        updateGate.setOrientation(LinearLayout.VERTICAL);
+        updateGate.setGravity(Gravity.CENTER);
+        updateGate.setBackgroundColor(Color.rgb(9,27,46));
+        updateGate.setPadding(dp(28),dp(12),dp(28),dp(12));
+
+        TextView title = new TextView(this);
+        title.setText("AURIMON");
+        title.setTextColor(Color.rgb(246,219,141));
+        title.setTextSize(30);
+        title.setGravity(Gravity.CENTER);
+        title.setPadding(0,0,0,dp(12));
+        updateGate.addView(title);
+
+        gateMessage = new TextView(this);
+        gateMessage.setTextColor(Color.WHITE);
+        gateMessage.setTextSize(18);
+        gateMessage.setGravity(Gravity.CENTER);
+        gateMessage.setMaxWidth(dp(750));
+        updateGate.addView(gateMessage);
+
+        gateProgress = new ProgressBar(this);
+        LinearLayout.LayoutParams spin = new LinearLayout.LayoutParams(dp(44),dp(44));
+        spin.gravity=Gravity.CENTER;
+        spin.topMargin=dp(16);
+        updateGate.addView(gateProgress,spin);
+
+        gateAction = new Button(this);
+        gateAction.setAllCaps(false);
+        LinearLayout.LayoutParams actionParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        actionParams.gravity=Gravity.CENTER;
+        actionParams.topMargin=dp(16);
+        updateGate.addView(gateAction,actionParams);
+
+        screen.addView(updateGate,new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT));
+        setContentView(screen);
+        checkMandatoryUpdate();
+    }
+    private int dp(int n) {
+        return Math.round(n*getResources().getDisplayMetrics().density);
+    }
+    private void checkMandatoryUpdate() {
+        if (checkingGate) return;
+        checkingGate = true;
+        webView.setVisibility(View.INVISIBLE);
+        updateGate.setVisibility(View.VISIBLE);
+        gateMessage.setText("Prüfe die aktuelle AuriMon-Version …\\nZum Spielen ist eine Internetverbindung erforderlich.");
+        gateAction.setVisibility(View.GONE);
+        gateProgress.setVisibility(View.VISIBLE);
+        updateManager.checkRequired(new AuriMonUpdateManager.RequiredUpdateCallback() {
+            @Override public void onUpToDate() {
+                checkingGate = false;
+                updateGate.setVisibility(View.GONE);
+                webView.setVisibility(View.VISIBLE);
+                if (!gameLoaded) {
+                    gameLoaded = true;
+                    webView.loadUrl("file:///android_asset/index.html");
                 }
             }
+            @Override public void onUpdateRequired(String current, String latest) {
+                checkingGate = false;
+                gateProgress.setVisibility(View.GONE);
+                gateMessage.setText("Pflicht-Update verfügbar!\\n\\nInstalliert: v" + current +
+                    "\\nNeu: v" + latest +
+                    "\\n\\nBitte installiere die neue Version. Erst danach kannst du weiterspielen. Deine Spielstände bleiben erhalten.");
+                gateAction.setText("Update v" + latest + " installieren");
+                gateAction.setOnClickListener(v -> updateManager.installRequiredUpdate());
+                gateAction.setVisibility(View.VISIBLE);
+            }
+            @Override public void onCheckFailed(String error) {
+                checkingGate = false;
+                gateProgress.setVisibility(View.GONE);
+                gateMessage.setText("Versionsprüfung fehlgeschlagen.\\n\\n" + error +
+                    "\\n\\nVerbinde dein Gerät mit dem Internet und versuche es erneut. Ohne erfolgreiche Prüfung startet das Spiel nicht.");
+                gateAction.setText("Erneut prüfen");
+                gateAction.setOnClickListener(v -> checkMandatoryUpdate());
+                gateAction.setVisibility(View.VISIBLE);
+            }
         });
-        setContentView(webView);
-        webView.loadUrl("file:///android_asset/index.html");
     }
     private void enableImmersiveFullscreen() {
         // Für Android 8–10 und als Kompatibilitätslösung auf neueren Geräten.
@@ -87,6 +178,8 @@ public class MainActivity extends Activity {
     @Override protected void onResume() {
         super.onResume();
         if (updateManager != null) updateManager.resumePendingInstall();
+        // Auch beim Zurueckkehren aus dem Hintergrund erneut auf Pflicht-Updates pruefen.
+        if (gameLoaded && updateGate != null) checkMandatoryUpdate();
     }
     @Override public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -98,6 +191,10 @@ public class MainActivity extends Activity {
         if (webView != null) webView.requestLayout();
     }
     @Override public void onBackPressed() {
+        if (!gameLoaded || updateGate.getVisibility() == View.VISIBLE) {
+            super.onBackPressed();
+            return;
+        }
         webView.evaluateJavascript("window.androidBack()", result -> {
             if ("\"exit\"".equals(result)) MainActivity.super.onBackPressed();
         });
