@@ -120,7 +120,7 @@ public class MainActivity extends Activity {
         checkingGate = true;
         webView.setVisibility(View.INVISIBLE);
         updateGate.setVisibility(View.VISIBLE);
-        gateMessage.setText("Prüfe die aktuelle AuriMon-Version …\\nZum Spielen ist eine Internetverbindung erforderlich.");
+        gateMessage.setText("Prüfe die aktuelle AuriMon-Version …\nZum Spielen ist eine Internetverbindung erforderlich.");
         gateAction.setVisibility(View.GONE);
         gateProgress.setVisibility(View.VISIBLE);
         updateManager.checkRequired(new AuriMonUpdateManager.RequiredUpdateCallback() {
@@ -136,9 +136,9 @@ public class MainActivity extends Activity {
             @Override public void onUpdateRequired(String current, String latest) {
                 checkingGate = false;
                 gateProgress.setVisibility(View.GONE);
-                gateMessage.setText("Pflicht-Update verfügbar!\\n\\nInstalliert: v" + current +
-                    "\\nNeu: v" + latest +
-                    "\\n\\nBitte installiere die neue Version. Erst danach kannst du weiterspielen. Deine Spielstände bleiben erhalten.");
+                gateMessage.setText("Pflicht-Update verfügbar!\n\nInstalliert: v" + current +
+                    "\nNeu: v" + latest +
+                    "\n\nBitte installiere die neue Version. Erst danach kannst du weiterspielen. Deine Spielstände bleiben erhalten.");
                 gateAction.setText("Update v" + latest + " installieren");
                 gateAction.setOnClickListener(v -> updateManager.installRequiredUpdate());
                 gateAction.setVisibility(View.VISIBLE);
@@ -146,8 +146,8 @@ public class MainActivity extends Activity {
             @Override public void onCheckFailed(String error) {
                 checkingGate = false;
                 gateProgress.setVisibility(View.GONE);
-                gateMessage.setText("Versionsprüfung fehlgeschlagen.\\n\\n" + error +
-                    "\\n\\nVerbinde dein Gerät mit dem Internet und versuche es erneut. Ohne erfolgreiche Prüfung startet das Spiel nicht.");
+                gateMessage.setText("Versionsprüfung fehlgeschlagen.\n\n" + error +
+                    "\n\nVerbinde dein Gerät mit dem Internet und versuche es erneut. Ohne erfolgreiche Prüfung startet das Spiel nicht.");
                 gateAction.setText("Erneut prüfen");
                 gateAction.setOnClickListener(v -> checkMandatoryUpdate());
                 gateAction.setVisibility(View.VISIBLE);
