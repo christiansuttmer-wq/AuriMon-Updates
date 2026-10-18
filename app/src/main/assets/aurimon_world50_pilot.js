@@ -455,7 +455,13 @@
    followerTrack.x=place?.[0]??hx;followerTrack.y=place?.[1]??hy;
   }
   Object.assign(followerTrack,{stage,slot,uid:mon.uid,heroX:hx,heroY:hy});
-  return {mon,x:followerTrack.x,y:followerTrack.y};
+  // Blickrichtung aus der tatsaechlichen Position zum Trainer ableiten.
+  // Dadurch schaut ein AuriMon nach einer Kurve nie mehr zurueck auf das
+  // letzte Feld, obwohl es dem Trainer vorwaerts folgt.
+  const dx=hx-followerTrack.x,dy=hy-followerTrack.y;
+  const facing=Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):
+    dy!==0?(dy>0?'down':'up'):state.facing;
+  return {mon,x:followerTrack.x,y:followerTrack.y,facing};
  }
  function followerImage(mon,back){
   const side=back?'back':'front',key=mon.id+':'+side;
@@ -473,12 +479,14 @@
  }
  function paintFollower(info,tick){
   if(!info)return;
-  const {mon,x,y}=info,cx=x*T+24,cy=y*T+27,bob=Math.sin(tick*.004)*2;
-  const image=followerImage(mon,state.facing==='up');
+  const {mon,x,y,facing}=info,cx=x*T+24,cy=y*T+27,bob=Math.sin(tick*.004)*2;
+  // Die Grafik richtet sich nach dem Weg des Pokemon, nicht nach dem
+  // Blick der Spielfigur. Oben zeigt den Ruecken, unten die Vorderseite.
+  const image=followerImage(mon,facing==='up');
   c.save();
   ellipse(cx,cy+13,17,5,'#174635',.28);
   if(image?.complete&&image.naturalWidth>0&&!image.failed){
-   if(state.facing==='left'){c.translate(cx,0);c.scale(-1,1);c.translate(-cx,0)}
+   if(facing==='right'){c.translate(cx,0);c.scale(-1,1);c.translate(-cx,0)}
    c.drawImage(image,cx-21,cy-29+bob,42,42);
   }else{
    // Works even when offline or while original Pokemon sprite is downloading.
