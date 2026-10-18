@@ -427,6 +427,71 @@
   ellipse(cx,cy-30,10,5,kind==='trainer'?'#574b6d':'#66527a');
   if(kind==='trainer')ellipse(cx+11,cy-37,4,5,'#f6d56f');
  }
+
+ // The 50-stage canvas replaced the classic map renderer. Restore its visible
+ // team follower without changing saves: always use the Pokemon selected via
+ // "Folgen" in the team screen, then the first party member as fallback.
+ const followerImages=new Map();
+ const followerTrack={stage:-1,slot:-1,uid:null,heroX:null,heroY:null,x:null,y:null};
+ function followerInfo(){
+  const mon=state.party?.find(p=>p.uid===state.followerUid)||state.party?.[0];
+  if(!mon||!POKE?.[mon.id])return null;
+  const stage=ensure().stage,slot=window.PokemonProfiles?.activeSlot||0;
+  const hx=state.x,hy=state.y;
+  const valid=(x,y)=>safe(x,y)&&passable(tile(x,y))&&!npc(x,y)&&!(x===hx&&y===hy);
+  const behind={up:[0,1],down:[0,-1],left:[1,0],right:[-1,0]}[state.facing]||[0,1];
+  const reset=followerTrack.stage!==stage||followerTrack.slot!==slot||followerTrack.uid!==mon.uid;
+  const dist=Math.abs(hx-followerTrack.heroX)+Math.abs(hy-followerTrack.heroY);
+  if(reset||dist>1){
+   const choices=[behind,[0,1],[0,-1],[-1,0],[1,0]];
+   const place=choices.map(([dx,dy])=>[hx+dx,hy+dy]).find(([x,y])=>valid(x,y));
+   followerTrack.x=place?.[0]??hx;followerTrack.y=place?.[1]??hy;
+  }else if(dist===1&&valid(followerTrack.heroX,followerTrack.heroY)){
+   // Actual previously occupied tile, not a fake direction that can be blocked.
+   followerTrack.x=followerTrack.heroX;followerTrack.y=followerTrack.heroY;
+  }else if(!valid(followerTrack.x,followerTrack.y)){
+   const choices=[behind,[0,1],[0,-1],[-1,0],[1,0]];
+   const place=choices.map(([dx,dy])=>[hx+dx,hy+dy]).find(([x,y])=>valid(x,y));
+   followerTrack.x=place?.[0]??hx;followerTrack.y=place?.[1]??hy;
+  }
+  Object.assign(followerTrack,{stage,slot,uid:mon.uid,heroX:hx,heroY:hy});
+  return {mon,x:followerTrack.x,y:followerTrack.y};
+ }
+ function followerImage(mon,back){
+  const side=back?'back':'front',key=mon.id+':'+side;
+  if(followerImages.has(key))return followerImages.get(key);
+  const src=(back?window.ARIMON_BATTLE_BACK?.[mon.id]:window.ARIMON_BATTLE_FRONT?.[mon.id])
+    ||window.ARIMON_SPRITES?.[mon.id];
+  if(!src||typeof Image==='undefined')return null;
+  const image=new Image();
+  followerImages.set(key,image);
+  image.onload=()=>{if(active()&&(canvas.isConnected||mobileCanvas.isConnected))draw()};
+  image.onerror=()=>{image.failed=true};
+  image.crossOrigin='anonymous';
+  image.src=src;
+  return image;
+ }
+ function paintFollower(info,tick){
+  if(!info)return;
+  const {mon,x,y}=info,cx=x*T+24,cy=y*T+27,bob=Math.sin(tick*.004)*2;
+  const image=followerImage(mon,state.facing==='up');
+  c.save();
+  ellipse(cx,cy+13,17,5,'#174635',.28);
+  if(image?.complete&&image.naturalWidth>0&&!image.failed){
+   if(state.facing==='left'){c.translate(cx,0);c.scale(-1,1);c.translate(-cx,0)}
+   c.drawImage(image,cx-21,cy-29+bob,42,42);
+  }else{
+   // Works even when offline or while original Pokemon sprite is downloading.
+   rounded(cx-18,cy-22+bob,36,35,10,'#e4f2de','#416e65');
+   c.font='23px sans-serif';c.textAlign='center';c.textBaseline='middle';
+   c.fillText(POKE[mon.id].symbol||'🐾',cx,cy-4+bob);
+  }
+  if(mon.shiny){
+   c.font='17px sans-serif';c.textAlign='center';c.textBaseline='middle';
+   c.fillText('✨',cx+17,cy-22+bob);
+  }
+  c.restore();
+ }
  function sprite(x,y,tick){
   const sex=state.profileGender==='girl'?'girl':'boy';const dir=['down','left','right','up'].includes(state.facing)?state.facing:'down';
   if(paintHeroAtlas(x,y,sex,dir) || paintPerson('vac_hero_'+sex+'_'+dir+'.svg',x*T+7,y*T-22,34,73) || paintPerson('hero_'+sex+'_'+dir+'.svg',x*T+7,y*T-22,34,73))return;
@@ -510,7 +575,10 @@
    ellipse(x,y+6,15,7,'#523e6f',.21);ellipse(x,y-10+Math.sin(tick*.003)*2,13,13,'#ffeaa1',.27);
    ellipse(x,y-10,5,7,'#fff5c1',.95);rounded(x-2,y-23,4,9,1,'#f6b85c');}
   for(const n of d.extras.npcs)character(n.x,n.y,n.kind,0,tick,n);
+  const buddy=followerInfo();
+  if(buddy&&buddy.y<=state.y)paintFollower(buddy,tick);
   sprite(state.x,state.y,tick);
+  if(buddy&&buddy.y>state.y)paintFollower(buddy,tick);
   // Soft translucent scene frame gives the visual world a cohesive polish.
   const grad=c.createLinearGradient(0,0,0,H*T);grad.addColorStop(0,'rgba(255,251,203,.12)');grad.addColorStop(1,s===3?'rgba(26,28,44,.19)':'rgba(14,69,44,.06)');fill(0,0,W*T,H*T,grad);
  }
