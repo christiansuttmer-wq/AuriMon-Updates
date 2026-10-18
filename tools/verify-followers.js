@@ -14,7 +14,7 @@ const state={
  party:[{uid:'bulbasaur',id:1,shiny:false},{uid:'squirtle',id:7,shiny:false}]
 };
 const drawn=[],bad=new Set(),c={
- save(){drawn.push('save')},restore(){drawn.push('restore')},translate(){},scale(){},
+ save(){drawn.push('save')},restore(){drawn.push('restore')},translate(){},scale(x){drawn.push('flip:'+x)},
  drawImage(){drawn.push('image')},fillText(s){drawn.push('text:'+s)},
  set font(v){},set textAlign(v){},set textBaseline(v){}
 };
@@ -54,6 +54,21 @@ f=api.followerInfo();
 assert.equal(f.x,9);assert.equal(f.y,9,'Companion occupies hero previous tile after moving');
 state.x=11;f=api.followerInfo();
 assert.equal(f.x,10);assert.equal(f.y,9,'Companion moves on each step');
+assert.equal(f.facing,'right','Moving east must make the companion face right');
+const rightImg=api.followerImage(f.mon,false);rightImg.complete=true;rightImg.naturalWidth=96;
+drawn.length=0;api.paintFollower(f,100);
+assert(drawn.includes('flip:-1'),'Right-facing original sprite should be horizontally flipped');
+state.y=8;state.facing='up';f=api.followerInfo();
+assert.equal(f.x,11);assert.equal(f.y,9);
+assert.equal(f.facing,'up','After turning north companion faces the direction to trainer');
+drawn.length=0;api.paintFollower(f,100);
+assert(!drawn.includes('flip:-1'),'Northern follower should not have lateral flip');
+state.x=10;state.facing='left';f=api.followerInfo();
+assert.equal(f.x,11);assert.equal(f.y,8);
+assert.equal(f.facing,'left','After turning west companion must face left');
+drawn.length=0;api.paintFollower(f,100);
+assert(!drawn.includes('flip:-1'),'Left-facing follower uses the opposite sprite orientation');
+state.x=11;state.y=9;state.facing='right';f=api.followerInfo();
 state.followerUid='bulbasaur';f=api.followerInfo();
 assert.equal(f.mon.id,1,'Team follow button switches shown Pokémon');
 assert.equal(f.x,10,'New follower starts behind currently facing hero');
