@@ -115,6 +115,7 @@ public class MainActivity extends Activity {
     private int dp(int n) {
         return Math.round(n*getResources().getDisplayMetrics().density);
     }
+    public void requestMandatoryCheck() { checkMandatoryUpdate(); }
     private void checkMandatoryUpdate() {
         if (checkingGate) return;
         checkingGate = true;
