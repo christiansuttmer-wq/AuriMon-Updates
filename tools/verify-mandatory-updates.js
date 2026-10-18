@@ -1,0 +1,27 @@
+/* AuriMon native startup hard-gate regression tests. */
+'use strict';
+const fs=require('fs'), assert=require('assert/strict');
+const activity=fs.readFileSync('app/src/main/java/de/aurelio/pokemonabenteuer/MainActivity.java','utf8');
+const updater=fs.readFileSync('app/src/main/java/de/aurelio/pokemonabenteuer/AuriMonUpdateManager.java','utf8');
+const manifest=fs.readFileSync('app/src/main/AndroidManifest.xml','utf8');
+const beforeLoad=activity.slice(0,activity.indexOf('private void checkMandatoryUpdate()'));
+assert(!beforeLoad.includes('webView.loadUrl('),'Game cannot load before mandatory check');
+assert.match(activity,/setContentView\(screen\);\s*checkMandatoryUpdate\(\);/);
+assert.match(activity,/webView\.setVisibility\(View\.INVISIBLE\)/);
+assert.match(activity,/updateManager\.checkRequired\(/);
+assert.match(activity,/onUpToDate\(\)\s*\{[\s\S]*?webView\.loadUrl\("file:\/\/\/android_asset\/index\.html"\)/);
+assert.match(activity,/onUpdateRequired\([\s\S]*?installRequiredUpdate\(\)/);
+assert.match(activity,/onCheckFailed\([\s\S]*?checkMandatoryUpdate\(\)/);
+assert.match(activity,/if \(gameLoaded && updateGate != null\) checkMandatoryUpdate\(\);/);
+const gate=updater.slice(updater.indexOf('public void checkRequired('),updater.indexOf('public void installRequiredUpdate()'));
+assert(gate.includes('fetchLatest()'),'Must contact release endpoint');
+assert(!gate.includes('last_update_check'),'Mandatory checks cannot use six-hour cache');
+assert(gate.includes('callback.onUpdateRequired(current, latest)'));
+assert(gate.includes('callback.onCheckFailed(details)'));
+assert.match(updater,/checkForUpdates\(\)[\s\S]*?requestMandatoryCheck\(\)/);
+assert.match(manifest,/android\.permission\.INTERNET/);
+assert.match(manifest,/android\.permission\.REQUEST_INSTALL_PACKAGES/);
+const nextVersion=fs.readFileSync('app/build.gradle.kts','utf8').match(/versionName\s*=\s*"([^"]+)"/)?.[1];
+assert(nextVersion,'version name');
+assert.equal('v'+nextVersion,fs.readFileSync('release/next-release.txt','utf8').trim(),'Release tag must match build');
+console.log('[PASS] mandatory online gate before WebView load, no skip, retry offline, install path, foreground recheck, signed release version.');
