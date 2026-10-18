@@ -46,7 +46,7 @@
 
   const brand = document.querySelector('.brand span');
   const updateVersion = () => {
-    if (brand) brand.textContent = '10 REGIONEN · 50 EBENEN · 151 AURIMON · VERSION ' + (window.AuriMonUpdateBridge?.getVersion?.() || '1.4.33')';
+    if (brand) brand.textContent = '10 REGIONEN · 50 EBENEN · 151 AURIMON · VERSION ' + (window.AuriMonUpdateBridge?.getVersion?.() || '1.4.33');
   };
   updateVersion();
   // Old layout handlers also update the label on resize, so register last.
