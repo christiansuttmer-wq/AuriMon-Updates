@@ -36,6 +36,9 @@ public final class AuriMonUpdateManager {
     private volatile boolean busy;
     private File pendingApk;
     private boolean pendingPermission;
+    private volatile boolean mandatoryChecking;
+    private volatile String requiredApkUrl;
+    private volatile String requiredApkDigest;
 
     public AuriMonUpdateManager(Activity activity, WebView webView) {
         this.activity = activity;
@@ -47,6 +50,69 @@ public final class AuriMonUpdateManager {
         @JavascriptInterface public String getVersion() { return installedVersion(); }
     }
     public Bridge bridge() { return new Bridge(); }
+
+    // Mandatory gate checks every launch/resume. It never trusts the optional
+    // six-hour manual-update cache and never unlocks when GitHub is unreachable.
+    // Existing save files are not read, changed or removed.
+    public interface RequiredUpdateCallback {
+        void onUpToDate();
+        void onUpdateRequired(String installed, String latest);
+        void onCheckFailed(String explanation);
+    }
+
+    public void checkRequired(RequiredUpdateCallback callback) {
+        if (mandatoryChecking) return;
+        mandatoryChecking = true;
+        new Thread(() -> {
+            try {
+                JSONObject release = fetchLatest();
+                String tag = release.optString("tag_name", "");
+                if (!tag.matches("v?\\d+\\.\\d+\\.\\d+"))
+                    throw new Exception("Die veröffentlichte Versionsnummer ist ungültig.");
+                String latest = tag.startsWith("v") ? tag.substring(1) : tag;
+                String current = installedVersion();
+                if (compare(latest, current) <= 0) {
+                    requiredApkUrl = null;
+                    requiredApkDigest = null;
+                    main.post(callback::onUpToDate);
+                    return;
+                }
+                JSONArray assets = release.optJSONArray("assets");
+                String download = null, digest = "";
+                if (assets != null) for (int i = 0; i < assets.length(); i++) {
+                    JSONObject asset = assets.optJSONObject(i);
+                    if (asset != null && APK_NAME.equals(asset.optString("name"))) {
+                        download = asset.optString("browser_download_url", "");
+                        digest = asset.optString("digest", "");
+                        break;
+                    }
+                }
+                if (download == null ||
+                    !download.startsWith("https://github.com/" + REPO + "/releases/download/" + tag + "/" + APK_NAME))
+                    throw new Exception("GitHub bietet noch keine sichere APK für v" + latest + " an.");
+                requiredApkUrl = download;
+                requiredApkDigest = digest;
+                main.post(() -> callback.onUpdateRequired(current, latest));
+            } catch (Exception e) {
+                requiredApkUrl = null;
+                requiredApkDigest = null;
+                final String details = e.getMessage() == null ? "Netzwerkfehler." : e.getMessage();
+                main.post(() -> callback.onCheckFailed(details));
+            } finally {
+                mandatoryChecking = false;
+            }
+        }, "AuriMon-Mandatory-Update-Gate").start();
+    }
+
+    public void installRequiredUpdate() {
+        final String link = requiredApkUrl;
+        final String digest = requiredApkDigest;
+        if (link == null || link.isEmpty()) {
+            message("Updateprüfung", "Bitte zuerst erneut die aktuelle Version prüfen.");
+            return;
+        }
+        main.post(() -> download(link, digest == null ? "" : digest));
+    }
 
     public void check(boolean manual) {
         if (!manual) {
@@ -109,6 +175,8 @@ public final class AuriMonUpdateManager {
 
     private JSONObject fetchLatest() throws Exception {
         HttpURLConnection c = (HttpURLConnection)new URL(API).openConnection();
+        c.setUseCaches(false);
+        c.setRequestProperty("Cache-Control", "no-cache");
         c.setConnectTimeout(10000);
         c.setReadTimeout(12000);
         c.setRequestProperty("Accept", "application/vnd.github+json");
