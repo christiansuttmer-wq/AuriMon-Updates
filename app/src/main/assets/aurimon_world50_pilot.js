@@ -246,11 +246,12 @@
  }
  function paintPerson(name,x,y,w,h){const im=imageFor(name);if(!im)return false;c.drawImage(im,x,y,w,h);return true;}
  // Offizielles Character-Design: acht freigestellte Pixel-Sprites im 28x44-Atlas.
- // Reihenfolge: Junge ↓ ← → ↑, Mädchen ↓ ← → ↑. Kein Einfluss auf Spiellogik/Speicher.
+ // Atlas-Reihenfolge: Junge ↓ → ← ↑, Mädchen ↓ → ← ↑.
+ // Grafikrichtung korrigiert; Bewegungslogik und Spielstand bleiben unveraendert.
  function paintHeroAtlas(x,y,gender,dir){
    const im=imageFor('hero_design_atlas.png');
    if(!im)return false;
-   const order={down:0,left:1,right:2,up:3};
+   const order={down:0,left:2,right:1,up:3};
    const index=(gender==='girl'?4:0)+(order[dir]??0);
    c.save();c.imageSmoothingEnabled=false;
    c.drawImage(im,index*28,0,28,44,x*T+4,y*T-18,40,66);
