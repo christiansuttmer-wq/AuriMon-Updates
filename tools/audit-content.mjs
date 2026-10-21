@@ -20,14 +20,14 @@ for(const n of duplicateSources)warn('high','HTML','Script loaded more than once
 const qtext=fs.readFileSync(path.join(root,'arimons_0_5_2.js'),'utf8');
 const questIds=[...qtext.matchAll(/\{id:'([^']+)',\s*zone:(\d+)/g)].map(m=>({id:m[1],zone:Number(m[2])}));
 counts.questIds=questIds.length;counts.uniqueQuestIds=new Set(questIds.map(x=>x.id)).size;
-for(const q of questIds)if(q.zone>=10)warn('high','Secret quest',q.id+' is assigned to old zone '+q.zone+' (only zones 0–9 exist)');
+for(const q of questIds)if(q.zone>=40)warn('high','Secret quest',q.id+' points outside 40 regions');
 for(const q of questIds)if(questIds.filter(p=>p.id===q.id).length>1)warn('high','Quest','Duplicate ID '+q.id);
 const v52=fs.readFileSync(path.join(root,'v5_2.js'),'utf8');
 const rival=v52.match(/const RIVAL_ZONES=\[([^\]]+)\]/);const rivalZones=rival?rival[1].split(',').map(Number):[];
 for(const z of rivalZones)if(z>=10)warn('high','Rival','Rival encounter uses retired region '+z);
 const tournament=[...v52.matchAll(/\{name:'([^']+)',min:(\d+),icon:[^,]+,zone:(\d+)/g)];
-for(const t of tournament){if(+t[2]>10)warn('high','Tournament',t[1]+' needs '+t[2]+' badges, but only 10 can be earned');
- if(+t[3]>=10)warn('high','Tournament',t[1]+' references unreachable zone '+t[3]);}
+for(const t of tournament){if(+t[2]>40)warn('high','Tournament',t[1]+' needs more badges than the current 40');
+ if(+t[3]>=40)warn('high','Tournament',t[1]+' references unreachable zone '+t[3]);}
 const v53=fs.readFileSync(path.join(root,'v5_3.js'),'utf8');
 function listLen(name){const m=v53.match(new RegExp('\\b'+name+'=\\[([^\\]]+)\\]'));return m?m[1].split(',').length:0;}
 const teamLen=listLen('TEAM_ZONES'),ruinLen=listLen('RUIN_ZONES');
@@ -42,15 +42,17 @@ if(new Set(chapterTitles).size!==chapterTitles.length)warn('high','Story','Dupli
 if(chapterTitles.length!==10)warn('high','Story','Expected 10 chapter titles but found '+chapterTitles.length);
 if(/zone\s*>=\s*14/.test(qtext))warn('medium','Legacy coordinates','Hidden quest search uses the old 14-cell width; new maps are 20 cells wide. Gameplay interaction needs manual testing.');
 const code=fs.readFileSync(path.join(root,'aurimon_world50_pilot.js'),'utf8');
-const ctx={window:{PokemonGame:{},PokemonProfiles:{activeSlot:1},addEventListener(){}},document:{createElement:()=>({setAttribute(){},getContext:()=>({scale(){}})}),addEventListener(){}},state:{starterChosen:true,zone:0,x:9,y:9,aurWorld50:{stage:0,completed:[],runestones:[]}},AREAS:[{"leader":"Lina","badge":"Wiesenorden"},{"leader":"Finn","badge":"Seeorden"},{"leader":"Rika","badge":"Felsorden"},{"leader":"Elly","badge":"Blütenorden"},{"leader":"Noah","badge":"Küstenorden"},{"leader":"Mia","badge":"Waldorden"},{"leader":"Leon","badge":"Dorforden"},{"leader":"Ada","badge":"Kristallorden"},{"leader":"Bruno","badge":"Flammenorden"},{"leader":"Champion Nova","badge":"Wolkenorden"}]};
+const ELEMENT_TYPES=['Normal','Feuer','Wasser','Pflanze','Elektro','Eis','Kampf','Gift','Boden','Flug','Psycho','Käfer','Gestein','Geist','Drache','Unlicht','Stahl','Fee'];
+const ctx={ELEMENT_TYPES,window:{PokemonGame:{},PokemonProfiles:{activeSlot:1},addEventListener(){}},document:{createElement:()=>({setAttribute(){},getContext:()=>({scale(){}})}),addEventListener(){}},state:{starterChosen:true,zone:0,x:9,y:9,aurWorld50:{stage:0,completed:[],runestones:[]}},AREAS:[{"leader":"Lina","badge":"Wiesenorden"},{"leader":"Finn","badge":"Seeorden"},{"leader":"Rika","badge":"Felsorden"},{"leader":"Elly","badge":"Blütenorden"},{"leader":"Noah","badge":"Küstenorden"},{"leader":"Mia","badge":"Waldorden"},{"leader":"Leon","badge":"Dorforden"},{"leader":"Ada","badge":"Kristallorden"},{"leader":"Bruno","badge":"Flammenorden"},{"leader":"Champion Nova","badge":"Wolkenorden"}]};
+while(ctx.AREAS.length<40)ctx.AREAS.push({leader:'Kristallwächter '+ctx.AREAS.length,badge:'Kristallsiegel '+ctx.AREAS.length});
 for(const n of ['renderMap','walk','interact','trainerParty','randomWild','gymParty','enterZone','battleDefeat','atPosition','trainers','drops','render','doAction','requestAnimationFrame'])ctx[n]=()=>{};
 try{vm.runInNewContext(code,vm.createContext(ctx),{filename:'aurimon_world50_pilot.js',timeout:4000});
- const api=ctx.window.PokemonGame.world50;counts.worldMaps=api.names.length;counts.regions=10;
- if(api.names.length!==50)warn('critical','World','Not exactly 50 maps');
+ const api=ctx.window.PokemonGame.world50;counts.worldMaps=api.names.length;counts.regions=40;
+ if(api.names.length!==200)warn('critical','World','Not exactly 200 maps');
  const checked=api.validate();
  for(const row of checked)if(!row.reachable)warn('critical','World','Missing reachable objects on level '+row.stage);
  const mapFingerprints=new Map();counts.duplicateLayouts=0;
- for(let i=0;i<50;i++){
+ for(let i=0;i<200;i++){
   const grid=api.getMap(i);if(grid.length!==12||grid.some(r=>r.length!==20))warn('critical','World','Invalid dimensions on '+(i+1));
   const fingerprint=grid.map(row=>row.join('')).join('|');
   if(mapFingerprints.has(fingerprint)){counts.duplicateLayouts++;warn('medium','Map duplicates','Level '+(i+1)+' has exactly the same tile layout as level '+(mapFingerprints.get(fingerprint)+1));}
@@ -59,7 +61,7 @@ try{vm.runInNewContext(code,vm.createContext(ctx),{filename:'aurimon_world50_pil
  }
 }catch(e){warn('critical','World runtime',String(e));}
 const hard=findings.filter(x=>x.severity==='critical');
-const out={version:'1.4.30',counts,findings,hardFailures:hard.length,passedStructuralChecks:hard.length===0,limits:['Source-level and simulated map checks are not a full hands-on playthrough of every quest.','Android install and save migration are not tested by this browser package.']};
+const out={version:'1.5.1',counts,findings,hardFailures:hard.length,passedStructuralChecks:hard.length===0,limits:['Source-level and simulated map checks are not a full hands-on playthrough of every quest.','Android install and save migration are not tested by this browser package.']};
 fs.mkdirSync('browser-dist',{recursive:true});
 fs.writeFileSync('browser-dist/PRUEFBERICHT.json',JSON.stringify(out,null,2));
 let md='# AuriMon v'+out.version+' – Browser- und Inhaltsprüfung\n\n';
