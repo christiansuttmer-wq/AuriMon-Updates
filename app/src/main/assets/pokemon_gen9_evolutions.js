@@ -8,7 +8,7 @@
  for(const [id,extras] of Object.entries(evolutions)){
   const species=window.POKEDEX[+id-1];
   if(!species)continue;
-  for(const evo of extras)if(!species.evol.some(x=>x.to===evo.to))species.evol.push(evo);
+  for(const evo of extras){const previous=species.evol.findIndex(x=>x.to===evo.to);if(previous<0)species.evol.push(evo);else species.evol[previous]={...species.evol[previous],...evo};}
  }
  window.AuriEvolutionItems=evolvingItems;
  window.AuriEvolutionCoverage={speciesWithNewRules:Object.keys(evolutions).length,newItems:evolvingItems.length,ruleCount:Object.values(evolutions).reduce((n,v)=>n+v.length,0),unimplemented:Object.values(evolutions).flat().filter(e=>e.kind==='trial').length};
