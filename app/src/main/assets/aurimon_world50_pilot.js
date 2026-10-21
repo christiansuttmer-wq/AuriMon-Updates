@@ -644,10 +644,10 @@
  function handleAt(x,y,walking){const w=ensure(),d=data(),n=npc(x,y),q=loot(x,y),r=rune(x,y),b=buildingAt(x,y);
   if(q){if(walking){state.x=x;state.y=y;}pick(q);return true}
   if(n){if(walking){toast('💬 Drücke A, um '+n.name+' anzusprechen.');return true}
-   if(['runeA','runeB','cache'].includes(n.kind)){window.PokemonGame.world51?.activate?.(n.kind);return true}
+   if(['runeA','runeB','cache'].includes(n.kind)){if(state.zone>=10){window.AuriMonEpic?.talkToGuide?.(state.zone);return true}window.PokemonGame.world51?.activate?.(n.kind);return true}
    if(n.kind==='cave'){window.PokemonGame.v4?.goCave?.();return true}
    if(n.kind==='rival'){doAction('v52-rival-menu');return true}
-   if(n.kind==='side'){doAction('v53-side');return true}
+   if(n.kind==='side'){if(state.zone>=10){window.AuriMonEpic?.talkToGuide?.(state.zone);return true}doAction('v53-side');return true}
    if(n.kind==='ruin'){doAction('v53-ruin');return true}
    if(n.kind==='temple'){doAction('v53-temple');return true}
    if(n.kind==='shadow'){
@@ -666,7 +666,12 @@
      const order=d.extras.runes;const done=order.filter(a=>w.runestones.includes(a.id)).length;
      if(w.stage!==3&&(d.extras.runeOrder||order.map(a=>a.id))[done]!==r.id){toast('🔮 Falsche Reihenfolge! Sprich mit dem Runenforscher.');return true}
      w.runestones.push(r.id);save();toast(`💎 Rune aktiviert! ${done+1}/3`);render()}
-    else toast('💎 Diese Rune leuchtet bereits.');return true}
+    else if(w.stage>=100){
+      if(!state.crystalHarvest||typeof state.crystalHarvest!=='object')state.crystalHarvest={};
+      const key='rune:'+w.stage+':'+r.id,last=state.crystalHarvest[key]??-100000;
+      if(state.steps-last>=80){const type=ELEMENT_TYPES[(Math.floor(w.stage/5)+r.x+r.y)%ELEMENT_TYPES.length];state.crystalHarvest[key]=state.steps;gainItem('crystal_'+type,1);toast('💎 '+type+'kristall geborgen! Nach 80 Schritten kann diese Rune erneut aufgeladen werden.');save();render()}
+      else toast('💎 Die Rune lädt sich auf. Noch '+(80-(state.steps-last))+' Schritte.');
+    }else toast('💎 Diese Rune leuchtet bereits.');return true}
   if(b){if(b.kind==='gym'){if(w.stage%5!==4)return true;enterGym();return true}
    if(b.kind==='center')healCenter();else if(b.kind==='market')showShop();else if(b.kind==='atelier'){window.PokemonGame.world51?.open?.('atelier');return true}else modal('🏡 '+b.name,'Ein gemütliches Haus in '+REGIONS[Math.floor(w.stage/5)]+'.',[['Weiter','close']]);return true}
   return false;
