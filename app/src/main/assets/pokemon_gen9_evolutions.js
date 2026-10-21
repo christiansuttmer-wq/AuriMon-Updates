@@ -9,6 +9,8 @@
   const species=window.POKEDEX[+id-1];
   if(!species)continue;
   for(const evo of extras){const previous=species.evol.findIndex(x=>x.to===evo.to);if(previous<0)species.evol.push(evo);else species.evol[previous]={...species.evol[previous],...evo};}
+  // Version-specific/regional forms sometimes create duplicate branches for one species.
+  const seen=new Set();species.evol=species.evol.filter(e=>{if(seen.has(e.to))return false;seen.add(e.to);return true});
  }
  window.AuriEvolutionItems=evolvingItems;
  window.AuriEvolutionCoverage={speciesWithNewRules:Object.keys(evolutions).length,newItems:evolvingItems.length,ruleCount:Object.values(evolutions).reduce((n,v)=>n+v.length,0),unimplemented:Object.values(evolutions).flat().filter(e=>e.kind==='trial').length};
