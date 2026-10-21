@@ -644,10 +644,10 @@
  function handleAt(x,y,walking){const w=ensure(),d=data(),n=npc(x,y),q=loot(x,y),r=rune(x,y),b=buildingAt(x,y);
   if(q){if(walking){state.x=x;state.y=y;}pick(q);return true}
   if(n){if(walking){toast('💬 Drücke A, um '+n.name+' anzusprechen.');return true}
-   if(['runeA','runeB','cache'].includes(n.kind)){if(state.zone>=10){window.AuriMonEpic?.talkToGuide?.(state.zone);return true}window.PokemonGame.world51?.activate?.(n.kind);return true}
+   if(['runeA','runeB','cache'].includes(n.kind)){if(state.zone>=10){window.AuriMonEpic?.talkToGuide?.(state.zone,n.kind);return true}window.PokemonGame.world51?.activate?.(n.kind);return true}
    if(n.kind==='cave'){window.PokemonGame.v4?.goCave?.();return true}
    if(n.kind==='rival'){doAction('v52-rival-menu');return true}
-   if(n.kind==='side'){if(state.zone>=10){window.AuriMonEpic?.talkToGuide?.(state.zone);return true}doAction('v53-side');return true}
+   if(n.kind==='side'){if(state.zone>=10){window.AuriMonEpic?.talkToGuide?.(state.zone,n.kind);return true}doAction('v53-side');return true}
    if(n.kind==='ruin'){doAction('v53-ruin');return true}
    if(n.kind==='temple'){doAction('v53-temple');return true}
    if(n.kind==='shadow'){
