@@ -9,11 +9,21 @@
  const DESCS=['Professorin Mira erwartet dich im Dorf.','Über die Lichtung führt ein Weg zum Bach.','Zwei Holzbrücken queren das Wasser.','Aktiviere drei Wurzelrunen.','Bestehe Linas erste Arenaprüfung.','Lerne die Fischer des Mondsees kennen.','Im Schilf verstecken sich seltene Pokémon.','Folge den Stegen über das tiefblaue Wasser.','Aktiviere die Flutrunen in der Reihenfolge West, Mitte, Ost.','Finn erwartet dich zur zweiten Arenaprüfung.'];
 
  const REGIONS=['Sonnenwiese','Mondsee','Felsenwald','Blumenpfad','Windküste','Bernsteinwald','Flüsterdorf','Kristallsee','Vulkanpass','Wolkenhöhe'];
+ REGIONS.push(...["Nebelfjord","Moossteppe","Sternenmoor","Kupferklippen","Tiefenriff","Glimmerhain","Sturmtal","Runenheide","Kristallgarten","Aschenküste","Nachtbucht","Silbergrat","Wüstenzirkel","Donnerfeld","Rosenwald","Nebelarchipel","Dunkelstadt","Korallenweg","Frostkuppel","Drachenhorst","Spiegelstadt","Traumwald","Himmelsmarkt","Mondruinen","Zeittal","Nullzone","Sternentor","Weltenbruch","Ursprungsinsel","Letzte Sphäre"]);
  const REGION_PALETTES=[['#94cf83','#72b875'],['#80c5a0','#5da08e'],['#84b7a1','#578d7b'],['#b5d88a','#8ebf83'],['#c1d8a1','#a2c48e'],['#e5b477','#b97d50'],['#828d9b','#626f87'],['#87bed2','#5e99b7'],['#9a897a','#6b6160'],['#cbd9cf','#a0bfca']];
+ while(REGION_PALETTES.length<40)REGION_PALETTES.push(REGION_PALETTES[REGION_PALETTES.length%10].slice());
  TITLES.push(...["Tannenlager","Steinsteig","Wasserfallbrücke","Bergwerksstollen","Gipfelarena","Blütendorf","Wildblumenfelder","Windmühlenwiese","Gewächshauslabyrinth","Blütenarena","Küstenhafen","Brandungsstrand","Leuchtturmklippen","Schmugglergrotten","Sturmarena","Herbstlichtung","Pilzwald","Baumkronenstege","Bernsteintempel","Waldarena","Nebelmarkt","Verlassene Gassen","Geisterbrunnen","Schattenkatakomben","Schattenarena","Kristallhafen","Schimmerufer","Frostfallpass","Resonanzgrotte","Kristallarena","Aschefeste","Glutpfad","Basaltbrücken","Magmakern","Flammenarena","Himmelstor","Wolkenstege","Sternenplateau","Himmelstempel","Kronenarena"]);
  DESCS.push(...["Raste vor dem felsigen Aufstieg.","Folge dem schmalen Gebirgspfad.","Überquere die Wasserfallstege.","Entschlüssele die Zeichen des Bergwerks.","Rika wartet auf dem Gipfel.","Das Dorf bereitet ein Blütenfest vor.","Suche Pokémon in den Blumen.","Folge den Windmühlen und Geheimpfaden.","Öffne das verwachsene Gewächshaus.","Ellys Blütenprüfung wartet.","Besuche Händler im Hafen.","Weiche Wellen und Sandbänken aus.","Erreiche den Leuchtturm.","Finde die verschlossenen Schmugglergänge.","Noah fordert dich im Sturm heraus.","Das Laub funkelt golden.","Zwischen den Pilzen liegen Geheimnisse.","Erkunde die Baumkronenstege.","Drei Zeichen wecken den Tempel.","Mia bewacht den Waldorden.","Auf dem Nebelmarkt kursieren Gerüchte.","Schatten verstecken sich in den Gassen.","Finde die Hinweise am Geisterbrunnen.","Entschlüssele Team Schattens Katakomben.","Leons Schattenprüfung wartet.","Kristalle beleuchten das Dorf.","Spiegelungen weisen verborgene Wege.","Eis und Felsen versperren den Pass.","Aktiviere die Resonanzkristalle.","Ada erwartet dich.","In der Aschefeste wird es heiß.","Entkomme den Glutfeldern.","Überquere die Basaltbrücken.","Finde den Weg durch den Magmakern.","Bruno erwartet dich.","Ein Tor führt über die Wolken.","Folge den Wolkenstegen.","Auf dem Plateau warten Rivalen.","Löse die letzten Himmelszeichen.","Champion Nova wartet im Finale."]);
+ const CHAPTERS=['Das Erwachen','Die neun Risse','Der Kristallkrieg','Jenseits der Grenzen'];
+ const STORY_MOTIFS=['Die Spuren des Orden Null tauchen wieder auf.','In alten Ruinen wurde ein rätselhafter Brief gefunden.','Ein vermisster Forscher kennt den Weg durch die Risse.','Die Kristalle reagieren auf ein verborgenes Signal.','Die Welt verändert sich, seit der Riss erwacht ist.','Ein ehemaliger Verbündeter bewacht den nächsten Zugang.','Die Runen verbergen die Herkunft einer verschwundenen Stadt.','Ein geheimnisvoller Trainer sucht dieselben Relikte wie du.','Der Orden Null will das Gleichgewicht der Typen verändern.','Ein Wächter erzählt von der legendären Sphäre.'];
+ for(let s=50;s<200;s++){
+  const z=Math.floor(s/5),k=s%5,region=REGIONS[z];
+  TITLES.push((k===0?region+' – ':'')+(k===0?'Ankunft':k===1?'Verzweigter Pfad':k===2?'Verlorenes Heiligtum':k===3?'Runenprüfung':'Kristall-Arena'));
+  const act=CHAPTERS[Math.floor(s/50)],motive=STORY_MOTIFS[(z+k)%STORY_MOTIFS.length];
+  DESCS.push(act+' · '+motive+' '+(k===3?'Finde und aktiviere drei Runen.':k===4?'Besiege den Arenaleiter, um das nächste Gebiet zu öffnen.':'Folge den Hinweisen durch '+region+'.'));
+ }
  const DIRS=[[0,-1],[1,0],[0,1],[-1,0]];
- const clampStage=s=>Math.max(0,Math.min(49,Number(s)||0));
+ const clampStage=s=>Math.max(0,Math.min(199,Number(s)||0));
  const mapKey=(x,y)=>x+','+y;
  const rnd=(x,y,k=0)=>{let a=Math.imul(x+117,374761393)^Math.imul(y+79,668265263)^Math.imul(k+7,1274126177);a=Math.imul(a^(a>>>13),2246822519);return ((a^(a>>>15))>>>0)/4294967295};
  const GRID=()=>Array.from({length:H},()=>Array(W).fill('g'));
@@ -24,7 +34,7 @@
  const maps=[];
  function buildMaps(){
   // Draw the whole terrain BEFORE objects: no decorative image masks walkable geometry.
-  for(let s=0;s<50;s++){
+  for(let s=0;s<200;s++){
    const g=GRID();for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(x===0||y===0||x===W-1||y===H-1)g[y][x]=(s%5===3?'#':'t');
    for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++){const n=rnd(x,y,20+s*71);if(n>.89)g[y][x]='t';else if(n>.70)g[y][x]='w'}
    const extras={buildings:[],npcs:[],loot:[],runes:[],gate:null,exit:[19,6],entry:[1,6],decor:[]};
@@ -109,7 +119,7 @@
     extras.npcs=[{x:8,y:8,name:'Arenatrainer Kian',kind:'trainer',j:66},{x:5,y:5,name:'Sanitäterin',kind:'heal'}];
     extras.loot=[{x:15,y:8,id:'9:50',item:'superpotion'}];
    }else if(s>=10){
-    const z=Math.floor(s/5),k=s%5,terrain=z===2||z===6?'#':z===4||z===7||z===8||z===9?'~':'t';
+    const z=Math.floor(s/5),k=s%5,terrain=(z===2||z===6||z>=10&&z%5===2)?'#':(z===4||z===7||z===8||z===9||z>=10&&z%5===1)?'~':'t';
     // Shared tiles drive terrain, collisions, buildings, pickups and path-finding.
     ROW(g,6,0,19,'p');ROW(g,3,1,18,'p');ROW(g,9,1,18,'p');
     COL(g,4,3,9,'p');COL(g,11,3,9,'p');COL(g,16,3,9,'p');
@@ -122,14 +132,14 @@
      BLOCK(g,15,1,17,2,'b');g[3][16]='p';
      extras.buildings.push({kind:'atelier',x:15,y:1,w:3,h:2,door:[16,2],step:[16,3],name:'Fossilienwerkstatt'});
      extras.npcs=[{x:8,y:8,name:'Reiseführerin',kind:'guide'},{x:5,y:9,name:'Sanitäterin',kind:'heal'},{x:14,y:6,name:'Trainer '+REGIONS[z],kind:'trainer',j:s*10}];
-     extras.loot=[{x:16,y:9,id:s+':treasure',item:'potion'}];
+     extras.loot=[{x:16,y:9,id:s+':treasure',item:s>=100?'crystal_'+ELEMENT_TYPES[z%18]:'potion'}];
     }else if(k===1||k===2){
      const left=k===1?7:10,right=left+2;
      BLOCK(g,left,1,right,10,terrain);
      for(const y of [3,6,9])ROW(g,y,left,right,terrain==='~'?'=':'p');
      if(k===2){COL(g,3,2,9,'p');ROW(g,2,2,5,'p');ROW(g,8,12,17,'p');}
      extras.npcs=[{x:5,y:3,name:'Wegtrainer '+(s+1),kind:'trainer',j:s*10+1},{x:15,y:9,name:'Pfadwächter '+(s+1),kind:'trainer',j:s*10+2}];
-     extras.loot=[{x:15,y:3,id:s+':chest',item:k===1?'greatball':'revive'}];
+     extras.loot=[{x:15,y:3,id:s+':chest',item:s>=100?'crystal_'+ELEMENT_TYPES[(z+k)%18]:(k===1?'greatball':'revive')}];
     }else if(k===3){
      BLOCK(g,1,1,18,10,'s');COL(g,7,1,4,'#');COL(g,12,8,10,'#');
      ROW(g,6,0,19,'p');COL(g,4,3,6,'s');COL(g,10,6,8,'s');COL(g,15,3,6,'s');
@@ -146,12 +156,12 @@
      extras.runeOrder=(z%2===0?[0,1,2]:[2,1,0]).map(i=>extras.runes[i].id);
      COL(g,17,1,10,'#');g[6][17]='G';extras.gate={x:17,y:6};
      extras.npcs=[{x:8,y:5,name:'Runenforscher',kind:'guide'},{x:13,y:7,name:'Tempelwächter',kind:'trainer',j:s*10+3}];
-     extras.loot=[{x:15,y:8,id:s+':relic',item:'candy'}];
+     extras.loot=[{x:15,y:8,id:s+':relic',item:s>=100?'crystal_'+ELEMENT_TYPES[(z+k)%18]:'candy'}];
     }else{
      BLOCK(g,12,2,16,3,'a');g[4][14]='p';
      extras.buildings=[{kind:'gym',x:12,y:2,w:5,h:2,door:[14,3],step:[14,4],name:TITLES[s]}];
      extras.npcs=[{x:8,y:8,name:'Arenatrainer '+REGIONS[z],kind:'trainer',j:s*10+4},{x:5,y:5,name:'Sanitäterin',kind:'heal'}];
-     extras.loot=[{x:15,y:9,id:s+':reward',item:'superpotion'}];
+     extras.loot=[{x:15,y:9,id:s+':reward',item:s>=100?'crystal_'+ELEMENT_TYPES[(z+4)%18]:'superpotion'}];
     }
    }
    // World encounters are mapped onto visible NPCs; no invisible legacy coordinates.
@@ -178,7 +188,7 @@
  }
  buildMaps();
  // Jede Zielbeschreibung ist mit einem tatsächlich erreichbaren Spielobjekt verbunden.
- for(let s=0;s<50;s++){
+ for(let s=0;s<200;s++){
   const z=Math.floor(s/5),k=s%5,m=maps[s];
   if(k===0)DESCS[s]=s===0?'Sprich mit Professorin Mira und erkunde das Starterdorf. Folge dem Weg nach Osten.':'Erkunde '+REGIONS[z]+', sprich mit dem Auftraggeber und finde den Weg nach Osten.';
   else if(k===1)DESCS[s]='Erkunde '+TITLES[s]+'. Kämpfe gegen Trainer, sammle Fundstücke und finde den Ostausgang.';
@@ -200,7 +210,7 @@
   }
   const w=state.aurWorld50;w.stage=clampStage(w.stage);
   // Keep every profile's existing collection, badges and rune state.
-  if(state.zone>=0&&state.zone<10&&Math.floor(w.stage/5)!==state.zone){w.stage=state.zone*5;state.x=1;state.y=6;}
+  if(state.zone>=0&&state.zone<REGIONS.length&&Math.floor(w.stage/5)!==state.zone){w.stage=state.zone*5;state.x=1;state.y=6;}
   if(!Array.isArray(w.runestones))w.runestones=[];
   if(!Array.isArray(w.completed))w.completed=[];
   if(!Number.isInteger(state.x)||!Number.isInteger(state.y)||!(passable(maps[w.stage].g[state.y]?.[state.x]||'t')||(maps[w.stage].g[state.y]?.[state.x]==='G'&&maps[w.stage].extras.runes.every(r=>w.runestones.includes(r.id))))){
@@ -208,7 +218,7 @@
   }
   return w;
  }
- const active=()=>Number.isInteger(state?.zone)&&state.zone>=0&&state.zone<10&&!state?.dungeon&&!state?.v51Indoor&&state?.starterChosen&&profileActive();
+ const active=()=>Number.isInteger(state?.zone)&&state.zone>=0&&state.zone<REGIONS.length&&!state?.dungeon&&!state?.v51Indoor&&state?.starterChosen&&profileActive();
  const data=()=>maps[clampStage(state.aurWorld50?.stage)];
  const tile=(x,y)=>data().g[y]?.[x]??'#';
  const npc=(x,y)=>data().extras.npcs.find(n=>n.x===x&&n.y===y);
@@ -592,23 +602,23 @@
  }
  function draw(){if(!active())return;ensure();makeScene(performance.now());copyMobileFrame()}
  const oldAt=atPosition;
- atPosition=function(z,x,y){if(z>=0&&z<10&&active()){const t=tile(x,y);if(npc(x,y))return 'trainer';if(loot(x,y))return 'loot';if(t==='w'||t==='g')return 'wild';if(t==='~')return 'water';if(t==='t')return 'tree';if(t==='#'||t==='b'||t==='a'||t==='G')return 'wall';if(t==='E')return 'portal';return 'path'}return oldAt(z,x,y)};
+ atPosition=function(z,x,y){if(z>=0&&z<REGIONS.length&&active()){const t=tile(x,y);if(npc(x,y))return 'trainer';if(loot(x,y))return 'loot';if(t==='w'||t==='g')return 'wild';if(t==='~')return 'water';if(t==='t')return 'tree';if(t==='#'||t==='b'||t==='a'||t==='G')return 'wall';if(t==='E')return 'portal';return 'path'}return oldAt(z,x,y)};
  const oldTrainers=trainers,oldDrops=drops;
- trainers=function(z){if(z>=0&&z<10&&active()){const s=ensure().stage;return maps[s].extras.npcs.filter(n=>n.kind==='trainer').map(n=>({id:`${z}:${n.j}`,x:n.x,y:n.y,j:n.j,name:n.name,defeated:state.trainerWins.includes(`${z}:${n.j}`)}));}return oldTrainers(z)};
- drops=function(z){if(z>=0&&z<10&&active())return maps[ensure().stage].extras.loot.filter(q=>!state.found.includes('aur50:'+q.id)).map(q=>({...q,picked:false}));return oldDrops(z)};
- trainerParty=function(z,j){const mons=oldTrainerParty(z,j);if(z>=0&&z<10&&active()){const s=ensure().stage;for(let i=0;i<mons.length;i++){mons[i].level=Math.min(99,5+s*2+i);mons[i].hp=hpMax(mons[i].id,mons[i].level)}}return mons};
- gymParty=function(z){const mons=oldGymParty(z);if(z>=0&&z<10&&active()&&ensure().stage%5===4){const bossLevels=[11,20,30,40,50,60,70,80,90,96];
-   if(z===9&&mons.length<6){const ids=ZONE_POOLS[z];while(mons.length<6)mons.push(newMon(ids[(mons.length*3)%ids.length],98));}
-   mons.forEach((m,i)=>{m.level=Math.min(100,bossLevels[z]+i);m.hp=hpMax(m.id,m.level)})}return mons};
- randomWild=function(z){const m=oldRandomWild(z);if(z>=0&&z<10&&active()){m.level=clamp(3+ensure().stage*2+rand(0,3),3,97);m.hp=hpMax(m.id,m.level)}return m};
+ trainers=function(z){if(z>=0&&z<REGIONS.length&&active()){const s=ensure().stage;return maps[s].extras.npcs.filter(n=>n.kind==='trainer').map(n=>({id:`${z}:${n.j}`,x:n.x,y:n.y,j:n.j,name:n.name,defeated:state.trainerWins.includes(`${z}:${n.j}`)}));}return oldTrainers(z)};
+ drops=function(z){if(z>=0&&z<REGIONS.length&&active())return maps[ensure().stage].extras.loot.filter(q=>!state.found.includes('aur50:'+q.id)).map(q=>({...q,picked:false}));return oldDrops(z)};
+ trainerParty=function(z,j){const mons=oldTrainerParty(z,j);if(z>=0&&z<REGIONS.length&&active()){const s=ensure().stage;for(let i=0;i<mons.length;i++){mons[i].level=Math.min(150,5+s+i);mons[i].hp=hpMax(mons[i].id,mons[i].level)}}return mons};
+ gymParty=function(z){const mons=oldGymParty(z);if(z>=0&&z<10&&active()&&ensure().stage%5===4){const bossLevels=Array.from({length:REGIONS.length},(_,i)=>i<10?[11,20,30,40,50,60,70,80,90,96][i]:Math.min(147,95+Math.floor((i-9)*1.7)));
+   if(z===REGIONS.length-1&&mons.length<6){const ids=ZONE_POOLS[z];while(mons.length<6)mons.push(newMon(ids[(mons.length*3)%ids.length],98));}
+   mons.forEach((m,i)=>{m.level=Math.min(150,bossLevels[z]+i);m.hp=hpMax(m.id,m.level)})}return mons};
+ randomWild=function(z){const m=oldRandomWild(z);if(z>=0&&z<REGIONS.length&&active()){m.level=clamp(3+Math.floor(ensure().stage*.7)+rand(0,3),3,149);m.hp=hpMax(m.id,m.level)}return m};
  function updateHud(){const w=ensure();if(!w)return;const s=w.stage,z=state.zone;
   const region=REGIONS[Math.floor(s/5)].toUpperCase();
   const runeCount=maps[s].extras.runes.filter(r=>w.runestones.includes(r.id)).length;
-  $('zone-step').textContent=`${region} · EBENE ${s+1} / 50`;
+  $('zone-step').textContent=`${region} · EBENE ${s+1} / 200`;
   $('zone-name').textContent=TITLES[s];$('zone-desc').textContent=DESCS[s];
-  $('goal-title').textContent=s%5===3?`Aktiviere drei Runen (${runeCount}/3)`:s%5===4?(state.badges.includes(Math.floor(s/5))?'Orden errungen!':'Besiege '+AREAS[Math.floor(s/5)].leader):`Erreiche Ebene ${Math.min(50,s+2)}`;
+  $('goal-title').textContent=s%5===3?`Aktiviere drei Runen (${runeCount}/3)`:s%5===4?(state.badges.includes(Math.floor(s/5))?'Orden errungen!':'Besiege '+AREAS[Math.floor(s/5)].leader):`Erreiche Ebene ${Math.min(200,s+2)}`;
   $('goal-desc').textContent=s%5===4?'Drücke A am Arenaeingang im Nordosten.':s%5===3?'Aktiviere die drei Runen und öffne das Osttor.':'Erkunde die Karte und folge dem Weg nach Osten.';
-  const sub=$('camera-position');if(sub)sub.textContent=`20 × 12 Felder · Abschnitt ${s+1}/50`;
+  const sub=$('camera-position');if(sub)sub.textContent=`20 × 12 Felder · Abschnitt ${s+1}/200`;
   const title=document.querySelector('.maptop b');if(title)title.textContent=`${region} · ${TITLES[s].toUpperCase()}`;
  }
  renderMap=function(){if(!active()){document.getElementById('game-map')?.classList.remove('aur50-active');return oldRender()}
@@ -619,8 +629,8 @@
   updateHud();draw();};
  function pick(q){state.found.push('aur50:'+q.id);gainItem(q.item,1);state.coins+=25;toast('✨ Schatz gefunden: '+ITEM_INFO[q.item][0]+'!');save();render()}
  function advance(dest,back){const w=ensure();if(dest<0){toast('🌿 Hier beginnt dein Abenteuer.');return}
-  if(dest>=50){if(!state.badges.includes(9)){toast('👑 Besiege zuerst Champion Nova!');return}
-   w.completed=Array.from(new Set([...w.completed,49]));save();modal('👑 Alle 50 Ebenen gemeistert!','Du hast alle zehn Regionen bereist und alle Prüfungen gemeistert. Alle Orte bleiben zugänglich.',[['Weiter erforschen','close','gold']]);return}
+  if(dest>=200){if(!state.badges.includes(39)){toast('👑 Besiege zuerst Champion Nova!');return}
+   w.completed=Array.from(new Set([...w.completed,199]));save();modal('👑 Alle 200 Ebenen gemeistert!','Du hast alle vierzig Regionen bereist und alle Prüfungen gemeistert. Alle Orte bleiben zugänglich.',[['Weiter erforschen','close','gold']]);return}
   const nextZone=Math.floor(dest/5),currentZone=Math.floor(w.stage/5);
   if(nextZone>currentZone&&!state.badges.includes(currentZone)){toast('🏅 Besiege zuerst '+AREAS[currentZone].leader+' und gewinne den Orden!');return}
   if(!back&&dest>0&&!w.completed.includes(dest-1))w.completed.push(dest-1);
@@ -684,10 +694,10 @@
   if(window.AriMons?.tryDiscover?.())return;
   modal('🧭 '+REGIONS[Math.floor(ensure().stage/5)],`Du erkundest <b>Ebene ${ensure().stage+1}: ${TITLES[ensure().stage]}</b>. Folge den begehbaren Wegen. Tippe A vor Häusern, Trainern und Runen.`,[['Weiter','close','gold']]);
  };
- battleDefeat=function(){oldDefeat();if(state.zone>=0&&state.zone<10&&state.aurWorld50){const p=maps[clampStage(state.aurWorld50.stage)].extras.entry;state.x=p[0];state.y=p[1];save();render()}};
+ battleDefeat=function(){oldDefeat();if(state.zone>=0&&state.zone<REGIONS.length&&state.aurWorld50){const p=maps[clampStage(state.aurWorld50.stage)].extras.entry;state.x=p[0];state.y=p[1];save();render()}};
  // The original controls reference global walk/interact dynamically.
  window.PokemonGame.walk=(dx,dy)=>walk(dx,dy);
- window.PokemonGame.world50={pilot:true,revision:'Zehn-Regionen-50-Ebenen',names:TITLES.slice(),getStage:()=>state?.aurWorld50?.stage??0,
+ window.PokemonGame.world50={pilot:true,revision:'Vierzig-Regionen-200-Ebenen',names:TITLES.slice(),getStage:()=>state?.aurWorld50?.stage??0,
   getMap:(i)=>maps[clampStage(i)].g.map(row=>row.slice()),getFeatures:(i)=>({npcs:maps[clampStage(i)].extras.npcs.map(n=>({...n})),runes:maps[clampStage(i)].extras.runes.map(n=>({...n})),runeOrder:[...(maps[clampStage(i)].extras.runeOrder||maps[clampStage(i)].extras.runes.map(r=>r.id))],loot:maps[clampStage(i)].extras.loot.map(n=>({...n})),buildings:maps[clampStage(i)].extras.buildings.map(n=>({...n}))}),getDescriptions:()=>DESCS.slice(),getRegion:(i)=>REGIONS[Math.floor(clampStage(i)/5)],getCount:()=>maps.length,getPlayer:()=>[state.x,state.y],getSpawn:()=>maps[clampStage(state?.aurWorld50?.stage)].extras.entry.slice(),
   // Route checker is read-only and works without a save or profile.
   validate:()=>maps.map((m,s)=>{
@@ -699,7 +709,7 @@
  const originalRender=render;
  render=function(){originalRender();if(active())updateHud();};
  const priorEnterZone=enterZone;
- enterZone=function(z){const r=priorEnterZone(z);if(z>=0&&z<10&&active()){ensure();render();}return r};
+ enterZone=function(z){const r=priorEnterZone(z);if(z>=0&&z<REGIONS.length&&active()){ensure();render();}return r};
  // The emergency button must send the player to the real spawn, never onto a building.
  const oldAction=doAction;
  doAction=function(act,el){if(act==='stuck-center'&&active()){
