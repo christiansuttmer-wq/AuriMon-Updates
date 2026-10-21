@@ -43,9 +43,9 @@ with sync_playwright() as pw:
    stage:window.PokemonGame?.world50?.getStage?.()
  })""")
  assert state["activeSlot"]==1 and state["starter"],"Could not create a real player profile: "+str(state)
- assert state["regions"]==50,"World does not contain 50 stages: "+str(state)
+ assert state["regions"]==200,"World does not contain 200 stages: "+str(state)
  checks.append("Profile created and first Pokémon selected")
- checks.append("All 50 stages initialized in real Chromium")
+ checks.append("All 200 stages initialized in real Chromium")
  def screenshot(stage,name):
   def change():
    pass
@@ -55,7 +55,7 @@ with sync_playwright() as pw:
     state.x=s===0?9:1;
     state.y=s===0?9:6;
     state.facing='right';
-    state.badges=Array.from({length:10},(_,i)=>i);
+    state.badges=Array.from({length:40},(_,i)=>i);
     if(typeof save==='function')save();
     render();
    }""",stage)
@@ -63,7 +63,7 @@ with sync_playwright() as pw:
   view=page.evaluate("() => ({stage:window.PokemonGame.world50.getStage(),canvas:!!document.querySelector('#game-map canvas'),visible:document.querySelector('#game-map')?.getBoundingClientRect().width})")
   assert view["stage"]==stage and view["canvas"] and view["visible"]>100,str(view)
   target=root/(name+".png");page.screenshot(path=str(target));shots.append(str(target.name))
- for st,name in [(0,"QA_Sonnenwiese_Ebene_1"),(24,"QA_Windkueste_Ebene_25"),(49,"QA_Wolkenhoehe_Ebene_50")]:
+ for st,name in [(0,"QA_Sonnenwiese_Ebene_1"),(24,"QA_Windkueste_Ebene_25"),(49,"QA_Wolkenhoehe_Ebene_50"),(199,"QA_Letzte_Sphaere_Ebene_200")]:
   screenshot(st,name)
  checks.append("Screenshots and map rendering on levels 1, 25 and 50")
  page.evaluate("""() => {
