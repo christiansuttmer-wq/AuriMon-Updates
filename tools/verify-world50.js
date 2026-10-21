@@ -4,12 +4,14 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const code=fs.readFileSync('app/src/main/assets/aurimon_world50_pilot.js','utf8');
 const st={starterChosen:true,zone:0,x:9,y:9,facing:'down',found:[],badges:[],trainerWins:[],coins:0,steps:0,
  aurWorld50:{stage:0,runestones:[],completed:[]}};
-const ctx={
+const ELEMENT_TYPES=["Normal","Feuer","Wasser","Pflanze","Elektro","Eis","Kampf","Gift","Boden","Flug","Psycho","Käfer","Gestein","Geist","Drache","Unlicht","Stahl","Fee"];
+const ctx={ELEMENT_TYPES,
  window:{PokemonGame:{},PokemonProfiles:{activeSlot:1},addEventListener(){}},
  document:{createElement:()=>({setAttribute(){},getContext:()=>({scale(){}})}),addEventListener(){}},
  state:st,requestAnimationFrame(){},
  AREAS:[{"leader":"Lina","badge":"Wiesenorden"},{"leader":"Finn","badge":"Seeorden"},{"leader":"Rika","badge":"Felsorden"},{"leader":"Elly","badge":"Blütenorden"},{"leader":"Noah","badge":"Küstenorden"},{"leader":"Mia","badge":"Waldorden"},{"leader":"Leon","badge":"Dorforden"},{"leader":"Ada","badge":"Kristallorden"},{"leader":"Bruno","badge":"Flammenorden"},{"leader":"Champion Nova","badge":"Wolkenorden"}],
 };
+while(ctx.AREAS.length<40)ctx.AREAS.push({leader:'Prüfer '+ctx.AREAS.length,badge:'Kristallsiegel '+ctx.AREAS.length});
 for(const n of ['renderMap','walk','interact','trainerParty','randomWild','gymParty','enterZone','battleDefeat','atPosition','trainers','drops','render','doAction'])
  ctx[n]=()=>{};
 vm.runInNewContext(code,vm.createContext(ctx),{filename:'aurimon_world50_pilot.js',timeout:2000});
