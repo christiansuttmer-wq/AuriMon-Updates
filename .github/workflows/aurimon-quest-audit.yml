@@ -12,6 +12,8 @@ on:
       - 'app/src/main/assets/pokemon_gen2_9.js'
       - 'app/src/main/assets/aurimon_2_0.js'
       - 'app/src/main/assets/game.js'
+      - 'app/src/main/assets/pokemon_gen9_evolutions.js'
+      - 'tools/verify-gen9-evolutions.js'
   workflow_dispatch:
 
 permissions:
@@ -30,6 +32,7 @@ jobs:
           node tools/verify-hero-atlas.js
           node tools/verify-world50.js
           node tools/verify-quests.js
+          node tools/verify-gen9-evolutions.js
 
   real-browser-quest-audit:
     runs-on: ubuntu-latest
