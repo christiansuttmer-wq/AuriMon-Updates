@@ -9,14 +9,16 @@ const zones=['Sonnenwiese','Mondsee','Felsenwald','Blumenpfad','Windküste','Ber
 const leaders=["Lina","Finn","Rika","Elly","Noah","Mia","Leon","Ada","Bruno","Champion Nova"];
 const badges=["Wiesenorden","Seeorden","Felsorden","Blütenorden","Küstenorden","Waldorden","Dorforden","Kristallorden","Flammenorden","Wolkenorden"];
 const areas=zones.map((name,i)=>({name,leader:leaders[i],badge:badges[i]}));
+while(areas.length<40)areas.push({name:'Neue Region '+areas.length,leader:'Prüfer '+areas.length,badge:'Kristallsiegel '+areas.length});
+const ELEMENT_TYPES=["Normal","Feuer","Wasser","Pflanze","Elektro","Eis","Kampf","Gift","Boden","Flug","Psycho","Käfer","Gestein","Geist","Drache","Unlicht","Stahl","Fee"];
 const state={starterChosen:true,zone:0,x:9,y:9,facing:'down',found:[],badges:[],trainerWins:[],coins:0,steps:0,aurWorld50:{stage:0,runestones:[],completed:[]}};
-const ctx={AREAS:areas,state,window:{PokemonGame:{},PokemonProfiles:{activeSlot:1},addEventListener(){}},document:{createElement(){return {setAttribute(){},getContext(){return {scale(){}}}}},addEventListener(){}},requestAnimationFrame(){}};
+const ctx={AREAS:areas,ELEMENT_TYPES,state,window:{PokemonGame:{},PokemonProfiles:{activeSlot:1},addEventListener(){}},document:{createElement(){return {setAttribute(){},getContext(){return {scale(){}}}}},addEventListener(){}},requestAnimationFrame(){}};
 for(const n of ['renderMap','walk','interact','trainerParty','randomWild','gymParty','enterZone','battleDefeat','atPosition','trainers','drops','render','doAction'])ctx[n]=()=>{};
 vm.runInNewContext(read('aurimon_world50_pilot.js'),vm.createContext(ctx),{timeout:3000});
 const api=ctx.window.PokemonGame.world50,descs=api.getDescriptions();
-assert.equal(api.getCount(),50);assert.equal(descs.length,50);
+assert.equal(api.getCount(),200);assert.equal(descs.length,200);
 let questObjects=0;
-for(let stage=0;stage<50;stage++){
+for(let stage=0;stage<200;stage++){
  const k=stage%5,z=Math.floor(stage/5),q=api.getFeatures(stage),desc=descs[stage];
  assert(desc&&desc.length>25,'Missing objective '+(stage+1));
  assert(!/Finde eine Windmühle|zerbrochenes Siegel|gestohlene Akte/.test(desc),'Unimplemented objective '+(stage+1));
@@ -40,7 +42,7 @@ for(let stage=0;stage<50;stage++){
  }
  if(k===4){
    assert(q.buildings.some(b=>b.kind==='gym'),'Missing arena '+(stage+1));
-   assert(desc.includes(leaders[z])&&desc.includes(badges[z]),'Arena text mismatch '+(stage+1));
+   assert(desc.includes(areas[z].leader)&&desc.includes(areas[z].badge),'Arena text mismatch '+(stage+1));
    questObjects++;
  }
  if(k===1||k===2)assert(desc.includes('Ostausgang'),'Stage exit explanation '+(stage+1));
