@@ -11,6 +11,7 @@
   'Die Stadt im Spiegel','Ein Traum von gestern','Der Händler der Himmelssteine','Licht unter dem Mond',
   'Der Tag, der zweimal kam','Wer ist Null?','Das Versprechen der Sterne','Die zerbrochene Welt',
   'Die Insel des Anfangs','Der letzte Riss'];
+ const storyEntries=["Ein Hafenmeister verschweigt, wo die gestohlene Seekarte zuletzt gesehen wurde.","Ein schweigender Wächter lässt nur drei Zeichen an seinem Baum zurück.","Die Sternwarte meldet einen Stern, der im Moor verschwunden ist.","Ein Kupferbrief verrät den Weg zu einem verschlossenen Bergwerk.","Das Logbuch einer Taucherin erwähnt einen versunkenen Kristall.","Ein Kristall ruft den Namen einer verschwundenen Botin.","Der Blitz traf einen Turm, der seit Jahrzehnten verlassen war.","Die Runen wurden absichtlich in falscher Reihenfolge gesetzt.","Ein altes Bibliotheksbuch zeigt die Gründung des Orden Null.","Im Ascheregen sind Spuren einer geheimen Kristallfabrik.","Ein verlassenes Schiff transportierte Dinge, die niemand bestellt hat.","Auf dem Silbergrat führen Spuren in zwei entgegengesetzte Zeiten.","Ein Sandzug fährt ohne Schienen zum Ursprung der Risse.","Ein Forscher hört den Blitz, bevor das Gewitter beginnt.","Im Rosengarten liegt eine verschlüsselte Nachricht deiner Verbündeten.","Jemand hat die Leuchtfeuer des Nebelarchipels verstellt.","Sieben Schatten tragen dasselbe Siegel wie ein alter Freund.","Das Korallentor wurde gebaut, um jemanden zu beschützen.","Im ewigen Eis wartet eine verschollene Erinnerung.","Der alte Drache kennt den wahren Namen des ersten Hüters.","Im Spiegelviertel existieren zwei Versionen derselben Stadt.","Jemand in deinen Träumen hinterlässt echte Spuren.","Ein Händler tauschte die Himmelssteine aus Angst vor dem Orden.","Unter den Mondruinen liegt eine ältere Geschichte der neun Risse.","Ein Wanderer erlebt denselben Tag immer wieder.","Der Anführer des Orden Null enthüllt, warum er die Welten verbinden will.","Ein Sternenwächter bietet dir eine Wahl, die niemand erwartet hat.","Vier Regionen zerbrechen gleichzeitig: Die letzte Jagd beginnt.","Die Ursprungsinsel zeigt, wer den ersten Kristall erschuf.","Ein letzter Weg durch die Risse entscheidet über die Welt."];
  const actNames=['Das Erwachen','Die neun Risse','Der Kristallkrieg','Jenseits der Grenzen'];
  const questText=[
   'Ein Reisender wurde zuletzt am Grenzportal gesehen. Seine Aufzeichnungen enthalten den ersten Hinweis.',
@@ -23,26 +24,41 @@
   const runeIds=window.PokemonGame.world50.getFeatures(stage).runes.map(r=>r.id);
   const doneRunes=runeIds.filter(id=>state.aurWorld50?.runestones?.includes(id)).length;
   const distance=Math.max(0,(state.steps||0)-(entry.steps||0)),required=80+(z-10)*8;
-  const badge=state.badges.includes(z);
-  return {...entry,distance,required,doneRunes,badge,complete:distance>=required&&doneRunes===3&&badge};
+  const badge=state.badges.includes(z),clues=(entry.clues&&typeof entry.clues==='object')?entry.clues:{};
+  const clueCount=['runeA','runeB','cache'].filter(k=>clues[k]).length;
+  return {...entry,distance,required,doneRunes,badge,clueCount,complete:distance>=required&&doneRunes===3&&badge&&clueCount===3};
  }
  function renderQuest(z){
   z=Number(z);if(z<10||z>=40)return;
   const q=data()[z],p=progress(z),title=questTitles[z-10],type=ELEMENT_TYPES[(z-10)%18];
   const phase=actNames[Math.floor((z*5)/50)]||actNames[3];
-  const story=questText[Math.floor((z*5)/50)]||questText[3];
-  const intro='<b>📜 '+title+'</b><p>'+story+'</p><p>Nach Hinweisen in mehreren Gebieten musst du die Ruinen prüfen, drei Runen entschlüsseln und den regionalen Wächter bezwingen.</p>';
+  const story=storyEntries[z-10];
+  const intro='<b>📜 '+title+'</b><p>'+story+'</p><p>Untersuche die drei Hinweise im ersten Abschnitt, meistere die Tempelrunen und bezwinge den Arenawächter.</p>';
   if(!q)return modal('📜 '+phase,intro+'<p>Belohnung: zwei '+type+'kristalle + 500 Münzen.</p>',[['Auftrag annehmen','epic-accept:'+z,'gold'],['Später','close']]);
   if(q.claimed)return modal('🏆 '+title,intro+'<p>✅ Abgeschlossen. Kristallbelohnung bereits eingesammelt.</p>',[['Zurück','close']]);
-  const status='<p>👟 Erkundung: '+Math.min(p.distance,p.required)+' / '+p.required+' Schritte</p>'+
+  const status='<p>🔎 Hinweise: '+p.clueCount+' / 3</p>'+'<p>👟 Erkundung: '+Math.min(p.distance,p.required)+' / '+p.required+' Schritte</p>'+
    '<p>🔮 Runen: '+p.doneRunes+' / 3</p><p>🏅 Regionaler Orden: '+(p.badge?'✅':'❌')+'</p>';
   modal('📜 '+title,intro+status,[...(p.complete?[['Belohnung abholen','epic-claim:'+z,'gold']]:[]),['Weiter erkunden','close']]);
  }
- function accept(z){const q=data();if(!q[z]){q[z]={steps:state.steps||0,acceptedAt:Date.now(),claimed:false};save()}renderQuest(z)}
+ function accept(z){const q=data();if(!q[z]){q[z]={steps:state.steps||0,acceptedAt:Date.now(),claimed:false,clues:{}};save()}renderQuest(z)}
  function claim(z){const p=progress(z);if(!p||p.claimed||!p.complete)return;
   const type=ELEMENT_TYPES[(z-10)%18];data()[z].claimed=true;
   gainItem('crystal_'+type,2);state.coins+=500;save();render();
   modal('💎 Kristallauftrag erfüllt!',questTitles[z-10]+' abgeschlossen! Du erhältst 2 '+type+'kristalle und 500 Münzen.',[['Weiter','close','gold']]);
+ }
+ function investigate(z,kind){
+  z=Number(z);if(z<10||z>=40)return;
+  if(!['runeA','runeB','cache'].includes(kind))return renderQuest(z);
+  const q=data()[z];
+  if(!q){toast('📜 Nimm zuerst den Auftrag an.');return renderQuest(z)}
+  if(q.claimed)return renderQuest(z);
+  if(!q.clues||typeof q.clues!=='object')q.clues={};
+  if(!q.clues[kind]){
+   q.clues[kind]={at:Date.now(),stage:state.aurWorld50?.stage??z*5};
+   save();
+   toast('🔎 Neuer Hinweis entdeckt!');render();
+  }
+  return renderQuest(z);
  }
  function ascendDialog(uid){const m=mon(uid);if(!m||m.level<100||m.level>=150)return;
   const n=POKE[m.id],needed=xpNeeded(m.level,m.id),ready=m.xp>=needed;
@@ -71,11 +87,34 @@
    if(z>=10){
     const p=progress(z),done=p?.claimed;
     const container=document.createElement('div');container.className='card';
-    container.innerHTML='<b>📜 '+questTitles[z-10]+'</b><p>'+((!p)?'Neuer Auftrag im Gebiet':done?'✅ Abgeschlossen':Math.min(p.distance,p.required)+'/'+p.required+' Schritte · '+p.doneRunes+'/3 Runen')+'</p><button class="smallbtn gold" data-action="epic-open:'+z+'">Quest ansehen</button>';
+    container.innerHTML='<b>📜 '+questTitles[z-10]+'</b><p>'+((!p)?'Neuer Auftrag im Gebiet':done?'✅ Abgeschlossen':p.clueCount+'/3 Hinweise · '+Math.min(p.distance,p.required)+'/'+p.required+' Schritte · '+p.doneRunes+'/3 Runen')+'</p><button class="smallbtn gold" data-action="epic-open:'+z+'">Quest ansehen</button>';
     journal.appendChild(container);
    }
   }
  };
+
+ const evolutionItems=window.AuriEvolutionItems||[];
+ const priorShop=showShop;
+ showShop=function(){
+  priorShop();
+  const actions=$('modal-content')?.querySelector('.dialog-actions');
+  if(actions&&evolutionItems.length){
+   const btn=document.createElement('button');btn.className='btn gold';
+   btn.dataset.action='evo-shop:0';btn.textContent='✨ Evolutionssteine und Tauschitems';
+   actions.prepend(btn);
+  }
+ };
+ function evolutionMarket(page){
+  const maxPage=Math.ceil(evolutionItems.length/7)-1;
+  page=Math.max(0,Math.min(maxPage,page|0));
+  const list=evolutionItems.slice(page*7,(page+1)*7);
+  const html='<h2>✨ Entwicklungsitems</h2><p>Besondere Steine und Tauschitems für Pokémon der Generationen 2–9.</p>'+
+   list.map(i=>'<div class="bag-entry"><span class="item-emoji">💎</span><span class="meta"><b>'+i.name+'</b><small>🪙 '+i.cost+' · Vorhanden: '+bagCount(i.key)+'</small></span><button class="smallbtn gold" data-action="evo-buy:'+i.key+':'+page+'">Kaufen</button></div>').join('')+
+   '<div class="dialog-actions">'+(page?'<button class="smallbtn" data-action="evo-shop:'+(page-1)+'">◀ Zurück</button>':'')+
+   (page<maxPage?'<button class="smallbtn" data-action="evo-shop:'+(page+1)+'">Weiter ▶</button>':'')+
+   '<button class="btn ghost" data-action="evo-shop-exit">Zum Markt</button></div>';
+  openModal(html);
+ }
  const oldAction=doAction;
  doAction=function(act,el){
   if(typeof act==='string'){
@@ -85,6 +124,14 @@
    if(cmd==='epic-open')return renderQuest(+a);
    if(cmd==='epic-accept')return accept(+a);
    if(cmd==='epic-claim')return claim(+a);
+   if(cmd==='evo-shop')return evolutionMarket(+a);
+   if(cmd==='evo-buy'){
+    const item=evolutionItems.find(i=>i.key===a);if(!item)return;
+    if(state.coins<item.cost){toast('🪙 Nicht genügend Münzen.');return}
+    state.coins-=item.cost;gainItem(item.key,1);render();
+    return evolutionMarket(+b);
+   }
+   if(cmd==='evo-shop-exit'){closeModal();return showShop()}
   }
   return oldAction(act,el);
  };
@@ -92,5 +139,5 @@
  starterScreen=function(){originalStarter();const m=$('modal-content');if(m){
   const text=m.querySelector('.muted');if(text)text.textContent='40 Regionen, 200 Ebenen und 1.025 Pokémon – deine Abenteuer bleiben im Spielerprofil gespeichert.';
  }};
- window.AuriMonEpic={questTitles:questTitles.slice(),talkToGuide:renderQuest,progress,ascendDialog,inspect:()=>({worldCount:window.PokemonGame.world50.getCount(),species:D.length,levelLimit:150,elementTypes:ELEMENT_TYPES.slice(),availableCrystalKinds:ELEMENT_TYPES.length})};
+ window.AuriMonEpic={questTitles:questTitles.slice(),talkToGuide:investigate,progress,ascendDialog,inspect:()=>({worldCount:window.PokemonGame.world50.getCount(),species:D.length,levelLimit:150,elementTypes:ELEMENT_TYPES.slice(),availableCrystalKinds:ELEMENT_TYPES.length})};
 })();
