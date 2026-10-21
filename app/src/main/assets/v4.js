@@ -58,7 +58,7 @@ function v4Moves(m){
   Flügelschlag:['Flug',60,35],Windstoß:['Flug',40,35],Konfusion:['Psycho',50,25],Psychokinese:['Psycho',90,10],
   Eisstrahl:['Eis',90,10],Pulverschnee:['Eis',40,25],Schlecker:['Geist',30,30],Spukball:['Geist',80,15],
   Käferbiss:['Käfer',60,20],Karateschlag:['Kampf',50,25],Fußkick:['Kampf',60,20],
-  Metallklaue:['Stahl',50,35],Drachenpuls:['Drache',85,10],Drachenwut:['Drache',40,10],
+  Feenwind:['Fee',40,30],Mondgewalt:['Fee',95,15],Metallklaue:['Stahl',50,35],Drachenpuls:['Drache',85,10],Drachenwut:['Drache',40,10],
   Giftpuder:['Gift',0,35,'gift',75],Toxin:['Gift',0,10,'gift',90],Irrlicht:['Feuer',0,15,'burn',85],
   Donnerwelle:['Elektro',0,20,'paralyze',90],Hypnose:['Psycho',0,20,'sleep',60],Schlafpuder:['Pflanze',0,15,'sleep',75]
  };
@@ -73,8 +73,8 @@ function v4Moves(m){
   129:['Tackle','Bodycheck','Biss','Ruckzuckhieb'],130:['Biss','Aquaknarre','Hydropumpe','Bodycheck'],
   150:['Konfusion','Psychokinese','Bodycheck','Hypnose'],151:['Konfusion','Psychokinese','Ruckzuckhieb','Hypnose']
  };
- const typical={Normal:'Bodycheck',Feuer:'Glut',Wasser:'Aquaknarre',Pflanze:'Rankenhieb',Elektro:'Donnerschock',Eis:'Pulverschnee',Kampf:'Karateschlag',Gift:'Giftstachel',Boden:'Erdbeben',Flug:'Windstoß',Psycho:'Konfusion',Käfer:'Käferbiss',Gestein:'Steinwurf',Geist:'Schlecker',Drache:'Drachenwut',Stahl:'Metallklaue',Unlicht:'Biss'};
- const advanced={Normal:'Bodycheck',Feuer:'Flammenwurf',Wasser:'Blubbstrahl',Pflanze:'Rasierblatt',Elektro:'Donnerblitz',Eis:'Eisstrahl',Kampf:'Fußkick',Gift:'Schlammbombe',Boden:'Erdbeben',Flug:'Flügelschlag',Psycho:'Psychokinese',Käfer:'Käferbiss',Gestein:'Steinwurf',Geist:'Spukball',Drache:'Drachenpuls',Stahl:'Metallklaue',Unlicht:'Biss'};
+ const typical={Normal:'Bodycheck',Feuer:'Glut',Wasser:'Aquaknarre',Pflanze:'Rankenhieb',Elektro:'Donnerschock',Eis:'Pulverschnee',Kampf:'Karateschlag',Gift:'Giftstachel',Boden:'Erdbeben',Flug:'Windstoß',Psycho:'Konfusion',Käfer:'Käferbiss',Gestein:'Steinwurf',Geist:'Schlecker',Drache:'Drachenwut',Stahl:'Metallklaue',Unlicht:'Biss',Fee:'Feenwind'};
+ const advanced={Normal:'Bodycheck',Feuer:'Flammenwurf',Wasser:'Blubbstrahl',Pflanze:'Rasierblatt',Elektro:'Donnerblitz',Eis:'Eisstrahl',Kampf:'Fußkick',Gift:'Schlammbombe',Boden:'Erdbeben',Flug:'Flügelschlag',Psycho:'Psychokinese',Käfer:'Käferbiss',Gestein:'Steinwurf',Geist:'Spukball',Drache:'Drachenpuls',Stahl:'Metallklaue',Unlicht:'Biss',Fee:'Mondgewalt'};
  const effects={Pflanze:'Giftpuder',Gift:'Giftpuder',Feuer:'Irrlicht',Elektro:'Donnerwelle',Psycho:'Hypnose'};
  const names=special[m.id]||['Tackle',typical[main]||'Tackle',advanced[alt]||'Bodycheck',effects[main]||'Bodycheck'];
  m.moves=names.map(name=>{const def=definitions[name]||definitions.Tackle;return{name,type:def[0],power:def[1],pp:def[2],maxpp:def[2],effect:def[3]||null,accuracy:def[4]||100}});
