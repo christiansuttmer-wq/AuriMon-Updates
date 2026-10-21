@@ -8,6 +8,10 @@ on:
       - 'tools/verify-world50.js'
       - 'tools/audit-content.mjs'
       - '.github/workflows/aurimon-quest-audit.yml'
+      - 'app/src/main/assets/aurimon_world50_pilot.js'
+      - 'app/src/main/assets/pokemon_gen2_9.js'
+      - 'app/src/main/assets/aurimon_2_0.js'
+      - 'app/src/main/assets/game.js'
   workflow_dispatch:
 
 permissions:
@@ -39,11 +43,11 @@ jobs:
       - name: Offline-Browserfassung aus aktuellem App-Code bauen
         run: |
           set -euo pipefail
-          AURIMON_BROWSER_VERSION=1.4.30 python3 tools/build-browser.py
-          # QA-Werkzeuge aus 1.4.28 auf die aktuelle offline Datei zeigen lassen.
-          sed -i 's/1\.4\.28/1.4.30/g' tools/e2e-browser.py tools/qa-regions-50.py
+          AURIMON_BROWSER_VERSION=1.5.1 python3 tools/build-browser.py
+          # QA-Werkzeuge auf die aktuelle Offline-Version zeigen lassen.
+          sed -i 's/1\.4\.28/1.5.1/g' tools/e2e-browser.py tools/qa-regions-50.py
           node tools/audit-content.mjs
-      - name: Echtes Chromium / 50 Regionen / zehn Auftrags-NPCs
+      - name: Echtes Chromium / 200 Gebiete / 50 ursprüngliche Questgebiete
         run: |
           set -euo pipefail
           python3 -m pip install --quiet playwright==1.55.0 pillow==11.1.0
@@ -53,7 +57,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: AuriMon-v1.4.30-Quest-Browser-QA
+          name: AuriMon-v1.5.1-Quest-Browser-QA
           path: |
             browser-dist/PRUEFBERICHT.md
             browser-dist/PRUEFBERICHT.json
