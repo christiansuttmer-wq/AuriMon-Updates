@@ -6,6 +6,7 @@
 (()=>{
  const rules=window.AuriSpecialEvolutionRules;
  if(!rules||Object.keys(rules).length!==64)throw Error('Special evolution rule table incomplete.');
+ const pokeApiTypes=['Normal','Kampf','Flug','Gift','Boden','Gestein','Käfer','Geist','Stahl','Feuer','Wasser','Pflanze','Elektro','Psycho','Eis','Drache','Unlicht','Fee'];
  const typeTarget={979:'Geist',981:'Psycho',982:'Normal',904:'Gift',899:'Psycho',900:'Gestein',902:'Wasser',983:'Unlicht'};
  const rule=(p,e)=>rules[p.id+':'+e.to];
  const statField=p=>p.auriEvoStats||(p.auriEvoStats={moves:{},crits:0,taken:0,wins:0,levels:0});
@@ -33,7 +34,7 @@
   if(r.heldItem&&!bagCount('evoitem_'+r.heldItem))return 'Benötigt gehaltenes Item '+r.heldItem;
   if(r.triggerItem&&!bagCount('evoitem_'+r.triggerItem))return 'Benötigt Entwicklungsitem '+r.triggerItem;
   if(r.partySpecies&&!state.party.some(m=>m.id===r.partySpecies))return 'Passendes Partner-Pokémon im Team erforderlich';
-  if(r.partyType&&!state.party.some(m=>window.POKEDEX[m.id-1]?.types?.includes(ELEMENT_TYPES[r.partyType-1])))return 'Pokémon eines passenden Typs im Team erforderlich';
+  if(r.partyType&&!state.party.some(m=>window.POKEDEX[m.id-1]?.types?.includes(pokeApiTypes[r.partyType-1])))return 'Pokémon eines passenden Typs im Team erforderlich';
   if(r.rain&&typeof v4Weather==='function'&&v4Weather(state.zone)!=='Regen')return 'Nur bei Regen in der Spielwelt';
   if(r.relativeStats!==undefined){
    const needed=r.relativeStats===1?'attack':r.relativeStats===-1?'defense':'balance';
@@ -82,7 +83,7 @@
    if(r.triggerItem)state.bag['evoitem_'+r.triggerItem]--;
    if(r.trigger==='gimmighoul-coins')state.coins-=999;
    if(r.trigger==='meltan-candies')state.bag.candy-=40;
-   if(r.heldItem)state.bag['evoitem_'+r.heldItem]--;
+   if(r.heldItem&&!e.heldItem)state.bag['evoitem_'+r.heldItem]--;
    delete p.auriEvoFocus;delete p.auriEvoStats;save();
   }
   // Nincada's Shedinja mechanic creates a SECOND creature when Ninjask evolves.
