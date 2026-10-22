@@ -47,6 +47,8 @@ with sync_playwright() as pw:
  checks.append("Profile created and first Pokémon selected")
  head=page.locator(".brand span").inner_text()
  assert "VERSION 1.5.6" in head, "Stale version header: "+head
+ page.evaluate("() => { document.querySelector(\u0027.brand span\u0027).textContent = \u0027VERALTET\u0027; }")
+ assert "VERSION 1.5.6" in page.locator(".brand span").inner_text(), "Legacy modules can overwrite release header"
  page.evaluate("() => doAction(\u0027regional-dex\u0027)")
  regional=page.locator("#modal-content").inner_text()
  assert "Regionaldex" in regional and "Wildarten" not in regional[:20], "Regionaldex dialog missing"
