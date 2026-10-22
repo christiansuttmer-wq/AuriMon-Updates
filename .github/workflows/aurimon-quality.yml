@@ -36,6 +36,7 @@ jobs:
           node tools/verify-gen9-evolutions.js
           node tools/verify-world50.js
           node tools/verify-quests.js
+          node tools/verify-all-quests.js
           node tools/verify-followers.js
           node tools/verify-hero-atlas.js
           node tools/verify-mandatory-updates.js
