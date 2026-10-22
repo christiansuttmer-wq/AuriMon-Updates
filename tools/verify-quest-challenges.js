@@ -125,8 +125,8 @@ function evaluate(ctx,source,body,expose){
 // Four master-path trials: gates, six-mon final and once-only grand reward.
 {
  const code=read('v5_5.js');
- const names=vm.runInNewContext(code.match(/const MAX_SPECIES=151, PATH_NAMES=(\[[^;]+?\]), PATH_TEAMS=/)[1]);
- const teams=vm.runInNewContext(code.match(/PATH_TEAMS=(\[[^;]+?\]), PATH_LEVELS=/)[1]);
+ const names=vm.runInNewContext(code.match(/PATH_NAMES=(\[[^;]+?\]);/)[1]);
+ const teams=vm.runInNewContext(code.match(/PATH_TEAMS=(\[[^;]+?\]);/)[1]);
  const levels=vm.runInNewContext(code.match(/PATH_LEVELS=(\[[^;]+?\]);/)[1]);
  const state={party:[{id:1}],leagueDone:true,v55Prestige:0,v55PathWins:[],bag:{},coins:0,battleWins:0};
  const ctx=envFor(state);ctx.ready=()=>true;ctx.safeData=noop;ctx.PATH_NAMES=names;ctx.PATH_TEAMS=teams;ctx.PATH_LEVELS=levels;ctx.record=noop;ctx.safe=x=>String(x);
