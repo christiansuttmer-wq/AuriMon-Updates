@@ -1,0 +1,11 @@
+/* AuriMon: special-form team and battle controls, responsive landscape. */
+.special-forms-list{display:flex;flex-direction:column;gap:8px;max-height:min(54vh,420px);overflow-y:auto;overscroll-behavior:contain;padding:4px 6px 8px 2px}
+.special-forms-list .bag-entry{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border:1px solid rgba(124,211,235,.23);border-radius:12px;padding:9px}
+.special-forms-list .bag-entry>b{flex:1 1 115px;min-width:105px;overflow-wrap:anywhere}
+.special-forms-list .bag-entry>small{flex:1 1 110px;color:#c9deea}
+.special-forms-list .bag-entry>.smallbtn{min-height:36px;white-space:normal}
+.special-type-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-height:50vh;overflow-y:auto;padding:4px}
+.special-type-grid button{min-height:37px}
+.battleactions button[data-battle^="special:"]{background:linear-gradient(135deg,#386c79,#804b91);border:1px solid rgba(189,232,255,.6);color:#fff;min-height:42px;text-shadow:0 1px 2px #15263c}
+.battleactions button[data-battle^="special:"]:active{filter:brightness(1.24)}
+@media(max-height:520px){.special-forms-list{max-height:48vh}.special-type-grid{max-height:43vh}}
