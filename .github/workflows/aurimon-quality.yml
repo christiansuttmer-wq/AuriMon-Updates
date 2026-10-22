@@ -39,6 +39,7 @@ jobs:
           node tools/verify-all-quests.js
           node tools/verify-quest-challenges.js
           node tools/verify-cave-quests.js
+          node tools/verify-ngplus.js
           node tools/verify-followers.js
           node tools/verify-hero-atlas.js
           node tools/verify-mandatory-updates.js
