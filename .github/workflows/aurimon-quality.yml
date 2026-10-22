@@ -33,6 +33,7 @@ jobs:
             node --check "$script"
           done
           node tools/verify-gen9.js
+          node tools/verify-final-pass.js
           node tools/verify-gen9-evolutions.js
           node tools/verify-special-forms.js
           node tools/verify-special-evolutions.js
