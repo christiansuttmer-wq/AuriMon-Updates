@@ -1,0 +1,66 @@
+name: AuriMon Qualitätsprüfung (kein Release)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/src/**'
+      - 'app/build.gradle.kts'
+      - 'tools/**'
+      - '.github/workflows/aurimon-quality.yml'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aurimon-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests-and-debug-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Quellcode auschecken
+        uses: actions/checkout@v4
+      - name: JavaScript-Syntax und Spielregeln prüfen
+        shell: bash
+        run: |
+          set -euo pipefail
+          for script in app/src/main/assets/*.js; do
+            node --check "$script"
+          done
+          node tools/verify-gen9.js
+          node tools/verify-gen9-evolutions.js
+          node tools/verify-world50.js
+          node tools/verify-quests.js
+          node tools/verify-followers.js
+          node tools/verify-hero-atlas.js
+          node tools/verify-mandatory-updates.js
+          node tools/verify-arenas.js
+          node tools/verify-exp.js
+      - name: Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools'
+      - name: Android API 35 und Build Tools
+        run: sdkmanager --install 'platforms;android-35' 'build-tools;35.0.0'
+      - name: Geprüftes Gradle 8.13
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+          validate-wrappers: false
+      - name: Debug-APK nur zur Buildprüfung kompilieren
+        shell: bash
+        run: |
+          set -euo pipefail
+          gradle :app:assembleDebug --no-daemon
+          test -s app/build/outputs/apk/debug/app-debug.apk
+      # Bewusst kein Signing und kein Release: installierte Profile bleiben unangetastet.
