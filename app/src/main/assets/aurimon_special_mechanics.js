@@ -132,7 +132,7 @@
   battle.auriUsed=true;
   const gmax=formsFor(p.id).find(f=>f.kind==='gmax');
   if(gmax)p.battleFormKey=gmax.key;
-  p.auriDyna={turns:3};p.hp+=hpMax(p.id,p.level);
+  p.auriDyna={turns:3};p.hp*=2;
   battle.log='⌚ '+formName(p)+' wächst für drei Angriffszüge!';renderBattle();save();
  }
  function activateTera(type){
