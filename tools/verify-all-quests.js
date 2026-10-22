@@ -171,6 +171,7 @@ vm.runInNewContext(slice(v4,'function v4CanLegend(id)','function v4EncounterLege
  '\nglobalThis.auditLegend=v4CanLegend;',vm.createContext(legendaryContext),{timeout:2000});
 const canLegend=legendaryContext.auditLegend;
 for(const q of temples){
+ legendaryState.badges=[];
  assert(!canLegend(q.id),'Legend '+q.id+' unlocked with zero badges');
  legendaryState.badges=Array.from({length:q.badges},(_,i)=>i);
  legendaryState.caught=Array.from({length:150},(_,i)=>i+152);
