@@ -50,6 +50,8 @@ jobs:
           node --check app/src/main/assets/pokemon_gen9_evolutions.js
           node --check app/src/main/assets/aurimon_special_forms_data.js
           node --check app/src/main/assets/aurimon_special_mechanics.js
+          node --check app/src/main/assets/aurimon_special_evolutions_data.js
+          node --check app/src/main/assets/aurimon_special_evolutions.js
           node --check app/src/main/assets/aurimon_vacation_sprites.js
           node --check app/src/main/assets/arimon_characters.js
           node tools/verify-hero-atlas.js
@@ -57,6 +59,7 @@ jobs:
           node tools/verify-gen9.js
           node tools/verify-gen9-evolutions.js
           node tools/verify-special-forms.js
+          node tools/verify-special-evolutions.js
           node tools/verify-arenas.js
           node tools/verify-exp.js
           node tools/verify-mandatory-updates.js
