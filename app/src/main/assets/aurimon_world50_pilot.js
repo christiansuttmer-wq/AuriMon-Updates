@@ -607,7 +607,7 @@
  trainers=function(z){if(z>=0&&z<REGIONS.length&&active()){const s=ensure().stage;return maps[s].extras.npcs.filter(n=>n.kind==='trainer').map(n=>({id:`${z}:${n.j}`,x:n.x,y:n.y,j:n.j,name:n.name,defeated:state.trainerWins.includes(`${z}:${n.j}`)}));}return oldTrainers(z)};
  drops=function(z){if(z>=0&&z<REGIONS.length&&active())return maps[ensure().stage].extras.loot.filter(q=>!state.found.includes('aur50:'+q.id)).map(q=>({...q,picked:false}));return oldDrops(z)};
  trainerParty=function(z,j){const mons=oldTrainerParty(z,j);if(z>=0&&z<REGIONS.length&&active()){const s=ensure().stage;for(let i=0;i<mons.length;i++){mons[i].level=Math.min(150,5+s+i);mons[i].hp=hpMax(mons[i].id,mons[i].level)}}return mons};
- gymParty=function(z){const mons=oldGymParty(z);if(z>=0&&z<10&&active()&&ensure().stage%5===4){const bossLevels=Array.from({length:REGIONS.length},(_,i)=>i<10?[11,20,30,40,50,60,70,80,90,96][i]:Math.min(147,95+Math.floor((i-9)*1.7)));
+ gymParty=function(z){const mons=oldGymParty(z);if(z>=0&&z<REGIONS.length&&active()&&ensure().stage%5===4){const bossLevels=Array.from({length:REGIONS.length},(_,i)=>i<10?[11,20,30,40,50,60,70,80,90,96][i]:Math.min(147,95+Math.floor((i-9)*1.7)));
    if(z===REGIONS.length-1&&mons.length<6){const ids=ZONE_POOLS[z];while(mons.length<6)mons.push(newMon(ids[(mons.length*3)%ids.length],98));}
    mons.forEach((m,i)=>{m.level=Math.min(150,bossLevels[z]+i);m.hp=hpMax(m.id,m.level)})}return mons};
  randomWild=function(z){const m=oldRandomWild(z);if(z>=0&&z<REGIONS.length&&active()){m.level=clamp(3+Math.floor(ensure().stage*.7)+rand(0,3),3,149);m.hp=hpMax(m.id,m.level)}return m};
@@ -629,7 +629,7 @@
   updateHud();draw();};
  function pick(q){state.found.push('aur50:'+q.id);gainItem(q.item,1);state.coins+=25;toast('✨ Schatz gefunden: '+ITEM_INFO[q.item][0]+'!');save();render()}
  function advance(dest,back){const w=ensure();if(dest<0){toast('🌿 Hier beginnt dein Abenteuer.');return}
-  if(dest>=200){if(!state.badges.includes(39)){toast('👑 Besiege zuerst Champion Nova!');return}
+  if(dest>=200){if(!state.badges.includes(39)){toast('👑 Besiege zuerst '+AREAS[39].leader+'!');return}
    w.completed=Array.from(new Set([...w.completed,199]));save();modal('👑 Alle 200 Ebenen gemeistert!','Du hast alle vierzig Regionen bereist und alle Prüfungen gemeistert. Alle Orte bleiben zugänglich.',[['Weiter erforschen','close','gold']]);return}
   const nextZone=Math.floor(dest/5),currentZone=Math.floor(w.stage/5);
   if(nextZone>currentZone&&!state.badges.includes(currentZone)){toast('🏅 Besiege zuerst '+AREAS[currentZone].leader+' und gewinne den Orden!');return}
