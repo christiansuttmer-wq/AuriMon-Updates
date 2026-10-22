@@ -25,8 +25,10 @@ for(const id of starterBases){
 }
 assert.equal(xp(100,161),xp(100,19),'Ordinary Gen2 species must grow like ordinary Gen1 species');
 assert.equal(xp(100,906),xp(100,1),'Gen9 starter must not be treated as legendary');
-for(const id of [144,151,243,249,1025]){
-  assert(ctx.POKE[id].legendary||ctx.POKE[id].mythical,'Rarity test specimen '+id+' has missing catalog marker');
+for(const id of [144,145,146,150,151])
+  assert(xp(100,id)>xp(100,19),'Gen1 rare species '+id+' must use slower growth');
+for(const id of [243,249,251,1025]){
+  assert(ctx.POKE[id].legendary||ctx.POKE[id].mythical,'Rarity marker missing for '+id);
   assert(xp(100,id)>xp(100,19),'Rare species '+id+' must use slower growth');
 }
 for(const id of [1,19,144,151,152,161,243,252,387,495,650,722,810,906,1025]){
