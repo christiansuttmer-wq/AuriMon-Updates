@@ -16,6 +16,11 @@
   ['Drachenschuppen','🐉','#c6b6f4','#85728c'],['Himmelsgärten','🌿','#dbffa8','#8acbb2'],
   ['Uralte Zeichen','🔮','#dfbdff','#7e7194'],['Goldene Kronen','👑','#ffe1a1','#ce8660']
  ];
+ // Die ersten zehn Orte besitzen die klassischen Doppelrunen-Rätsel.
+ // Neuere Regionen verwenden Kristallchroniken, brauchen aber weiterhin sichere Farbthemen für Innenräume.
+ const CLASSIC_RUNE_REGIONS=10;
+ const originalThemes=THEMES.map(t=>t.slice());
+ while(THEMES.length<AREAS.length)THEMES.push(originalThemes[THEMES.length%originalThemes.length].slice());
  const SPECIAL={house:{x:6,y:2},atelier:{x:10,y:7},notice:{x:7,y:4},runeA:{x:1,y:8},runeB:{x:12,y:9},cache:{x:5,y:9}};
  const specialAt=(x,y)=>Object.entries(SPECIAL).find(([,pos])=>pos.x===x&&pos.y===y)?.[0]||null;
  const rewards=['ball','potion','greatball','repel','superpotion','candy','revive','ether','antidote','Feuerstein','Wasserstein','Donnerstein','Blattstein','Mondstein','Tausch-Kabel'];
@@ -141,11 +146,11 @@
  showGuide=function(){oldGuide();$('modal-content')?.insertAdjacentHTML('beforeend','<p>🏠 In jedem Ort warten ein Gasthaus, eine Werkstatt und verborgene Geschichten. Beobachte die Umgebung und sprich mit den Bewohnern.</p>')};
  const oldTravel=renderTravel;
  renderTravel=function(){oldTravel();ensure();
-  const cards=AREAS.map((a,z)=>{
+  const cards=AREAS.slice(0,CLASSIC_RUNE_REGIONS).map((a,z)=>{
     const isUnlocked=z<=state.badges.length;
     return `<div class="v51-world-row ${isUnlocked?'':'locked'}"><span>${a.icon}</span><strong>${a.name}</strong><small>${THEMES[z][1]} ${THEMES[z][0]} · ${has(state.v51Puzzles,z)?'🗿 Rätsel gelöst':'🗿 Rätsel offen'} · ${has(state.v51Caches,z)?'🎁 Schatz gefunden':'🎁 Schatz offen'}</small></div>`
   }).join('');
-  const holder=document.createElement('section');holder.className='v51-journal';holder.innerHTML=`<h2>🧩 Geheimnisse der 10 Orte</h2><p>${state.v51Puzzles.length} / ${AREAS.length} Runenrätsel gelöst · ${state.v51Caches.length} / ${AREAS.length} geheime Truhen entdeckt · ${state.v51RoomsLoot.length} / ${AREAS.length*2} Haus-Truhen gefunden</p><details><summary>Alle ${AREAS.length} regionalen Geheimnisse ansehen</summary><div class="v51-world-list">${cards}</div></details>`;
+  const holder=document.createElement('section');holder.className='v51-journal';holder.innerHTML=`<h2>🧩 Geheimnisse der 10 Orte</h2><p>${state.v51Puzzles.filter(z=>z<CLASSIC_RUNE_REGIONS).length} / ${CLASSIC_RUNE_REGIONS} Runenrätsel gelöst · ${state.v51Caches.filter(z=>z<CLASSIC_RUNE_REGIONS).length} / ${CLASSIC_RUNE_REGIONS} geheime Truhen entdeckt · ${state.v51RoomsLoot.length} / ${AREAS.length*2} Haus-Truhen gefunden</p><details><summary>Die ${CLASSIC_RUNE_REGIONS} klassischen Ortsrätsel ansehen</summary><div class="v51-world-list">${cards}</div></details>`;
   $('journal').appendChild(holder);
  };
  // Pixel-Details: jedes Gebiet hat eigene Motive und markante architektonische Marker.
