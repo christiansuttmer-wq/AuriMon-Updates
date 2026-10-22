@@ -60,6 +60,7 @@ jobs:
           node tools/verify-world50.js
           node tools/verify-quests.js
           node tools/verify-all-quests.js
+          node tools/verify-quest-challenges.js
       - name: Vorbedingungen pruefen (noch kein Release)
         id: check
         env:
