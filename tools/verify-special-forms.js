@@ -36,7 +36,7 @@ Object.assign(ctx,{
  doAction:()=>{},battleAction:()=>{},showShop:()=>{},showGuide:()=>{},flee:()=>{ctx.battle=null},
  battleAttack:()=>{},battleSwitch:()=>{},battleVictory:()=>{ctx.battle=null},
  battleDefeat:()=>{ctx.battle=null},startBattle:()=>{ctx.battle={auriUsed:false,auriZUsed:false,auriZReady:null,log:''}},
- chooseAlive:()=>ctx.state.party.find(p=>p.hp>0),
+ chooseAlive:()=>ctx.state.party.find(p=>p.hp>0),foe:()=>({id:1,hp:100,level:55}),
  closeModal:()=>{},openModal:()=>{},toast:()=>{},gainItem:(id,n)=>ctx.state.bag[id]=(ctx.state.bag[id]||0)+(n||1),
  bagCount:id=>ctx.state.bag[id]||0,hpMax:(id,level)=>100+level,
  effectiveness:()=>1,aurimonDamage:()=>({amount:15,mult:1,crit:false}),
