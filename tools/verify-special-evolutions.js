@@ -15,7 +15,8 @@ const D=ctx.window.POKEDEX,POKE=Object.fromEntries(D.map(x=>[x.id,x]));
 const rules=ctx.window.AuriSpecialEvolutionRules,cat=ctx.window.AuriSpecialFormCatalog;
 assert.equal(Object.keys(rules).length,64);
 const TYPE_NAMES=['Normal','Feuer','Wasser','Pflanze','Elektro','Eis','Kampf','Gift','Boden','Flug','Psycho','Käfer','Gestein','Geist','Drache','Unlicht','Stahl','Fee'];
-let saved=0;
+let saved=0,fakeHour=12;
+ctx.Date=class extends Date{getHours(){return fakeHour}};
 const state={party:[],box:[],bag:{ball:99,candy:10000},coins:1000000,steps:100000,badges:Array.from({length:40},(_,i)=>i)};
 for(let i=0;i<9000;i++)state.bag['evoitem_'+i]=20;
 Object.assign(ctx,{
@@ -50,6 +51,7 @@ for(const [key,r] of Object.entries(rules)){
  if(r.formId>=10000&&form)p.formKey=form.key;
  state.party=[p,{uid:'partner',id:r.partySpecies||1,level:120,hp:100}];
  state.steps=100000;state.coins=1000000;
+ fakeHour=r.time==='night'?23:12;
  const reason=ctx.evolutionReason(p,evo);
  if(r.trigger==='shed'){
   assert(reason&&reason.includes('automatisch'),'Shedinja should be a bonus Pokémon');
