@@ -4,7 +4,7 @@
 */
 (() => {
   'use strict';
-  const CURRENT = window.AuriMonUpdateBridge?.getVersion?.() || document.querySelector('.brand span')?.dataset.gameVersion || '1.5.6';
+  const CURRENT = window.AuriMonUpdateBridge?.getVersion?.() || document.querySelector('.brand span')?.dataset.gameVersion || '1.5.7';
   const HOME_BTN_ID = 'aurimon-updates-startscreen';
   let lastStatus = 'GitHub-Updates prüfen';
   let observedPicker = null;
