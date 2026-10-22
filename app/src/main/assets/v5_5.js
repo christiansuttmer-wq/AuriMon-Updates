@@ -43,7 +43,7 @@
     {id:'path',emoji:'💫',title:'Herr des Meisterpfads',goal:4,progress:()=>length(state.v55PathWins),detail:'Die vier neuen Prüfungen gewinnen'},
     {id:'rival',emoji:'⚡',title:'Rivalenmeister',goal:6,progress:()=>length(state.v52RivalWins),detail:'Sechs Rivalen-Etappen gewinnen'},
     {id:'cups',emoji:'🥇',title:'Turnierlegende',goal:3,progress:()=>Object.values(state.v52Tournaments||{}).filter(n=>n===3).length,detail:'Alle drei Turniere gewinnen'},
-    {id:'side',emoji:'📜',title:'Hilfsbereiter Held',goal:AREAS.length,progress:()=>length(state.v53SideDone),detail:AREAS.length+' Nebenquests erfüllen'},
+    {id:'side',emoji:'📜',title:'Hilfsbereiter Held',goal:40,progress:()=>length(state.v53SideDone)+Object.entries(state.epicQuests||{}).filter(([z,e])=>+z>=10&&+z<40&&e?.claimed===true).length,detail:'10 klassische Ortsaufträge und 30 Kristallchroniken abschließen'},
     {id:'ruins',emoji:'🏛️',title:'Runenforscher',goal:7,progress:()=>length(state.v53Ruins),detail:'Alle sieben Ruinen enträtseln'},
     {id:'temples',emoji:'✨',title:'Tempelforscher',goal:5,progress:()=>length(state.v53Temples),detail:'Alle fünf Tempel öffnen'},
     {id:'hatches',emoji:'🥚',title:'Eier-Experte',goal:3,progress:()=>number(state.v54Hatched),detail:'Drei AuriMon ausbrüten'},
