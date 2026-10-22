@@ -91,7 +91,7 @@ function xpNeeded(lv,id){
  // Legendäre und mysteriöse Pokémon werden über Art-Metadaten erkannt, nicht über ID-Schwellen.
  const starterRanges=[[1,9],[152,160],[252,260],[387,395],[495,503],[650,658],[722,730],[810,818],[906,914]];
  const starter=starterRanges.some(([first,last])=>id>=first&&id<=last);
- const rare=!!(POKE[id]?.legendary||POKE[id]?.mythical);
+ const rare=[144,145,146,150,151].includes(id)||!!(POKE[id]?.legendary||POKE[id]?.mythical);
  function total(level){
   if(starter)return Math.max(0,Math.floor(1.2*level**3-15*level**2+100*level-140));
   if(rare)return Math.floor(1.25*level**3);
