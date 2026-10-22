@@ -70,10 +70,7 @@
       const expected = 'DEINE AURIMON-WELT · VERSION ' + brand.dataset.gameVersion;
       const restore = () => { if (brand.textContent !== expected) brand.textContent = expected; };
       restore();
-      if (typeof MutationObserver !== 'undefined') {
-        const observer = new MutationObserver(restore);
-        observer.observe(brand, {childList:true,characterData:true,subtree:true});
-      }
+
     }
   }
   window.AuriFinalPass = {regionCount: sources.length, getRegionalSpecies: zone => (sources[zone] || []).slice()};
