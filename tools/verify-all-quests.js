@@ -163,6 +163,28 @@ for(const q of temples){
 assert.equal(puzzle.v53Ruins.length,7);
 assert.equal(puzzle.v53Temples.length,5);
 
+// All five legendary encounters must respect their real badge, shadow and
+// Kanto collection prerequisites (modern Pokémon cannot impersonate Kanto entries).
+const legendaryState={badges:[],caught:[],rocketWins:[]};
+const legendaryContext={state:legendaryState,V4_LEGENDS:legends};
+vm.runInNewContext(slice(v4,'function v4CanLegend(id)','function v4EncounterLegend(id)')+
+ '\nglobalThis.auditLegend=v4CanLegend;',vm.createContext(legendaryContext),{timeout:2000});
+const canLegend=legendaryContext.auditLegend;
+for(const q of temples){
+ assert(!canLegend(q.id),'Legend '+q.id+' unlocked with zero badges');
+ legendaryState.badges=Array.from({length:q.badges},(_,i)=>i);
+ legendaryState.caught=Array.from({length:150},(_,i)=>i+152);
+ legendaryState.rocketWins=[3,5,7,8,9];
+ if(q.id===151)assert(!canLegend(q.id),'Mew unlocked without 150 Kanto species');
+ else assert(canLegend(q.id),'Legend '+q.id+' inaccessible after requirements');
+}
+legendaryState.badges=Array.from({length:40},(_,i)=>i);
+legendaryState.caught=Array.from({length:150},(_,i)=>i+1);
+legendaryState.rocketWins=[];
+assert(!canLegend(150),'Mewtwo must require five shadow-team wins');
+legendaryState.rocketWins=[3,5,7,8,9];
+assert(canLegend(150)&&canLegend(151),'Mewtwo or Mew permanently locked after requirements');
+
 // Preserve integration between legacy menus, the crystal chronicle UI,
 // achievement counters and the true Kanto legendary prerequisite.
 assert.match(v53,/state\.zone>=SIDESTORIES\.length\)return window\.AuriMonEpic\?\.openQuest/);
