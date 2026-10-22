@@ -35,7 +35,7 @@
   if(!state.v53RuinsProgress||typeof state.v53RuinsProgress!=='object'||Array.isArray(state.v53RuinsProgress))state.v53RuinsProgress={};
   if(!state.v53TemplesProgress||typeof state.v53TemplesProgress!=='object'||Array.isArray(state.v53TemplesProgress))state.v53TemplesProgress={};
   if(!state.v53SideActive||typeof state.v53SideActive!=='object'||Array.isArray(state.v53SideActive))state.v53SideActive={};
-  state.v53SideDone=[...new Set(state.v53SideDone.filter(z=>Number.isInteger(z)&&z>=0&&z<AREAS.length))];
+  state.v53SideDone=[...new Set(state.v53SideDone.filter(z=>Number.isInteger(z)&&z>=0&&z<SIDESTORIES.length))];
   state.v53StoryWins=[...new Set(state.v53StoryWins.filter(z=>TEAM_ZONES.includes(z)))];
   state.v53Ruins=[...new Set(state.v53Ruins.filter(z=>RUIN_ZONES.includes(z)))];
   state.v53Temples=[...new Set(state.v53Temples.filter(id=>TEMPLE_ENTRIES.some(t=>t.id===id)))];
@@ -47,6 +47,7 @@
  const ready=()=>Number.isInteger(window.PokemonProfiles?.activeSlot)&&!!state.starterChosen&&state.party.length>0;
  const canInteract=()=>ready()&&!modalOpen&&!battle&&!state.dungeon&&!state.v51Indoor;
  const count=(arr)=>Array.isArray(arr)?arr.length:0;
+ const epicCount=()=>Object.entries(state.epicQuests||{}).filter(([z,e])=>+z>=10&&+z<40&&e?.claimed===true).length;
  const esc=(s)=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const ebtn=(title,act,off=false)=>`<button type="button" data-action="${act}" ${off?'disabled':''}>${title}</button>`;
  function sideTask(z){
@@ -61,16 +62,16 @@
  function sideReady(z){const a=state.v53SideActive[z];if(!a)return false;
   return z%4===0?state.steps-a.steps>=24:z%4===1?state.battleWins-a.wins>=2:z%4===2?state.v51Puzzles?.includes(z):state.v51Caches?.includes(z);
  }
- function sideDialog(){if(!ready())return;checkData();const z=state.zone,done=state.v53SideDone.includes(z),started=!!state.v53SideActive[z];
-  modal('📜 Ortsauftrag: '+AREAS[z].name,`<div class="v53-flavor"><strong>${esc(SIDESTORIES[z])}</strong><p>${done?'✅ Du hast dem Bewohner geholfen.':sideTask(z)}</p><small>Ort ${z+1} von ${AREAS.length} · Nimm den Auftrag an, erfülle das angezeigte Ziel und hole die Belohnung ab. Einmal pro Spielstand.</small></div>`,
+ function sideDialog(){if(!ready())return;checkData();if(state.zone>=SIDESTORIES.length)return window.AuriMonEpic?.openQuest?.(state.zone);const z=state.zone,done=state.v53SideDone.includes(z),started=!!state.v53SideActive[z];
+  modal('📜 Ortsauftrag: '+AREAS[z].name,`<div class="v53-flavor"><strong>${esc(SIDESTORIES[z])}</strong><p>${done?'✅ Du hast dem Bewohner geholfen.':sideTask(z)}</p><small>Ort ${z+1} von ${SIDESTORIES.length} · Nimm den Auftrag an, erfülle das angezeigte Ziel und hole die Belohnung ab. Einmal pro Spielstand.</small></div>`,
   done?[[ 'Zurück','close']]:[[started?(sideReady(z)?'🎁 Belohnung abholen':'Auftrag prüfen'):'Auftrag annehmen','v53-side-progress','gold'],['Zurück','close']]);
  }
- function sideProgress(){checkData();const z=state.zone;if(state.v53SideDone.includes(z))return sideDialog();
+ function sideProgress(){checkData();if(state.zone>=SIDESTORIES.length)return window.AuriMonEpic?.openQuest?.(state.zone);const z=state.zone;if(state.v53SideDone.includes(z))return sideDialog();
   if(!state.v53SideActive[z]){state.v53SideActive[z]={steps:state.steps,wins:state.battleWins};save();return sideDialog()}
   if(!sideReady(z))return sideDialog();
   state.v53SideDone.push(z);delete state.v53SideActive[z];state.coins+=120+z*22;
   const reward=z%3===0?'candy':z%3===1?'greatball':'superpotion';gainItem(reward,1);save();render();
-  modal('🎉 Ortsauftrag abgeschlossen!',`Du erhältst ${120+z*22} Münzen und ${esc(ITEM_INFO[reward][0])}. Geschaffte Ortsaufträge: ${state.v53SideDone.length}/${AREAS.length}.`,[['Weiter','close','gold']]);
+  modal('🎉 Ortsauftrag abgeschlossen!',`Du erhältst ${120+z*22} Münzen und ${esc(ITEM_INFO[reward][0])}. Geschaffte Ortsaufträge: ${state.v53SideDone.length}/${SIDESTORIES.length}.`,[['Weiter','close','gold']]);
  }
  function ruinPattern(z){return [(z+1)%4,(z+2)%4,(z+3)%4]}
  function ruinDialog(){if(!ready())return;checkData();const z=state.zone;
@@ -134,10 +135,10 @@
   modal('🥚 Fossil wiederbelebt!',`${art(id)}<b>${POKE[id].name}</b> ist geschlüpft! Es wartet ${target==='box'?'in deiner AuriMon-Box':'in deinem Team'}.`,[['Juhu!','close','gold']]);
  }
  function overview(){if(!ready())return;checkData();
-  const current=state.zone,quest=state.v53SideDone.includes(current)?'✅ Abgeschlossen':sideReady(current)?'🎁 Belohnung bereit':state.v53SideActive[current]?'⏳ In Arbeit':'✨ Neu';
-  modal('📖 Abenteuer 5.3',`<p>Weitere Geschichten aus den 10 Regionen – alle ohne neue AuriMon-Arten.</p>
+  const current=state.zone,quest=current>=SIDESTORIES.length?(state.epicQuests?.[current]?.claimed?'✅ Kristallchronik abgeschlossen':state.epicQuests?.[current]?'⏳ Kristallchronik läuft':'✨ Kristallchronik neu'):state.v53SideDone.includes(current)?'✅ Abgeschlossen':sideReady(current)?'🎁 Belohnung bereit':state.v53SideActive[current]?'⏳ In Arbeit':'✨ Neu';
+  modal('📖 Abenteuer 5.3',`<p>10 klassische Ortsaufträge und 30 Kristallchroniken in 40 Regionen.</p>
    <div class="v53-grid">
-    <div class="v53-card"><b>📜 Ortsaufträge</b><small>${state.v53SideDone.length}/${AREAS.length} erledigt · Hier: ${quest}</small>${ebtn('Ortsauftrag öffnen','v53-side')}</div>
+    <div class="v53-card"><b>📜 Ortsaufträge</b><small>${state.v53SideDone.length}/${SIDESTORIES.length} klassische · ${epicCount()}/30 Kristallchroniken · Hier: ${quest}</small>${ebtn('Ortsauftrag öffnen','v53-side')}</div>
     <div class="v53-card"><b>🕶️ Schattenchronik</b><small>${state.v53StoryWins.length}/5 Kommandanten</small>${ebtn('Kapitel ansehen','v53-story')}</div>
     <div class="v53-card"><b>🏛️ Runenruinen</b><small>${state.v53Ruins.length}/7 entschlüsselt</small>${ebtn('Ruine erkunden','v53-ruin',!RUIN_ZONES.includes(current))}</div>
     <div class="v53-card"><b>✨ Legendäre Tempel</b><small>${state.v53Temples.length}/5 entschlüsselt</small>${ebtn('Tempel erkunden','v53-temple',!TEMPLE_ENTRIES.some(t=>t.zone===current))}</div>
@@ -166,7 +167,7 @@
   return origWin();
  };
  const origTravel=renderTravel;
- renderTravel=function(){origTravel();checkData();const report=document.createElement('section');report.className='v53-report';report.innerHTML=`<h2>🗝️ Erweiterte Abenteuer</h2><p>📜 Ortsaufträge: ${state.v53SideDone.length}/${AREAS.length} · 🕶️ Schattenchronik: ${state.v53StoryWins.length}/5</p><p>🏛️ Ruinen: ${state.v53Ruins.length}/7 · ✨ Tempel: ${state.v53Temples.length}/5</p>${ebtn('📖 Geschichten & Rätsel ansehen','v53-overview')}`;$('journal')?.appendChild(report)};
+ renderTravel=function(){origTravel();checkData();const report=document.createElement('section');report.className='v53-report';report.innerHTML=`<h2>🗝️ Erweiterte Abenteuer</h2><p>📜 Ortsaufträge: ${state.v53SideDone.length}/${SIDESTORIES.length} · 💎 Kristallchroniken: ${epicCount()}/30 · 🕶️ Schattenchronik: ${state.v53StoryWins.length}/5</p><p>🏛️ Ruinen: ${state.v53Ruins.length}/7 · ✨ Tempel: ${state.v53Temples.length}/5</p>${ebtn('📖 Geschichten & Rätsel ansehen','v53-overview')}`;$('journal')?.appendChild(report)};
  const origGuide=showGuide;
  showGuide=function(){origGuide();$('modal-content')?.insertAdjacentHTML('beforeend','<p>🗝️ 5.3: Starte im Schnellmenü die Abenteuerübersicht. Die 10 Orte besitzen Nebenaufträge. Erkunde ungewöhnliche Bauwerke, achte auf Inschriften und lass dir von Bewohnern helfen.</p>')};
  const extras=document.createElement('div');extras.className='v53-shortcuts';extras.innerHTML='<button type="button" data-action="v53-overview">🗝️ Abenteuer & Rätsel</button>';
