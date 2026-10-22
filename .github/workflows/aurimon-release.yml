@@ -39,7 +39,7 @@ jobs:
           # Das Repository enthaelt einen eigenen, nicht offiziell signierten Wrapper.
           # Der CI-Build nutzt ausschliesslich die verifizierte Gradle-Distribution.
           validate-wrappers: false
-      - name: JavaScript und alle 50 Karten pruefen
+      - name: JavaScript und alle 200 Karten pruefen
         shell: bash
         run: |
           set -euo pipefail
@@ -54,6 +54,8 @@ jobs:
           node tools/verify-followers.js
           node tools/verify-gen9.js
           node tools/verify-gen9-evolutions.js
+          node tools/verify-arenas.js
+          node tools/verify-exp.js
           node tools/verify-mandatory-updates.js
           node tools/verify-world50.js
           node tools/verify-quests.js
