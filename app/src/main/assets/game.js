@@ -87,11 +87,14 @@ function hpMax(id,level){
 }
 function xpNeeded(lv,id){
  if(lv>=150)return Infinity;
- // EP-Kurven: Starter mittels Mittel-Langsam, legendäre Arten Langsam, sonst Mittel-Schnell.
- const starters=[1,2,3,4,5,6,7,8,9];
+ // Alle neun Starter-Generationen wachsen mittels Mittel-Langsam.
+ // Legendäre und mysteriöse Pokémon werden über Art-Metadaten erkannt, nicht über ID-Schwellen.
+ const starterRanges=[[1,9],[152,160],[252,260],[387,395],[495,503],[650,658],[722,730],[810,818],[906,914]];
+ const starter=starterRanges.some(([first,last])=>id>=first&&id<=last);
+ const rare=!!(POKE[id]?.legendary||POKE[id]?.mythical);
  function total(level){
-  if(starters.includes(id))return Math.max(0,Math.floor(1.2*level**3-15*level**2+100*level-140));
-  if(id>=144)return Math.floor(1.25*level**3);
+  if(starter)return Math.max(0,Math.floor(1.2*level**3-15*level**2+100*level-140));
+  if(rare)return Math.floor(1.25*level**3);
   return level**3;
  }
  return Math.max(1,total(lv+1)-total(lv));
