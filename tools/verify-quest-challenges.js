@@ -113,6 +113,7 @@ function evaluate(ctx,source,body,expose){
   api.v4LeagueBattle(i);
   assert.equal(ctx.battle?.key,'league:'+i,'League challenge '+i+' unavailable');
   assert.equal(ctx.battle.enemies.length,i===4?6:5,'League team size '+i);
+  assert(ctx.battle.enemies.every(mon=>mon.level>=136&&mon.level<=150),'League levels must match 40-region endgame');
   api.battleVictory();
   assert(state.leagueWins.includes(i),'League victory '+i+' missing');
  }
@@ -138,6 +139,7 @@ function evaluate(ctx,source,body,expose){
   api.startPath(n);
   assert.equal(ctx.battle?.key,'v55:path:'+n,'Missing master trial '+n);
   assert.equal(ctx.battle.enemies.length,n===3?6:5,'Master trial team size '+n);
+  assert(ctx.battle.enemies.every(mon=>mon.level>=138&&mon.level<=150),'Master path scaled incorrectly');
   api.battleVictory();
   assert(state.v55PathWins.includes(n),'Master trial progress missing '+n);
  }
