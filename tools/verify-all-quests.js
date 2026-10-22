@@ -79,6 +79,27 @@ const themes=vm.runInNewContext(v51.match(/const THEMES=(\[[\s\S]*?\]);/)[1]);
 assert.equal(themes.length,20,'Classic theme definitions changed unexpectedly');
 assert.match(v51,/while\(THEMES.length<AREAS.length\)/,'The 40-region palette migration was removed');
 assert.match(v51,/AREAS\.slice\(0,CLASSIC_RUNE_REGIONS\)/,'Classic puzzle overview must show ten regions');
+// A quest journal must remain renderable in every unlocked extended region.
+const journalCards=[];
+const palette=themes.map(t=>Array.from(t));
+const travelContext={
+ AREAS,ELEMENT_TYPES,THEMES:palette,
+ state:{zone:0,badges:[],v51Puzzles:[],v51Caches:[],v51RoomsLoot:[]},
+ renderTravel:noop,ensure:noop,has:(arr,z)=>Array.isArray(arr)&&arr.includes(z),
+ document:{createElement:()=>({className:'',innerHTML:''})},
+ $:()=>({appendChild:node=>journalCards.push(node)})
+};
+const paletteSetup=slice(v51,' const CLASSIC_RUNE_REGIONS=10;',' const SPECIAL=');
+const travelUi=slice(v51,' const oldTravel=renderTravel;',' // Pixel-Details:');
+vm.runInNewContext(paletteSetup+'\n'+travelUi+'\nglobalThis.auditTravel=renderTravel;',
+ vm.createContext(travelContext),{timeout:3500});
+assert.equal(palette.length,40,'Extended regions have missing decorative palettes');
+for(let z=0;z<40;z++){
+ travelContext.state.zone=z;travelContext.auditTravel();
+ assert(journalCards[z]?.innerHTML.includes('10 klassischen Ortsrätsel'),
+   'Travel journal crashed or mislabelled quests in region '+z);
+}
+
 const classic={zone:0,v51Runes:{},v51Puzzles:[],v51Caches:[],bag:{},coins:0};
 const classicContext={state:classic,THEMES:themes,AREAS,ensure:noop,zName:()=>AREAS[classic.zone].name,
  has:(arr,z)=>Array.isArray(arr)&&arr.includes(z),rewards:['ball','potion','greatball','repel','superpotion','candy','revive','ether','antidote','Feuerstein','Wasserstein','Donnerstein','Blattstein','Mondstein','Tausch-Kabel'],
