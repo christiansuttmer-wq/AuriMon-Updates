@@ -1,7 +1,7 @@
 /* AuriMon 1.3.15 — keep version label reliable despite older update listeners. */
 (() => {
  'use strict';
- const VERSION='1.3.27';
+ const VERSION=document.querySelector('.brand span')?.dataset.gameVersion || '1.5.6';
  const label=document.querySelector('.brand span');
  function placeActions(){
    const toggle=document.querySelector('#page-world .aur-more-toggle');
@@ -11,7 +11,7 @@
  }
  placeActions();
  function syncVersion(){
-   const str='20 ORTE · 151 AURIMON · VERSION '+VERSION;
+   const str='DEINE AURIMON-WELT · VERSION '+VERSION;
    if(label && label.textContent!==str) label.textContent=str;
    if(window.AriMons && window.AriMons.version!==VERSION) window.AriMons.version=VERSION;
  }

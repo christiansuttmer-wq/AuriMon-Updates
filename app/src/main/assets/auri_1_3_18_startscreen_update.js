@@ -4,14 +4,14 @@
 */
 (() => {
   'use strict';
-  const CURRENT = window.AuriMonUpdateBridge?.getVersion?.() || '1.4.33';
+  const CURRENT = window.AuriMonUpdateBridge?.getVersion?.() || document.querySelector('.brand span')?.dataset.gameVersion || '1.5.6';
   const HOME_BTN_ID = 'aurimon-updates-startscreen';
   let lastStatus = 'GitHub-Updates prüfen';
   let observedPicker = null;
 
   function syncVersion() {
     const brand = document.querySelector('.brand span');
-    const value = '10 REGIONEN · 50 EBENEN · 151 AURIMON · VERSION ' + CURRENT;
+    const value = 'DEINE AURIMON-WELT · VERSION ' + CURRENT;
     if (brand && brand.textContent !== value) brand.textContent = value;
     if (window.AriMons && window.AriMons.version !== CURRENT) window.AriMons.version = CURRENT;
   }
