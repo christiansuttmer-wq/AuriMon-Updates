@@ -45,7 +45,7 @@
     const won=state.v52RivalWins.includes(state.zone),name=state.profileGender==='girl'?'Rivale Alex':'Rivalin Alex';
     return modal('⚡ '+name,won?
       `„${escapeTrainerName()}, unser letztes Duell war klasse! Lust auf eine Revanche? Mein Team trainiert weiter.“`:
-      `„Hey ${escapeTrainerName()}! Ich sammle ebenfalls alle 10 Siegel. Bei jeder wichtigen Etappe messen wir unsere Teams. Bereit für unser nächstes Duell?“`,
+      `„Hey ${escapeTrainerName()}! Ich sammle ebenfalls alle 40 Siegel. Bei jeder wichtigen Etappe messen wir unsere Teams. Bereit für unser nächstes Duell?“`,
       [[won?'Revanche':'Duell starten','v52-rival-fight','gold'],['Später','close']]);
   }
   function rivalTeam(){
