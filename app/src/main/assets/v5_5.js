@@ -5,7 +5,7 @@
 (() => {
   const MAX_SPECIES=151, PATH_NAMES=['Waldwächterin Elara','Wellenmeister Taron','Sternenforscherin Lyra','Hüter des Horizonts'];
   const PATH_TEAMS=[[3,65,71,103,143],[9,121,131,134,130],[26,135,142,149,144],[6,94,145,146,150,151]];
-  const PATH_LEVELS=[78,83,88,94];
+  const PATH_LEVELS=[138,142,146,148];
   const PROFILE_PREFIX='pokemon_abenteuer_v55_ng_backup_';
   const safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const hasProfile=()=>Number.isInteger(window.PokemonProfiles?.activeSlot)&&window.PokemonProfiles.activeSlot>=1;
@@ -14,6 +14,8 @@
   const number=x=>Number.isFinite(x)?x:0;
   const link=(label,action)=>`<button type="button" data-action="${action}">${label}</button>`;
   const unique=x=>[...new Set((Array.isArray(x)?x:[]).filter(v=>Number.isInteger(v)&&v>=1&&v<=MAX_SPECIES))];
+  // Kanto-only trophy calculations use unique(); NG+ must preserve every Gen1–9 species.
+  const uniqueAll=x=>[...new Set((Array.isArray(x)?x:[]).filter(v=>Number.isInteger(v)&&v>=1&&v<=1025))];
   const safeData=()=>{
     if(!state||typeof state!=='object')return;
     if(!Array.isArray(state.v55Trophies))state.v55Trophies=[];
@@ -37,7 +39,7 @@
     {id:'caught100',emoji:'🔎',title:'AuriDex-Forscher',goal:100,progress:()=>unique(state.caught).length,detail:'100 Arten sammeln'},
     {id:'dex151',emoji:'🌟',title:'Alle 151',goal:151,progress:()=>unique(state.caught).length,detail:'Alle 151 Kanto-Arten sammeln'},
     {id:'badge1',emoji:'🏅',title:'Erstes Siegel',goal:1,progress:()=>length(state.badges),detail:'Das erste Siegel gewinnen'},
-    {id:'badge5',emoji:'🎖️',title:'Halbzeit',goal:5,progress:()=>length(state.badges),detail:'Fünf von zehn Siegeln gewinnen'},
+    {id:'badge5',emoji:'🎖️',title:'Fünf Siegel',goal:5,progress:()=>length(state.badges),detail:'Fünf der 40 Siegel gewinnen'},
     {id:'badge10',emoji:'👑',title:'Arenenmeister',goal:AREAS.length,progress:()=>length(state.badges),detail:'Alle '+AREAS.length+' Siegel gewinnen'},
     {id:'league',emoji:'🏆',title:'Liga-Champion',goal:1,progress:()=>state.leagueDone?1:0,detail:'Meisterliga abschließen'},
     {id:'path',emoji:'💫',title:'Herr des Meisterpfads',goal:4,progress:()=>length(state.v55PathWins),detail:'Die vier neuen Prüfungen gewinnen'},
@@ -82,14 +84,14 @@
   function pathMenu(){if(!ready())return;safeData();
     if(!state.leagueDone)return modal('🔒 Der Meisterpfad','Gewinne zuerst alle ${AREAS.length} Siegel und schließe die Meisterliga ab. Danach warten vier neue Prüfungen.',[['Zurück','close']]);
     const completed=state.v55PathWins.length,allWon=completed===4;
-    const cards=PATH_NAMES.map((name,i)=>`<div class="v55-path-item ${state.v55PathWins.includes(i)?'won':''}"><div><b>${i+1}. ${safe(name)}</b><small>${state.v55PathWins.includes(i)?'✅ Gewonnen':i>completed&&!allWon?'🔒 Erst vorherige Prüfung':'⚔️ Bereit'} · Team aus ${PATH_TEAMS[i].length} AuriMon · Lv. ${Math.min(100,PATH_LEVELS[i]+state.v55Prestige*4)}+</small></div>${i>completed&&!allWon?'<button type="button" disabled>Gesperrt</button>':link(state.v55PathWins.includes(i)?'Revanche':'Kämpfen','v55-battle:'+i)}</div>`).join('');
+    const cards=PATH_NAMES.map((name,i)=>`<div class="v55-path-item ${state.v55PathWins.includes(i)?'won':''}"><div><b>${i+1}. ${safe(name)}</b><small>${state.v55PathWins.includes(i)?'✅ Gewonnen':i>completed&&!allWon?'🔒 Erst vorherige Prüfung':'⚔️ Bereit'} · Team aus ${PATH_TEAMS[i].length} AuriMon · Lv. ${Math.min(150,PATH_LEVELS[i]+state.v55Prestige*4)}+</small></div>${i>completed&&!allWon?'<button type="button" disabled>Gesperrt</button>':link(state.v55PathWins.includes(i)?'Revanche':'Kämpfen','v55-battle:'+i)}</div>`).join('');
     modal('💫 Der Meisterpfad',`<div class="v55-endgame-header"><b>${allWon?'👑 Großmeister!':'Vier Prüfungen nach der Liga'}</b><p>Vier mächtige Gegner erwarten dich. Die letzte Prüfung hat ein Team aus sechs AuriMon. Heile deine AuriMon vor jeder Runde.</p><div class="v55-meter"><i style="width:${25*completed}%"></i></div><small>${completed}/4 Prüfungen abgeschlossen</small></div><div class="v55-path-list">${cards}</div>${allWon?'<p>🏆 Deine Legende lebt weiter! Du kannst alle Prüfungen wiederholen oder Neues Spiel+ beginnen.</p>':''}`,[['Zurück','close']]);
   }
   function startPath(n){if(!ready()||!state.leagueDone||!Number.isInteger(n)||n<0||n>3)return;
     safeData();if(n>state.v55PathWins.length)return toast('🔒 Gewinne erst die vorherige Prüfung.');
     if(!chooseAlive())return toast('💚 Dein Team braucht Heilung.');
     const base=PATH_LEVELS[n]+Math.min(state.v55Prestige*4,16);
-    const enemy=PATH_TEAMS[n].map((id,i)=>newMon(id,clamp(base+Math.floor(i/2),1,100)));
+    const enemy=PATH_TEAMS[n].map((id,i)=>newMon(id,clamp(base+Math.floor(i/2),1,150)));
     closeModal();startBattle('v55-path',enemy,PATH_NAMES[n],'v55:path:'+n,2400+n*850);
   }
   function completedDex(){return unique(state.caught).length===MAX_SPECIES}
@@ -100,7 +102,7 @@
     if(state.v55FinalReward)return modal('🌟 Ehrenplatz im AuriDex','Deine 151 AuriMon sind verewigt. Die besondere Belohnung wurde bereits verliehen.',[['Halle der Legenden','v55-hall'],['Zurück','close']]);
     modal('🌟 151 AuriMon — Meisterfeier!',`<div class="v55-celebration"><span>🏆 ✨ 🌟</span><b>Du hast alle 151 AuriMon der ersten Generation entdeckt und gefangen!</b><p>Die Professorin veranstaltet eine besondere Feier für dich. Als Belohnung warten 3.000 Münzen, fünf EP-Bonbons und ein Eintrag in der Halle der Legenden.</p></div>`,[['Belohnung abholen','v55-final-claim','gold'],['Später','close']]);
   }
-  function record(title){safeData();state.v55Hall.push({title,at:Date.now(),trainer:state.profileName||'Trainer',run:state.v55Prestige,team:state.party.map(m=>m.id).filter(id=>id>=1&&id<=151)});state.v55Hall=state.v55Hall.slice(-15)}
+  function record(title){safeData();state.v55Hall.push({title,at:Date.now(),trainer:state.profileName||'Trainer',run:state.v55Prestige,team:state.party.map(m=>m.id).filter(id=>id>=1&&id<=1025)});state.v55Hall=state.v55Hall.slice(-15)}
   function claimFinal(){if(!ready()||!state.leagueDone||!completedDex()||state.v55FinalReward)return finalMenu();
     state.v55FinalReward=true;state.coins+=3000;state.bag.candy=(state.bag.candy||0)+5;
     record('151 AuriMon – Vollständiger AuriDex');save();render();
@@ -119,7 +121,7 @@
     fresh.profileName=old.profileName;fresh.profileGender=old.profileGender;fresh.starterChosen=true;
     fresh.party=JSON.parse(JSON.stringify(old.party));fresh.box=JSON.parse(JSON.stringify(old.box||[]));
     fresh.activeUid=old.activeUid;fresh.followerUid=old.followerUid;
-    fresh.seen=unique(old.seen);fresh.caught=unique(old.caught);
+    fresh.seen=uniqueAll(old.seen);fresh.caught=uniqueAll(old.caught);
     fresh.coins=Math.min(5000,Math.max(350,Number(old.coins)||0));
     fresh.bag={...START_BAG,ball:Math.max(15,Math.min(99,old.bag?.ball||0)),greatball:Math.max(4,Math.min(99,old.bag?.greatball||0)),potion:8,superpotion:6,revive:4,candy:Math.min(15,old.bag?.candy||0)};
     fresh.v54Photos=JSON.parse(JSON.stringify(old.v54Photos||[]));
@@ -146,7 +148,7 @@
   startBattle=function(kind,enemies,name,key,reward){
     if(ready()&&state.v55Prestige>0 && !['wild','safari','trainer','gym','boss'].includes(kind)){
       const strongest=Math.max(5,...state.party.map(m=>m.level||5));
-      enemies.forEach(e=>{if(!POKE[e.id]||e.id>151)return;e.level=clamp(Math.max(e.level+Math.min(state.v55Prestige*4,20),strongest-5),1,100);e.hp=hpMax(e.id,e.level)})
+      enemies.forEach(e=>{if(!POKE[e.id]||e.id>151)return;e.level=clamp(Math.max(e.level+Math.min(state.v55Prestige*4,20),strongest-5),1,150);e.hp=hpMax(e.id,e.level)})
     }
     return origStartBattle(kind,enemies,name,key,reward);
   };
