@@ -25,8 +25,8 @@ android {
         applicationId = "de.aurelio.pokemonabenteuer"
         minSdk = 26
         targetSdk = 35
-        versionCode = 174
-        versionName = "1.5.2"
+        versionCode = 175
+        versionName = "1.5.3"
     }
     signingConfigs {
         create("aurimonRelease") {
