@@ -49,7 +49,9 @@ for(const [key,r] of Object.entries(rules)){
   auriEvoFocus:r.relativeStats===1?'attack':r.relativeStats===-1?'defense':'balance'};
  const form=cat.bySpecies[p.id]?.find(f=>f.formId===r.formId);
  if(r.formId>=10000&&form)p.formKey=form.key;
- state.party=[p,{uid:'partner',id:r.partySpecies||1,level:120,hp:100}];
+ const apiTypes=['Normal','Kampf','Flug','Gift','Boden','Gestein','Käfer','Geist','Stahl','Feuer','Wasser','Pflanze','Elektro','Psycho','Eis','Drache','Unlicht','Fee'];
+ const typePartner=r.partyType?D.find(q=>q.types.includes(apiTypes[r.partyType-1]))?.id:1;
+ state.party=[p,{uid:'partner',id:r.partySpecies||1,level:120,hp:100},{uid:'type-partner',id:typePartner||1,level:120,hp:100}];
  state.steps=100000;state.coins=1000000;
  fakeHour=r.time==='night'?23:12;
  const reason=ctx.evolutionReason(p,evo);
