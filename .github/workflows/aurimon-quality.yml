@@ -35,6 +35,7 @@ jobs:
           node tools/verify-gen9.js
           node tools/verify-gen9-evolutions.js
           node tools/verify-special-forms.js
+          node tools/verify-special-evolutions.js
           node tools/verify-world50.js
           node tools/verify-quests.js
           node tools/verify-all-quests.js
