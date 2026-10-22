@@ -139,5 +139,5 @@
  starterScreen=function(){originalStarter();const m=$('modal-content');if(m){
   const text=m.querySelector('.muted');if(text)text.textContent='40 Regionen, 200 Ebenen und 1.025 Pokémon – deine Abenteuer bleiben im Spielerprofil gespeichert.';
  }};
- window.AuriMonEpic={questTitles:questTitles.slice(),talkToGuide:investigate,progress,ascendDialog,inspect:()=>({worldCount:window.PokemonGame.world50.getCount(),species:D.length,levelLimit:150,elementTypes:ELEMENT_TYPES.slice(),availableCrystalKinds:ELEMENT_TYPES.length})};
+ window.AuriMonEpic={questTitles:questTitles.slice(),openQuest:renderQuest,talkToGuide:investigate,progress,ascendDialog,inspect:()=>({worldCount:window.PokemonGame.world50.getCount(),species:D.length,levelLimit:150,elementTypes:ELEMENT_TYPES.slice(),availableCrystalKinds:ELEMENT_TYPES.length})};
 })();
