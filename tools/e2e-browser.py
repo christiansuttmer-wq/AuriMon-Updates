@@ -45,6 +45,13 @@ with sync_playwright() as pw:
  assert state["activeSlot"]==1 and state["starter"],"Could not create a real player profile: "+str(state)
  assert state["regions"]==200,"World does not contain 200 stages: "+str(state)
  checks.append("Profile created and first Pokémon selected")
+ head=page.locator(".brand span").inner_text()
+ assert "VERSION 1.5.6" in head, "Stale version header: "+head
+ page.evaluate("() => doAction(\u0027regional-dex\u0027)")
+ regional=page.locator("#modal-content").inner_text()
+ assert "Regionaldex" in regional and "Wildarten" not in regional[:20], "Regionaldex dialog missing"
+ page.evaluate("() => closeModal()")
+ checks.append("Version header and Regionaldex open correctly")
  checks.append("All 200 stages initialized in real Chromium")
  def screenshot(stage,name):
   def change():

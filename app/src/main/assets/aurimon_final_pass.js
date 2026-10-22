@@ -63,5 +63,10 @@
     }
     return previousAction(action, element);
   };
+  // Legacy story modules used to overwrite the current game version and region counts.
+  if (typeof document !== 'undefined') {
+    const brand = document.querySelector('.brand span[data-game-version]');
+    if (brand) brand.textContent = 'DEINE AURIMON-WELT · VERSION ' + brand.dataset.gameVersion;
+  }
   window.AuriFinalPass = {regionCount: sources.length, getRegionalSpecies: zone => (sources[zone] || []).slice()};
 })();

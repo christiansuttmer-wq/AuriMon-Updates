@@ -35,8 +35,10 @@ const teamNames=[...v53.matchAll(/\['([^']+)','Das Schatten-Team/g)];
 if(teamLen!==5)warn('high','Shadow storyline','Five chapter narrative expects 5 commanders; actual accessible TEAM_ZONES='+teamLen);
 if(ruinLen!==7)warn('medium','Ruins','Quest interface announces 7 ruins, but RUIN_ZONES has '+ruinLen);
 const story=fs.readFileSync(path.join(root,'auri_1_3_12_story_shop.js'),'utf8');
-const chapters=story.slice(story.indexOf('const chapters = ['),story.indexOf('];',story.indexOf('const chapters = [')));
-const chapterTitles=[...chapters.matchAll(/^\s*\['([^']+)'/gm)].map(m=>m[1]);
+const chapterStart=story.search(/const chapters\\s*=\\s*\\[/);
+const chapterEnd=chapterStart>=0?story.indexOf('];',chapterStart):-1;
+const chapters=chapterStart>=0&&chapterEnd>chapterStart?story.slice(chapterStart,chapterEnd):'';
+const chapterTitles=[...chapters.matchAll(/^\\s*\\[(?:"([^"]+)"|'([^']+)')/gm)].map(m=>m[1]||m[2]);
 counts.storyChapters=chapterTitles.length;
 if(new Set(chapterTitles).size!==chapterTitles.length)warn('high','Story','Duplicate chapter title');
 if(chapterTitles.length!==10)warn('high','Story','Expected 10 chapter titles but found '+chapterTitles.length);
@@ -61,7 +63,9 @@ try{vm.runInNewContext(code,vm.createContext(ctx),{filename:'aurimon_world50_pil
  }
 }catch(e){warn('critical','World runtime',String(e));}
 const hard=findings.filter(x=>x.severity==='critical');
-const out={version:'1.5.1',counts,findings,hardFailures:hard.length,passedStructuralChecks:hard.length===0,limits:['Source-level and simulated map checks are not a full hands-on playthrough of every quest.','Android install and save migration are not tested by this browser package.']};
+const gradle=fs.readFileSync('app/build.gradle.kts','utf8');
+const currentVersion=gradle.match(/versionName\\s*=\\s*"([^"]+)"/)?.[1]||'unbekannt';
+const out={version:currentVersion,counts,findings,hardFailures:hard.length,passedStructuralChecks:hard.length===0,limits:['Source-level and simulated map checks are not a full hands-on playthrough of every quest.','Android install and save migration are not tested by this browser package.']};
 fs.mkdirSync('browser-dist',{recursive:true});
 fs.writeFileSync('browser-dist/PRUEFBERICHT.json',JSON.stringify(out,null,2));
 let md='# AuriMon v'+out.version+' – Browser- und Inhaltsprüfung\n\n';
