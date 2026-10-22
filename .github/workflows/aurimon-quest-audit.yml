@@ -10,6 +10,8 @@ on:
       - 'tools/e2e-browser.py'
       - 'tools/qa-regions-50.py'
       - 'app/src/main/assets/aurimon_final_pass.js'
+      - 'app/src/main/assets/auri_1_3_15_auditfix.js'
+      - 'app/src/main/assets/auri_1_3_18_startscreen_update.js'
       - '.github/workflows/aurimon-quest-audit.yml'
       - 'app/src/main/assets/aurimon_world50_pilot.js'
       - 'app/src/main/assets/pokemon_gen2_9.js'
