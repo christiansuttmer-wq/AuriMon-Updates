@@ -66,7 +66,15 @@
   // Legacy story modules used to overwrite the current game version and region counts.
   if (typeof document !== 'undefined') {
     const brand = document.querySelector('.brand span[data-game-version]');
-    if (brand) brand.textContent = 'DEINE AURIMON-WELT · VERSION ' + brand.dataset.gameVersion;
+    if (brand) {
+      const expected = 'DEINE AURIMON-WELT · VERSION ' + brand.dataset.gameVersion;
+      const restore = () => { if (brand.textContent !== expected) brand.textContent = expected; };
+      restore();
+      if (typeof MutationObserver !== 'undefined') {
+        const observer = new MutationObserver(restore);
+        observer.observe(brand, {childList:true,characterData:true,subtree:true});
+      }
+    }
   }
   window.AuriFinalPass = {regionCount: sources.length, getRegionalSpecies: zone => (sources[zone] || []).slice()};
 })();
