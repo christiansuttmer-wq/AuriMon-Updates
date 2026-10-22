@@ -5,6 +5,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const base='app/src/main/assets/',source=n=>fs.readFileSync(base+n,'utf8');
 const ctx={window:{}};
+vm.runInNewContext(source('pokemon_stats_151.js'),vm.createContext(ctx));
 vm.runInNewContext(source('dex.js'),vm.createContext(ctx));
 vm.runInNewContext(source('pokemon_gen2_9.js'),ctx);
 vm.runInNewContext(source('pokemon_gen9_evolutions.js'),ctx);
