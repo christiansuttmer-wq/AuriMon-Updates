@@ -129,7 +129,7 @@ assert.equal(classic.v51Caches.length,10);
 // Seven ruin puzzles and five legendary shrines: wrong glyph sequence resets,
 // correct sequence completes, and every reward is paid once.
 const v53=src('v5_3.js'),v4=src('v4.js'),v55=src('v5_5.js');
-const legends=vm.runInNewContext(v4.match(/const V4_LEGENDS=(\{[^;]+\});/)[1]);
+const legends=vm.runInNewContext('('+v4.match(/const V4_LEGENDS=(\{[^;]+\});/)[1]+')');
 const temples=Object.entries(legends).map(([id,q])=>({id:+id,...q}));
 const ruins=[2,3,4,5,6,8,9];
 const puzzle={zone:0,v53Ruins:[],v53RuinsProgress:{},v53Temples:[],v53TemplesProgress:{},caught:[],badges:[],coins:0,bag:{}};
