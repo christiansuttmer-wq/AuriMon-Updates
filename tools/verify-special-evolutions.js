@@ -17,7 +17,7 @@ assert.equal(Object.keys(rules).length,64);
 const TYPE_NAMES=['Normal','Feuer','Wasser','Pflanze','Elektro','Eis','Kampf','Gift','Boden','Flug','Psycho','Käfer','Gestein','Geist','Drache','Unlicht','Stahl','Fee'];
 let saved=0,fakeHour=12;
 ctx.Date=class extends Date{getHours(){return fakeHour}};
-const state={party:[],box:[],bag:{ball:99,candy:10000},coins:1000000,steps:100000,badges:Array.from({length:40},(_,i)=>i)};
+const state={party:[],box:[],bag:{ball:99,candy:10000,'Tausch-Kabel':100},coins:1000000,steps:100000,badges:Array.from({length:40},(_,i)=>i)};
 for(let i=0;i<9000;i++)state.bag['evoitem_'+i]=20;
 Object.assign(ctx,{
  D,POKE,state,ITEM_INFO:{},START_BAG:{},ELEMENT_TYPES:TYPE_NAMES,
