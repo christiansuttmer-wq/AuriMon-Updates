@@ -90,7 +90,7 @@ function v4QuestRows(){const d=v4Daily();return [
  ['fangen','Fange eine neue AuriMon-Art',Math.min(1,state.caught.length-d.baseCaught),1,'candy',1],
  ['trainer','Gewinne 10 Trainerkämpfe (gesamt)',Math.min(10,state.trainerWins.length),10,'revive',2]
  ]}
-function v4CanLegend(id){const q=V4_LEGENDS[id];if(!q)return false;const badges=state.badges.length;if(badges<q.badges)return false;if(id===151&&state.caught.filter(x=>x!==151).length<150)return false;if(id===150&&state.rocketWins.length<5)return false;return true}
+function v4CanLegend(id){const q=V4_LEGENDS[id];if(!q)return false;const badges=state.badges.length;if(badges<q.badges)return false;if(id===151&&new Set(state.caught.filter(x=>Number.isInteger(x)&&x>=1&&x<=150)).size<150)return false;if(id===150&&state.rocketWins.length<5)return false;return true}
 function v4EncounterLegend(id){if(!v4CanLegend(id)){toast('🔒 Die Legenden-Quest ist noch nicht freigeschaltet.');return}if(state.caught.includes(id)){toast('✨ Diese Legende ist bereits in deinem AuriDex!');return}if(!chooseAlive()){toast('Heile erst dein Team!');return}closeModal();const m=newMon(id,id===151?72:55+Math.min(18,state.badges.length));m.shiny=false;startBattle('legend',[m],POKE[id].name,'legend:'+id,3000);}
 const v4BaseAt=atPosition;
 atPosition=function(z,x,y){if(state.dungeon)return v4CaveTile(x,y);if(AREAS[z].theme==='ocean'&&[[8,5],[9,5],[9,6]].some(a=>a[0]===x&&a[1]===y))return 'water';if(V4_CAVES.includes(z)&&x===6&&y===2)return 'cave';if(V4_ROCKET.includes(z)&&x===7&&y===3)return 'rocketteam';if(z===5&&x===6&&y===6)return 'safari';if(Object.entries(V4_LEGENDS).some(([id,q])=>q.zone===z)&&x===7&&y===6)return 'legend';return v4BaseAt(z,x,y)};
