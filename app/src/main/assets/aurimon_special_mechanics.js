@@ -12,7 +12,7 @@
  ['form_talisman','🪬 Formen-Talisman',1050]
  ];
  for(const [id,icon,price] of equipment){
-  ITEM_INFO[id]=[id.replace(/_/g,' '),icon,'Schaltet passende Spezialformen oder Kampftechniken frei.',price];
+  ITEM_INFO[id]=[icon.slice(icon.indexOf(' ')+1),icon.split(' ')[0],'Schaltet passende Spezialformen oder Kampftechniken frei.',price];
   START_BAG[id]??=0;state.bag[id]??=0;
  }
  for(const type of ELEMENT_TYPES){
@@ -78,7 +78,7 @@
  const goods=[...equipment.map(x=>x[0]),...ELEMENT_TYPES.map(x=>'z_crystal_'+x)];
  function market(){
   openModal('<h2>🔮 Spezialmarkt</h2><p>Ringe, Kristalle und Bänder bleiben im Rucksack. Einmalige Kampfaktivierungen werden pro Kampf zurückgesetzt.</p>'+
-  '<div class="special-forms-list">'+goods.map(id=>'<div class="bag-entry"><b>'+ITEM_INFO[id][1]+' '+ITEM_INFO[id][0]+
+  '<div class="special-forms-list special-market-list">'+goods.map(id=>'<div class="bag-entry"><b>'+ITEM_INFO[id][1]+' '+ITEM_INFO[id][0]+
    '</b><small>🪙 '+ITEM_INFO[id][3]+' · Tasche: '+bagCount(id)+'</small>'+
    '<button class="smallbtn gold" data-action="forms-buy:'+id+'">Kaufen</button></div>').join('')+'</div>'+
   '<button class="btn ghost" data-action="forms-back">Zum Markt</button>');
