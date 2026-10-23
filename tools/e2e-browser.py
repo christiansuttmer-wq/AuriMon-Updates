@@ -30,6 +30,8 @@ with sync_playwright() as pw:
  page.wait_for_timeout(500)
  assert page.locator('[data-profile-action="new"]').count(),"Profile picker missing"
  assert "1.025 AURIMON" in page.locator(".player-picker-heading").inner_text(),"Outdated species count on player selection"
+ assert "Liebe Trainerinnen und Trainer" in page.locator(".aur2-greeting").inner_text(), "Welcome greeting missing"
+ assert page.locator(".aur2-title-logo").evaluate("(el)=>el.complete && el.naturalWidth>0"), "AuriMon 2.0 title logo missing"
  page.locator('[data-profile-action="new"]').first.click()
  assert "1.025 AURIMON" in page.locator("#modal-content").inner_text(),"Outdated species count on trainer creation"
  assert "40 Regionen und 200 Ebenen" in page.locator("#modal-content").inner_text(),"Outdated region count on trainer creation"
@@ -49,9 +51,9 @@ with sync_playwright() as pw:
  assert state["regions"]==200,"World does not contain 200 stages: "+str(state)
  checks.append("Profile created and first Pokémon selected")
  head=page.locator(".brand span").inner_text()
- assert "VERSION 1.5.10" in head, "Stale version header: "+head
+ assert "VERSION 2.0.0" in head, "Stale version header: "+head
  page.evaluate("() => { document.querySelector(\u0027.brand span\u0027).textContent = \u0027VERALTET\u0027; }")
- assert "VERSION 1.5.10" in page.locator(".brand span").inner_text(), "Legacy modules can overwrite release header"
+ assert "VERSION 2.0.0" in page.locator(".brand span").inner_text(), "Legacy modules can overwrite release header"
  page.evaluate("() => doAction(\u0027regional-dex\u0027)")
  regional=page.locator("#modal-content").inner_text()
  assert "Regionaldex" in regional and "Wildarten" not in regional[:20], "Regionaldex dialog missing"

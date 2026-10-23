@@ -15,6 +15,10 @@ on:
       - 'app/src/main/assets/arimons_0_4.css'
       - 'app/src/main/assets/v5_5.js'
       - 'app/src/main/assets/aurimon_reset_v158.js'
+      - 'app/src/main/assets/aurimon_reset_v200.js'
+      - 'app/src/main/assets/profiles.js'
+      - 'app/src/main/assets/aurimon_brand_2_0.css'
+      - 'tools/verify-v2-welcome-reset.js'
       - 'app/src/main/assets/auri_1_3_15_auditfix.js'
       - 'app/src/main/assets/auri_1_3_18_startscreen_update.js'
       - '.github/workflows/aurimon-quest-audit.yml'
@@ -44,6 +48,7 @@ jobs:
           node tools/verify-world50.js
           node tools/verify-quests.js
           node tools/verify-gen9-evolutions.js
+          node tools/verify-v2-welcome-reset.js
 
   real-browser-quest-audit:
     runs-on: ubuntu-latest
@@ -57,9 +62,9 @@ jobs:
       - name: Offline-Browserfassung aus aktuellem App-Code bauen
         run: |
           set -euo pipefail
-          AURIMON_BROWSER_VERSION=1.5.10 python3 tools/build-browser.py
+          AURIMON_BROWSER_VERSION=2.0.0 python3 tools/build-browser.py
           # QA-Werkzeuge auf die aktuelle Offline-Version zeigen lassen.
-          sed -i 's/1\.4\.28/1.5.10/g' tools/e2e-browser.py tools/qa-regions-50.py tools/qa-regions-200.py
+          sed -i 's/1\.4\.28/2.0.0/g' tools/e2e-browser.py tools/qa-regions-50.py tools/qa-regions-200.py
           node tools/audit-content.mjs
       - name: Echtes Chromium / 200 Karten / 40 Regionen / 40 Questgebiete
         run: |
@@ -71,7 +76,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: AuriMon-v1.5.10-Quest-Browser-QA
+          name: AuriMon-v2.0.0-Quest-Browser-QA
           path: |
             browser-dist/PRUEFBERICHT.md
             browser-dist/PRUEFBERICHT.json

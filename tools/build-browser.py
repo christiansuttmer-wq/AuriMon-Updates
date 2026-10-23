@@ -3,7 +3,7 @@
 from pathlib import Path
 import os,re,json,base64,mimetypes,hashlib,zipfile,shutil
 src=Path('app/src/main/assets');dest=Path('browser-dist');dest.mkdir(exist_ok=True)
-release=os.getenv('AURIMON_BROWSER_VERSION','1.5.10')
+release=os.getenv('AURIMON_BROWSER_VERSION','2.0.0')
 files={p.relative_to(src).as_posix():p for p in src.rglob('*') if p.is_file()}
 index=(src/'index.html').read_text('utf-8')
 images={}

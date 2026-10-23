@@ -139,7 +139,8 @@ public class MainActivity extends Activity {
                 gateProgress.setVisibility(View.GONE);
                 gateMessage.setText("Pflicht-Update verfügbar!\n\nInstalliert: v" + current +
                     "\nNeu: v" + latest +
-                    "\n\nBitte installiere die neue Version. Erst danach kannst du weiterspielen. Deine Spielstände bleiben erhalten.");
+                    "\n\nBitte installiere die neue Version. Erst danach kannst du weiterspielen." +
+                    (latest.startsWith("2.0.0") ? "\n\nAchtung: Version 2.0.0 setzt wie angekündigt alle bisherigen Spielstände zurück." : "\n\nDeine neu angelegten Spielstände bleiben bei regulären Updates erhalten."));
                 gateAction.setText("Update v" + latest + " installieren");
                 gateAction.setOnClickListener(v -> updateManager.installRequiredUpdate());
                 gateAction.setVisibility(View.VISIBLE);

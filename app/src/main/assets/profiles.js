@@ -99,8 +99,12 @@
     const back='<button type="button" class="picker-back" data-profile-action="back">← Zurück</button>';
     let body='';
     if(pickerMode==='home'){
-      body=head('Dein Abenteuer beginnt!','Wähle aus, wie du spielen möchtest.');
-      body+=commonWarning+`<div class="profile-start-actions">
+      body='<img class="aur2-title-logo" src="aurimon_logo_2.webp" alt="AuriMon – Willkommen im Kristallreich" draggable="false">'+head('Dein Abenteuer beginnt!','Wähle aus, wie du spielen möchtest.');
+      body+=commonWarning;
+      body+='<div class="aur2-greeting" role="note"><strong>✨ Liebe Trainerinnen und Trainer, herzlich willkommen in AuriMon 2.0.0! ✨</strong> Eine riesige neue Reise wartet auf euch. Entdeckt fantastische Welten, findet neue Freunde und erlebt viele unvergessliche Abenteuer. Viel Spaß – euer AuriMon-Team! 💙</div>';
+      if(window.AuriReset200?.performed && window.AuriReset200.removed>1)body+='<p class="aur2-reset-note">🌟 Frischer Start: Frühere Spielstände und Sicherungen wurden wie angekündigt gelöscht.</p>';
+      if(window.AuriReset200?.error)body+='<p class="player-picker-warning" role="alert">Der alte Spielstand konnte nicht gelöscht werden. Bitte prüfe den Gerätespeicher und starte die App erneut.</p>';
+      body+=`<div class="profile-start-actions">
         <button type="button" class="profile-big-button new-game" data-profile-action="new"><span class="profile-big-symbol">✦</span><span>Neues Spiel</span></button>
         <button type="button" class="profile-big-button continue-game" data-profile-action="load"><span class="profile-big-symbol">💾</span><span>Spielstand laden</span></button>
       </div><p class="player-picker-footer">${usedCount} von ${TOTAL} Speicherplätzen belegt · Jeder Spieler hat seinen eigenen Fortschritt.</p>`;
@@ -127,6 +131,8 @@
     picker.innerHTML=`<div class="player-picker-inner picker-compact picker-mode-${pickerMode}">${body}</div>`;
   }
   function newGame(){
+    if(window.AuriReset200?.error){storageFault=true;draw();return;}
+
     const free=Array.from({length:TOTAL},(_,idx)=>idx+1).find(i=>read(slotKey(i))===null);
     if(free){chooseSlot(free);return}
     pickerMode='load';draw();
@@ -135,6 +141,8 @@
     picker.querySelector('.player-picker-heading').insertAdjacentElement('afterend',notice);
   }
   function chooseSlot(i){
+    if(window.AuriReset200?.error){storageFault=true;draw();return;}
+
     if(!Number.isInteger(i)||i<1||i>TOTAL)return;
     const raw=read(slotKey(i)),data=slotData(i);
     if(raw&&!data){storageFault=true;draw();window.alert('Dieser Spielstand ist beschädigt. Er wird zum Schutz nicht überschrieben.');return}

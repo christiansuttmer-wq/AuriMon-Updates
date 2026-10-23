@@ -7,7 +7,7 @@ from threading import Thread
 import json, os, shutil, traceback
 from playwright.sync_api import sync_playwright
 
-version=os.environ.get("AURIMON_BROWSER_VERSION","1.5.10")
+version=os.environ.get("AURIMON_BROWSER_VERSION","2.0.0")
 root=Path("browser-dist").resolve()
 html=root/("AuriMon_v"+version+"_BROWSER_OFFLINE.html")
 assert html.is_file(),str(html)
@@ -48,6 +48,10 @@ try:
         page.wait_for_timeout(450)
         check(page.locator('[data-profile-action="new"]').count()==1,"New-game button visible")
         check("1.025" in page.locator(".player-picker-heading").inner_text(),"New-game title reports 1.025 species")
+        check(page.locator(".aur2-greeting").count()==1,"Version 2.0 welcome to every player")
+        check(page.locator(".aur2-title-logo").evaluate("(el)=>el.complete && el.naturalWidth>0"),"New title logo is loaded")
+        check("aurimon_title_bg_2.webp" in page.locator("#player-picker").evaluate("(el)=>getComputedStyle(el).backgroundImage"),"Generated background used on game start")
+        check(page.locator(".player-picker-footer").inner_text().startswith("0 von 6"),"Version 2.0 resets previous profiles")
         page.locator('[data-profile-action="new"]').click()
         check("40 Regionen und 200 Ebenen" in page.locator("#modal-content").inner_text(),"Trainer setup reports 40 regions, 200 stages")
         page.locator("#profile-name").fill("Browser Tiefen QA")
