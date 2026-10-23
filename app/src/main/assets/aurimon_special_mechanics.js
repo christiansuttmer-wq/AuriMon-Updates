@@ -198,7 +198,7 @@
  aurimonDamage=function(att,tgt,move,weather='Klar'){
   const af=getForm(att),df=getForm(tgt),z=!!battle?.auriZReady&&att?.uid===chooseAlive()?.uid&&battle.auriZReady===move.type;
   if(!af&&!df&&!att.battleTeraType&&!tgt.battleTeraType&&!att.auriDyna&&!tgt.auriDyna&&!z)return oldDamage(att,tgt,move,weather);
-  const physical=['Normal','Kampf','Flug','Gift','Boden','Gestein','Käfer','Geist','Stahl'].includes(move.type);
+  const physical=aurimonAttackCategory(move)==='physical';
   const ix=physical?1:3,dx=physical?2:4;
   const ast=(af?.stats||window.POKEMON_BASESTATS[att.id])[ix],dst=(df?.stats||window.POKEMON_BASESTATS[tgt.id])[dx];
   const a=Math.max(1,Math.floor((2*ast+15)*att.level/100)+5),d=Math.max(1,Math.floor((2*dst+15)*tgt.level/100)+5);
@@ -206,6 +206,7 @@
   const stab=att.battleTeraType&&natural.includes(move.type)&&att.battleTeraType===move.type?2:
    formTypes(att).includes(move.type)||natural.includes(move.type)?1.5:1;
   const mult=effectiveness(move.type,formTypes(tgt));
+  if(move.name==='Drachenwut')return {amount:mult===0?0:40,mult,crit:false};
   const crit=Math.random()<.0625;
   const w=weather==='Regen'?(move.type==='Wasser'?1.5:move.type==='Feuer'?.5:1):
           weather==='Sonnig'?(move.type==='Feuer'?1.5:move.type==='Wasser'?.5:1):1;

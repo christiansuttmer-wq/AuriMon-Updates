@@ -1,0 +1,34 @@
+'use strict';
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const original=fs.readFileSync('app/src/main/assets/pokemon_combat_151.js','utf8');
+const special=fs.readFileSync('app/src/main/assets/aurimon_special_mechanics.js','utf8');
+const ctx={window:{POKEMON_BASESTATS:{1:[60,12,60,150,70,60],2:[80,75,155,70,20,40]}},
+ POKE:{1:{types:['Geist','Feuer']},2:{types:['Normal','Pflanze']}},
+ effectiveness:(type,types)=>type==='Drache'&&types.includes('Fee')?0:1};
+vm.runInNewContext(original+'\nglobalThis.testMove=aurimonAttackCategory;globalThis.damage=aurimonDamage;',vm.createContext(ctx));
+const move=(name,type,power=80)=>({name,type,power});
+const physical=['Tackle','Kratzer','Ruckzuckhieb','Bodycheck','Biss','Hyperzahn','Feuerzahn','Rankenhieb','Rasierblatt','Giftstachel','Steinwurf','Erdbeben','Flügelschlag','Schlecker','Käferbiss','Karateschlag','Fußkick','Metallklaue'];
+const specialNames=['Glut','Flammenwurf','Feuersturm','Aquaknarre','Blubbstrahl','Hydropumpe','Surfer','Solarstrahl','Donnerschock','Donnerblitz','Donner','Schlammbombe','Konfusion','Psychokinese','Eisstrahl','Pulverschnee','Spukball','Feenwind','Mondgewalt','Drachenpuls','Drachenwut'];
+for(const name of physical)assert.equal(ctx.testMove(move(name,'Geist')),'physical',name);
+for(const name of specialNames)assert.equal(ctx.testMove(move(name,'Geist')),'special',name);
+assert.equal(ctx.testMove({name:'Hypnose',type:'Psycho',power:0}),'status');
+assert.equal(ctx.testMove({name:'Spezialattacke',type:'Normal',power:80,category:'special'}),'special');
+const a={id:1,level:75,status:null},t={id:2,level:75,status:null};
+const lick=ctx.damage(a,t,move('Schlecker','Geist',80));
+const shadow=ctx.damage(a,t,move('Spukball','Geist',80));
+assert(shadow.amount>lick.amount,'Special Ghost attack must use SpA/SpD, not Attack/Defense');
+const rage=ctx.damage(a,t,move('Drachenwut','Drache',40));
+assert.equal(rage.amount,40);
+ctx.POKE[2].types=['Fee'];
+ctx.effectiveness=(type,types)=>type==='Drache'&&types.includes('Fee')?0:1;
+assert.equal(ctx.damage(a,t,move('Drachenwut','Drache',40)).amount,0,'Fairy immunity');
+const previous=ctx.damage(a,t,move('Schlecker','Geist',80)).amount;
+a.status='burn';
+const burnt=ctx.damage(a,t,move('Schlecker','Geist',80)).amount;
+assert(burnt.amount<previous,'Burn should reduce physical damage');
+const specialBefore=ctx.damage({...a,status:null},t,move('Spukball','Geist',80)).amount;
+const specialBurnt=ctx.damage(a,t,move('Spukball','Geist',80)).amount;
+assert(specialBurnt.amount>0,'Burn must not disable special move');
+assert.match(special,/const physical=aurimonAttackCategory\(move\)==='physical'/);
+assert.match(special,/move.name==='Drachenwut'/);
+console.log('[PASS] 39 move-category contracts, fixed Dragon Rage, burn category, Gen4+ Ghost split, special-form combat wrapper.');
