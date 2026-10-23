@@ -9,6 +9,7 @@ on:
       - 'tools/audit-content.mjs'
       - 'tools/e2e-browser.py'
       - 'tools/qa-regions-50.py'
+      - 'tools/qa-regions-200.py'
       - 'app/src/main/assets/aurimon_final_pass.js'
       - 'app/src/main/assets/arimons_0_4.js'
       - 'app/src/main/assets/arimons_0_4.css'
@@ -45,13 +46,13 @@ jobs:
 
   real-browser-quest-audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - name: Python-Skripte pruefen
         run: |
           set -euo pipefail
-          python3 -m py_compile tools/build-browser.py tools/e2e-browser.py tools/qa-regions-50.py
+          python3 -m py_compile tools/build-browser.py tools/e2e-browser.py tools/qa-regions-50.py tools/qa-regions-200.py tools/qa-regions-200.py
       - name: Offline-Browserfassung aus aktuellem App-Code bauen
         run: |
           set -euo pipefail
@@ -59,12 +60,12 @@ jobs:
           # QA-Werkzeuge auf die aktuelle Offline-Version zeigen lassen.
           sed -i 's/1\.4\.28/1.5.8/g' tools/e2e-browser.py tools/qa-regions-50.py
           node tools/audit-content.mjs
-      - name: Echtes Chromium / 200 Gebiete / 50 ursprüngliche Questgebiete
+      - name: Echtes Chromium / 200 Karten / 40 Regionen / 40 Questgebiete
         run: |
           set -euo pipefail
           python3 -m pip install --quiet playwright==1.55.0 pillow==11.1.0
           python3 tools/e2e-browser.py
-          python3 tools/qa-regions-50.py
+          python3 tools/qa-regions-200.py
       - name: Pruefberichte und Bilder archivieren
         if: always()
         uses: actions/upload-artifact@v4
@@ -74,6 +75,6 @@ jobs:
             browser-dist/PRUEFBERICHT.md
             browser-dist/PRUEFBERICHT.json
             browser-dist/BROWSER_E2E.json
-            browser-dist/REGIONEN_50_PRUEFUNG.json
-            browser-dist/REGIONEN_50_PRUEFUNG.md
+            browser-dist/REGIONEN_200_PRUEFUNG.json
+            browser-dist/REGIONEN_200_PRUEFUNG.md
             browser-dist/QA_*.png
