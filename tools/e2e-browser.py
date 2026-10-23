@@ -73,9 +73,13 @@ with sync_playwright() as pw:
  assert all(layout.values()), "Battle mechanics missing from modern controls: "+str(layout)
  page.evaluate("() => battleAction('special:dyna')")
  assert page.evaluate("() => chooseAlive()?.auriDyna?.turns")==3, "Dynamax activation failed"
+ before_move=page.evaluate("""() => ({active:chooseAlive()?.id,allyHp:chooseAlive()?.hp,enemyHp:foe()?.hp,
+   enemyStatus:foe()?.status, enemySleep:foe()?.sleepTurns, battle:!!battle,kind:battle?.kind})""")
  page.evaluate("() => battleAction('move:0')")
- turns=page.evaluate("() => ({turns:chooseAlive()?.auriDyna?.turns, active:chooseAlive()?.id, battle:!!battle, enemy:foe()?.hp})")
- assert turns["turns"]==2, "Normal move did not advance Dynamax counter: "+str(turns)
+ turns=page.evaluate("""() => ({turns:chooseAlive()?.auriDyna?.turns, active:chooseAlive()?.id, battle:!!battle,
+   enemy:foe()?.hp, modal:document.querySelector('#modal-content')?.innerText?.slice(0,140),
+   hp:chooseAlive()?.hp,gameLog:battle?.log})""")
+ assert turns["turns"]==2, "Normal move did not advance Dynamax counter: before="+str(before_move)+" after="+str(turns)
  page.evaluate("() => battleAction('special:z')")
  assert page.evaluate("() => battle?.auriZReady") is not None, "Z crystal not armed"
  page.evaluate("() => battleAction('move:1')")
