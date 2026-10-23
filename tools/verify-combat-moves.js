@@ -2,9 +2,10 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const original=fs.readFileSync('app/src/main/assets/pokemon_combat_151.js','utf8');
 const special=fs.readFileSync('app/src/main/assets/aurimon_special_mechanics.js','utf8');
-const ctx={window:{POKEMON_BASESTATS:{1:[60,12,60,150,70,60],2:[80,75,155,70,20,40]}},
+const ctx={window:{POKEMON_BASESTATS:{1:[60,65,60,150,70,60],2:[80,75,75,70,20,40]}},
  POKE:{1:{types:['Geist','Feuer']},2:{types:['Normal','Pflanze']}},
  effectiveness:(type,types)=>type==='Drache'&&types.includes('Fee')?0:1};
+ctx.Math=Object.create(Math);ctx.Math.random=()=>0.5;
 vm.runInNewContext(original+'\nglobalThis.testMove=aurimonAttackCategory;globalThis.damage=aurimonDamage;',vm.createContext(ctx));
 const move=(name,type,power=80)=>({name,type,power});
 const physical=['Tackle','Kratzer','Ruckzuckhieb','Bodycheck','Biss','Hyperzahn','Feuerzahn','Rankenhieb','Rasierblatt','Giftstachel','Steinwurf','Erdbeben','Flügelschlag','Schlecker','Käferbiss','Karateschlag','Fußkick','Metallklaue'];
