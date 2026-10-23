@@ -29,7 +29,10 @@ with sync_playwright() as pw:
  page.goto(url,wait_until="domcontentloaded",timeout=60000)
  page.wait_for_timeout(500)
  assert page.locator('[data-profile-action="new"]').count(),"Profile picker missing"
+ assert "1.025 AURIMON" in page.locator(".player-picker-heading").inner_text(),"Outdated species count on player selection"
  page.locator('[data-profile-action="new"]').first.click()
+ assert "1.025 AURIMON" in page.locator("#modal-content").inner_text(),"Outdated species count on trainer creation"
+ assert "40 Regionen und 200 Ebenen" in page.locator("#modal-content").inner_text(),"Outdated region count on trainer creation"
  page.locator("#profile-name").fill("QA Trainer")
  page.locator("#modal-content button").filter(has_text="Junge").first.click()
  page.locator("#modal-content button").filter(has_text="Abenteuer beginnen!").first.click()
@@ -53,6 +56,31 @@ with sync_playwright() as pw:
  regional=page.locator("#modal-content").inner_text()
  assert "Regionaldex" in regional and "Wildarten" not in regional[:20], "Regionaldex dialog missing"
  page.evaluate("() => closeModal()")
+ # Screenshot regression: the full special market must render correctly in landscape.
+ page.set_viewport_size({"width":1536,"height":709})
+ page.evaluate("() => doAction('forms-market')")
+ market_rows=page.locator("#modal-content .special-market-list > .bag-entry")
+ assert market_rows.count() >= 20, "Special market item list is incomplete"
+ market_layout=page.evaluate("""() => {
+   const box=document.querySelector('#modal-content');
+   const list=box.querySelector('.special-market-list');
+   const row=list.querySelector('.bag-entry');
+   const bounds=row.getBoundingClientRect();
+   const contents=[row.querySelector('b'),row.querySelector('small'),row.querySelector('button')];
+   const inside=contents.every(el => {
+     const r=el.getBoundingClientRect();
+     return r.top>=bounds.top-2 && r.bottom<=bounds.bottom+2 && r.left>=bounds.left-2 && r.right<=bounds.right+2;
+   });
+   return {layout:getComputedStyle(row).display,background:getComputedStyle(row).backgroundColor,
+     inside,title:getComputedStyle(contents[0]).color,scrollable:list.scrollHeight>=list.clientHeight};
+ }""")
+ assert market_layout["layout"]=="grid", "Special-market cards are not arranged as grid: "+str(market_layout)
+ assert market_layout["inside"], "Market buttons/labels extend outside item cards: "+str(market_layout)
+ assert market_layout["background"]=="rgb(238, 248, 255)", "Market item contrast broken: "+str(market_layout)
+ assert "form talisman" not in page.locator("#modal-content .special-market-list").inner_text(), "Raw item ID displayed to player"
+ checks.append("Special market readable: all item texts/buttons inside cards at 1536x709")
+ page.evaluate("() => closeModal()")
+ page.set_viewport_size({"width":1400,"height":900})
  # Actual battle interaction: special controls must survive the 3-column layout.
  page.evaluate("""() => {
    const a=state.party[0];a.level=100;a.hp=hpMax(a.id,a.level);
