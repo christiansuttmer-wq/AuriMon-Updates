@@ -46,14 +46,32 @@ with sync_playwright() as pw:
  assert state["regions"]==200,"World does not contain 200 stages: "+str(state)
  checks.append("Profile created and first Pokémon selected")
  head=page.locator(".brand span").inner_text()
- assert "VERSION 1.5.7" in head, "Stale version header: "+head
+ assert "VERSION 1.5.8" in head, "Stale version header: "+head
  page.evaluate("() => { document.querySelector(\u0027.brand span\u0027).textContent = \u0027VERALTET\u0027; }")
- assert "VERSION 1.5.7" in page.locator(".brand span").inner_text(), "Legacy modules can overwrite release header"
+ assert "VERSION 1.5.8" in page.locator(".brand span").inner_text(), "Legacy modules can overwrite release header"
  page.evaluate("() => doAction(\u0027regional-dex\u0027)")
  regional=page.locator("#modal-content").inner_text()
  assert "Regionaldex" in regional and "Wildarten" not in regional[:20], "Regionaldex dialog missing"
  page.evaluate("() => closeModal()")
  checks.append("Version header and Regionaldex open correctly")
+ # Regressions from screenshots: actual 20-character gallery and full 1,025-species progress.
+ page.evaluate("() => doAction('ari04-atlas')")
+ assert '20 Charakterporträts' in page.locator("#modal-content h2").inner_text()
+ assert page.locator(".ari04-atlas-person").count()==20
+ gallery=page.locator(".ari04-atlas-grid")
+ assert gallery.evaluate("(el) => el.scrollTop") == 0
+ # Old gallery scroll position must never hide the first row upon reopening.
+ gallery.evaluate("(el) => {el.scrollTop=350}")
+ page.evaluate("() => doAction('ari04-atlas')")
+ assert page.locator(".ari04-atlas-grid").evaluate("(el) => el.scrollTop")==0
+ page.evaluate("() => closeModal()")
+ page.evaluate("() => doAction('v55-finale')")
+ assert '1.025' in page.locator("#modal-content").inner_text()
+ assert '151' in page.locator("#modal-content").inner_text()
+ page.locator('button[data-action="v55-open-dex"]').click()
+ assert page.locator("#page-dex").evaluate("(el) => el.classList.contains('active')")
+ page.evaluate("() => switchPage('world')")
+ checks.append("Screenshot regressions: 20-character gallery scroll reset and full 1,025 Dex navigation")
  checks.append("All 200 stages initialized in real Chromium")
  def screenshot(stage,name):
   def change():

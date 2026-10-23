@@ -58,6 +58,7 @@ jobs:
           node tools/verify-followers.js
           node tools/verify-gen9.js
           node tools/verify-final-pass.js
+          node tools/verify-ui-reset-v158.js
           node tools/verify-gen9-evolutions.js
           node tools/verify-special-forms.js
           node tools/verify-special-evolutions.js

@@ -124,7 +124,7 @@ function mon(uid){return allMons().find(p=>p.uid===uid)}
 function hpPercent(m){return clamp(Math.round(100*m.hp/hpMax(m.id,m.level)),0,100)}
 function gainItem(id,num=1){state.bag[id]=(state.bag[id]||0)+num;save()}
 function toast(str){const el=$('toast');el.textContent=str;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2700)}
-function openModal(html){modalOpen=true;$('modal-content').innerHTML=html;$('modal-overlay').classList.remove('hidden')}
+function openModal(html){modalOpen=true;const content=$('modal-content');content.innerHTML=html;content.scrollTop=0;content.querySelectorAll('.ari04-atlas-grid').forEach(grid=>{grid.scrollTop=0});$('modal-overlay').classList.remove('hidden')}
 function closeModal(){if(!state.starterChosen)return;modalOpen=false;$('modal-overlay').classList.add('hidden');$('modal-content').innerHTML=''}
 function modal(title,text,buttons=[['Schließen','close']]){openModal(`<h2>${title}</h2><p>${text}</p><div class="dialog-actions">${buttons.map(([t,a,c])=>`<button class="btn ${c||''}" data-action="${a}">${t}</button>`).join('')}</div>`)}
 function start(){render();if(!state.starterChosen)starterScreen();else if(state.party.length===0)starterScreen()}

@@ -11,7 +11,7 @@
  const signedNumber=z=>Number.isInteger(z)&&z>=0&&z<AREAS.length?z:0;
  function pic(id){return PICS[String(id)]||'';}
  function portraitCard(p,sub='',small=false){
-  return `<div class="ari04-portrait ${small?'ari04-portrait-small':''}" style="--ari04-hue:${p.color}"><img src="${pic(p.id)}" alt="Porträt von ${ESC(p.name)}" loading="eager"><div class="ari04-person-meta"><span>${ESC(sub||p.role)}</span><strong>${ESC(p.name)}</strong><p>„${ESC(p.quote)}“</p></div></div>`;
+  return `<div class="ari04-portrait ${small?'ari04-portrait-small':''}" style="--ari04-hue:${p.color}">${pic(p.id)?`<img src="${pic(p.id)}" alt="Porträt von ${ESC(p.name)}" loading="eager">`:`<div class="ari04-portrait-initials" aria-hidden="true">${ESC(p.name.slice(0,2).toUpperCase())}</div>`}<div class="ari04-person-meta"><span>${ESC(sub||p.role)}</span><strong>${ESC(p.name)}</strong><p>„${ESC(p.quote)}“</p></div></div>`;
  }
  function shadowForZone(z){const i=SHADOW_ZONES.indexOf(z);return i<0?null:SHADOWS[i]}
  // The exact list and key controls of the classic-inspired menu are unchanged.
@@ -101,15 +101,15 @@
  };
  function openAtlas(){
    const items=LEADERS.map((p,i)=>`<button class="ari04-atlas-person" data-action="ari04-leader:${i}"><img src="${pic(i)}" alt=""><span><b>${ESC(p.name)}</b><small>${ESC(p.role)}</small><small>${state.badges.includes(i)?'🏅 Siegel gewonnen':`Ort ${i+1} · ${ESC(p.focus)}`}</small></span></button>`).join('');
-   openModal(`<h2>🏟️ Die 10 Prüfhallenleiter</h2><p>Jeder Ort hat seinen eigenen Charakter. Wähle eine Person für Details.</p><div class="ari04-atlas-grid">${items}</div><button class="btn ghost" data-action="close">Schließen</button>`);
+   openModal(`<h2>🏟️ Die ${LEADERS.length} Charakterporträts</h2><p>Unsere Porträtgalerie aus den ersten 20 Regionen. Die Welt umfasst inzwischen 40 Regionen. Wähle eine Person für Details.</p><div class="ari04-atlas-grid">${items}</div><button class="btn ghost" data-action="close">Schließen</button>`);
  }
  const oldTravel=renderTravel;
  renderTravel=function(){
    oldTravel();
    const journal=document.getElementById('journal');
    if(journal&&!journal.querySelector('.ari04-travel-info')){
-     const zone=signedNumber(state.zone),p=LEADERS[zone];
-     journal.insertAdjacentHTML('beforeend',`<section class="ari04-travel-info"><h2>🏟️ Menschen dieser Welt</h2>${portraitCard(p,'Prüfhallenleiter · '+AREAS[zone].name,true)}<button class="ari04-atlas-button" data-action="ari04-atlas">Alle 10 Leiter kennenlernen</button><div class="ari04-shadow-status">🌑 Schattenbund: ${state.rocketWins?.length||0}/5 Vorposten · ${state.v53StoryWins?.length||0}/5 Chronik-Kapitel</div></section>`);
+     const zone=signedNumber(state.zone),p=LEADERS[zone]||{id:-1,name:AREAS[zone].leader,role:'Prüfhallenleitung',color:'#70aed0',quote:'Ich erwarte dich zur nächsten Herausforderung!',focus:AREAS[zone].theme};
+     journal.insertAdjacentHTML('beforeend',`<section class="ari04-travel-info"><h2>🏟️ Menschen dieser Welt</h2>${portraitCard(p,'Prüfhallenleiter · '+AREAS[zone].name,true)}<button class="ari04-atlas-button" data-action="ari04-atlas">Charakterporträts ansehen</button><div class="ari04-shadow-status">🌑 Schattenbund: ${state.rocketWins?.length||0}/5 Vorposten · ${state.v53StoryWins?.length||0}/5 Chronik-Kapitel</div></section>`);
    }
  };
  // Portraits are reusable in the game UI and self-contained in offline browser file.

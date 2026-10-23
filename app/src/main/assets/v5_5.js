@@ -96,11 +96,16 @@
   }
   function completedDex(){return unique(state.caught).length===MAX_SPECIES}
   function finalMenu(){if(!ready())return;safeData();
-    const count=unique(state.caught).length;
-    if(!completedDex())return modal('📖 Die 151-AuriMon-Chronik',`Dir fehlen noch <b>${151-count} AuriMon-Arten</b> bis zum vollständigen Kanto-AuriDex. Dein Fortschritt: <b>${count}/151</b>.${!state.leagueDone?'<p>Der große Abschluss wartet außerdem hinter der Meisterliga.</p>':''}`,[['AuriDex ansehen','close','gold']]);
-    if(!state.leagueDone)return modal('🌟 Alle 151 AuriMon!','Du hast den vollständigen AuriDex! Besiege jetzt die Meisterliga, um die große Abschlussfeier freizuschalten.',[['Weiter','close','gold']]);
-    if(state.v55FinalReward)return modal('🌟 Ehrenplatz im AuriDex','Deine 151 AuriMon sind verewigt. Die besondere Belohnung wurde bereits verliehen.',[['Halle der Legenden','v55-hall'],['Zurück','close']]);
-    modal('🌟 151 AuriMon — Meisterfeier!',`<div class="v55-celebration"><span>🏆 ✨ 🌟</span><b>Du hast alle 151 AuriMon der ersten Generation entdeckt und gefangen!</b><p>Die Professorin veranstaltet eine besondere Feier für dich. Als Belohnung warten 3.000 Münzen, fünf EP-Bonbons und ein Eintrag in der Halle der Legenden.</p></div>`,[['Belohnung abholen','v55-final-claim','gold'],['Später','close']]);
+    const kanto=unique(state.caught).length, all=uniqueAll(state.caught).length;
+    const progress='<p>🌍 <b>Gesamter AuriDex: '+all+'/1.025</b> · Noch '+(1025-all)+' Pokémon-Arten fehlen.</p>'+
+      '<p>🏅 <b>Kanto-Chronik: '+kanto+'/151</b> · Noch '+(151-kanto)+' der ursprünglichen 151 Arten fehlen.</p>';
+    if(!completedDex())return modal('📖 Die AuriMon-Chronik',progress+
+      '<p>Die besondere Meisterfeier belohnt das vollständige Kanto-Kapitel. Für den großen AuriDex sammelst du alle 1.025 Arten.</p>'+
+      (!state.leagueDone?'<p>Die Kanto-Meisterfeier wartet außerdem hinter der Meisterliga.</p>':''),
+      [['Zum AuriDex','v55-open-dex','gold'],['Schließen','close']]);
+    if(!state.leagueDone)return modal('🌟 Kanto komplett!',progress+'<p>Du hast alle 151 Kanto-Pokémon! Besiege jetzt die Meisterliga für die Kanto-Meisterfeier.</p>',[['Zum AuriDex','v55-open-dex','gold'],['Schließen','close']]);
+    if(state.v55FinalReward)return modal('🌟 Ehrenplatz im AuriDex',progress+'<p>Deine 151 Kanto-Pokémon sind verewigt. Die Kanto-Belohnung wurde bereits verliehen.</p>',[['Halle der Legenden','v55-hall'],['Zum AuriDex','v55-open-dex']]);
+    modal('🌟 Kanto – Meisterfeier!',progress+`<div class="v55-celebration"><span>🏆 ✨ 🌟</span><b>Du hast alle 151 Pokémon der ersten Generation gefangen!</b><p>Die Professorin veranstaltet die Kanto-Meisterfeier. Als Belohnung warten 3.000 Münzen, fünf EP-Bonbons und ein Eintrag in der Halle der Legenden.</p></div>`,[['Belohnung abholen','v55-final-claim','gold'],['Später','close']]);
   }
   function record(title){safeData();state.v55Hall.push({title,at:Date.now(),trainer:state.profileName||'Trainer',run:state.v55Prestige,team:state.party.map(m=>m.id).filter(id=>id>=1&&id<=1025)});state.v55Hall=state.v55Hall.slice(-15)}
   function claimFinal(){if(!ready()||!state.leagueDone||!completedDex()||state.v55FinalReward)return finalMenu();
@@ -166,13 +171,13 @@
   };
   const origTravel=renderTravel;
   renderTravel=function(){origTravel();if(!ready())return;safeData();syncTrophies();const card=document.createElement('section');card.className='v55-travel-card';
-    card.innerHTML=`<h2>🏆 Trophäen & Endgame</h2><p>🏅 ${state.v55Trophies.length}/${TROPHIES.length} Trophäen · 💫 Meisterpfad ${state.v55PathWins.length}/4</p><p>📖 AuriDex ${unique(state.caught).length}/151 · 🔁 Neues Spiel+ ${state.v55Prestige}</p><div class="v55-actions">${link('🏆 Trophäenhalle','v55-trophies')}${link('💫 Meisterpfad','v55-path')}${link('🌟 151-AuriMon-Finale','v55-finale')}${link('📜 Ruhmeshalle','v55-hall')}${link('🔁 Neues Spiel+','v55-plus')}${link('💾 NG+-Backup','v55-restore')}</div>`;
+    card.innerHTML=`<h2>🏆 Trophäen & Endgame</h2><p>🏅 ${state.v55Trophies.length}/${TROPHIES.length} Trophäen · 💫 Meisterpfad ${state.v55PathWins.length}/4</p><p>📖 AuriDex ${uniqueAll(state.caught).length}/1.025 · Kanto ${unique(state.caught).length}/151 · 🔁 Neues Spiel+ ${state.v55Prestige}</p><div class="v55-actions">${link('🏆 Trophäenhalle','v55-trophies')}${link('💫 Meisterpfad','v55-path')}${link('📖 AuriMon-Chronik','v55-finale')}${link('📜 Ruhmeshalle','v55-hall')}${link('🔁 Neues Spiel+','v55-plus')}${link('💾 NG+-Backup','v55-restore')}</div>`;
     $('journal')?.appendChild(card);
   };
   const origAction=doAction;
   doAction=function(act,el){
     if(act==='v55-trophies')return trophies();if(act==='v55-path')return pathMenu();if(act==='v55-hall')return hall();
-    if(act==='v55-finale')return finalMenu();if(act==='v55-final-claim')return claimFinal();
+    if(act==='v55-finale')return finalMenu();if(act==='v55-open-dex'){closeModal();return switchPage('dex');}if(act==='v55-final-claim')return claimFinal();
     if(act==='v55-plus')return plusMenu();if(act==='v55-plus-confirm')return plusConfirm();
     if(act==='v55-restore')return restoreMenu();if(act==='v55-restore-confirm')return restoreConfirm();
     if(act?.startsWith('v55-battle:'))return startPath(Number(act.slice(11)));
