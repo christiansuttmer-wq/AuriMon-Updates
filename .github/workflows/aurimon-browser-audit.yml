@@ -1,104 +1,89 @@
-name: AuriMon Browser-Test und Inhaltsaudit
-
+name: AuriMon Browser-Tiefentest und Testversion
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - 'browser-build/trigger.txt'
       - '.github/workflows/aurimon-browser-audit.yml'
+      - 'browser-build/trigger.txt'
 
 permissions:
   contents: write
 
 concurrency:
-  group: aurimon-browser-audit
+  group: aurimon-browser-deep
   cancel-in-progress: false
 
 jobs:
-  browser-test:
+  complete-browser-qa:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 45
+    env:
+      AURIMON_BROWSER_VERSION: 1.5.10
     steps:
-      - name: Aktuellen AuriMon-Stand auschecken
+      - name: Aktuelles AuriMon-Projekt auschecken
         uses: actions/checkout@v4
-
-      - name: JavaScript-Syntax und Gebietslogik pruefen
+      - name: Alle JS-Dateien und strukturelle Spielregeln pruefen
         shell: bash
         run: |
           set -euo pipefail
           find app/src/main/assets -maxdepth 1 -name '*.js' -print0 | xargs -0 -n1 node --check
-          node tools/verify-world50.js
-
-      - name: Python-Browser-Builder pruefen
-        shell: bash
-        run: python3 -m py_compile tools/build-browser.py
-
-      - name: Browser-Testversion offline erstellen
+          python3 -m py_compile tools/build-browser.py tools/e2e-browser.py tools/e2e-deep-browser.py tools/qa-regions-200.py
+          for f in tools/verify-hero-atlas.js tools/verify-followers.js tools/verify-gen9.js tools/verify-final-pass.js tools/verify-combat-moves.js tools/verify-ui-reset-v158.js tools/verify-gen9-evolutions.js tools/verify-special-forms.js tools/verify-special-evolutions.js tools/verify-arenas.js tools/verify-exp.js tools/verify-mandatory-updates.js tools/verify-world50.js tools/verify-quests.js tools/verify-all-quests.js tools/verify-quest-challenges.js tools/verify-cave-quests.js tools/verify-ngplus.js; do
+            node "$f"
+          done
+      - name: Browser-Spielversion als einzelnes HTML und ZIP bauen
         shell: bash
         run: |
           set -euo pipefail
-          AURIMON_BROWSER_VERSION=1.4.28 python3 tools/build-browser.py
-
-      - name: Quests und doppelte Inhalte auditiert dokumentieren
-        shell: bash
-        run: node tools/audit-content.mjs
-
-      - name: Chromium-Browser installieren und E2E testen
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 -m pip install --quiet playwright==1.55.0
-          python3 tools/e2e-browser.py
-
-      - name: Vollpruefung aller 50 Gebiete in echtem Chromium
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 -m pip install --quiet pillow==11.1.0
-          python3 -m py_compile tools/qa-regions-50.py
-          python3 tools/qa-regions-50.py
-
-      - name: Offline-Browser-Paket als Action-Artefakt bereitstellen
+          python3 tools/build-browser.py
+          test -s browser-dist/AuriMon_v1.5.10_BROWSER_OFFLINE.html
+          test -s browser-dist/AuriMon_v1.5.10_BROWSER_KOMPLETT.zip
+          sed -i 's/1\.4\.28/1.5.10/g' tools/e2e-browser.py tools/qa-regions-200.py
+          node tools/audit-content.mjs
+      - name: Playwright und Bildpruefung vorbereiten
+        run: python3 -m pip install --quiet playwright==1.55.0 pillow==11.1.0
+      - name: Browser – Start, Trainer, Quests, Spezialkaempfe, Speicherstand
+        run: python3 tools/e2e-browser.py
+      - name: Browser – vier Bildschirmgroessen, Spezialmarkt, Kauf und Ladefunktion
+        run: python3 tools/e2e-deep-browser.py
+      - name: Browser – 200 Karten, 199 Grenzen, 40 Runen, 40 Arenen und Aufgaben
+        run: python3 tools/qa-regions-200.py
+      - name: Ergebnispaket immer in GitHub Actions speichern
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: AuriMon-v1.4.28-Browser-und-Pruefbericht
+          name: AuriMon-v1.5.10-Browser-Tiefentest
+          retention-days: 30
           path: |
-            browser-dist/AuriMon_v1.4.28_BROWSER_OFFLINE.html
-            browser-dist/AuriMon_v1.4.28_BROWSER_KOMPLETT.zip
+            browser-dist/AuriMon_v1.5.10_BROWSER_OFFLINE.html
+            browser-dist/AuriMon_v1.5.10_BROWSER_KOMPLETT.zip
+            browser-dist/browser_build.json
             browser-dist/PRUEFBERICHT.md
             browser-dist/PRUEFBERICHT.json
-            browser-dist/browser_build.json
             browser-dist/BROWSER_E2E.json
+            browser-dist/DEEP_BROWSER_QA.md
+            browser-dist/DEEP_BROWSER_QA.json
+            browser-dist/REGIONEN_200_PRUEFUNG.md
+            browser-dist/REGIONEN_200_PRUEFUNG.json
             browser-dist/QA_*.png
-            browser-dist/REGIONEN_50_PRUEFUNG.md
-            browser-dist/REGIONEN_50_PRUEFUNG.json
-            browser-dist/REGIONEN_10_KARTENVORSCHAU.png
-            browser-dist/SPIELFELD_HANDY_QUERFORMAT.png
-            browser-dist/REGION_*.png
-
-      - name: Gepruefte Browserfassung und alle 10 Regionenbilder als Release bereitstellen
+            browser-dist/REGIONEN_40_KARTENVORSCHAU.png
+      - name: Nur nach allen Tests Browserversion zum bestehenden Release hochladen
+        shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        shell: bash
         run: |
           set -euo pipefail
-          tag="v1.4.28"
-          gh release view "$tag" --json tagName --jq .tagName | grep -Fx "$tag"
-          for file in browser-dist/AuriMon_v1.4.28_BROWSER_OFFLINE.html browser-dist/AuriMon_v1.4.28_BROWSER_KOMPLETT.zip browser-dist/REGIONEN_50_PRUEFUNG.md browser-dist/REGIONEN_50_PRUEFUNG.json browser-dist/REGIONEN_10_KARTENVORSCHAU.png; do
-            test -s "$file"
-          done
-          gh release upload "$tag" \
-            browser-dist/AuriMon_v1.4.28_BROWSER_OFFLINE.html \
-            browser-dist/AuriMon_v1.4.28_BROWSER_KOMPLETT.zip \
+          gh release view "v1.5.10" --json tagName --jq .tagName | grep -Fx "v1.5.10"
+          gh release upload "v1.5.10" --clobber \
+            browser-dist/AuriMon_v1.5.10_BROWSER_OFFLINE.html \
+            browser-dist/AuriMon_v1.5.10_BROWSER_KOMPLETT.zip \
             browser-dist/PRUEFBERICHT.md \
             browser-dist/PRUEFBERICHT.json \
             browser-dist/BROWSER_E2E.json \
-            browser-dist/browser_build.json \
-            browser-dist/REGIONEN_50_PRUEFUNG.md \
-            browser-dist/REGIONEN_50_PRUEFUNG.json \
-            browser-dist/REGIONEN_10_KARTENVORSCHAU.png \
-            browser-dist/SPIELFELD_HANDY_QUERFORMAT.png \
-            browser-dist/REGION_*.png \
-            browser-dist/QA_*.png \
-            --clobber
+            browser-dist/DEEP_BROWSER_QA.md \
+            browser-dist/DEEP_BROWSER_QA.json \
+            browser-dist/REGIONEN_200_PRUEFUNG.md \
+            browser-dist/REGIONEN_200_PRUEFUNG.json \
+            browser-dist/REGIONEN_40_KARTENVORSCHAU.png \
+            browser-dist/QA_*.png
