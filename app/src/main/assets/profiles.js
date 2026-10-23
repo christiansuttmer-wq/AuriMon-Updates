@@ -95,7 +95,7 @@
     const valid=occupied.filter(p=>p.data);
     const usedCount=occupied.filter(p=>p.raw!==null).length;
     const commonWarning=storageFault?'<p class="player-picker-warning" role="alert">⚠️ Speichern ist momentan nicht möglich. Bitte den Gerätespeicher prüfen.</p>':'';
-    const head=(title,description='')=>`<header class="player-picker-heading"><div class="eyebrow">⚡ AURIMON · 151 AURIMON</div><h1>${title}</h1>${description?`<p>${description}</p>`:''}</header>`;
+    const head=(title,description='')=>`<header class="player-picker-heading"><div class="eyebrow">⚡ AURIMON · 1.025 AURIMON</div><h1>${title}</h1>${description?`<p>${description}</p>`:''}</header>`;
     const back='<button type="button" class="picker-back" data-profile-action="back">← Zurück</button>';
     let body='';
     if(pickerMode==='home'){
