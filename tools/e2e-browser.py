@@ -61,8 +61,9 @@ with sync_playwright() as pw:
    state.bag['z_crystal_'+POKE[a.id].types[0]]=1;
    const target=newMon(143,60);
    // Isolate special-mechanic turns from random KOs in this UI test.
-   target.hp=100000;target.status='sleep';target.sleepTurns=99;
    startBattle('wild',[target],'QA Spezialkampf','qa-special',0);
+   // Some battle wrappers normalize enemy HP on entry; set the QA tank after entry.
+   const enemy=foe();enemy.hp=100000;enemy.status='sleep';enemy.sleepTurns=99;
  }""")
  layout=page.evaluate("""() => ({
    columns:!!document.querySelector('.auri131-stage'),
