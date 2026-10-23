@@ -15,3 +15,5 @@ QA landscape right navigation and frame height fix
 Landscape frame hit-test diagnostics
 
 Remove empty 30px world-top row on short landscape and retest
+
+AuriMon 2.0.0 full browser validation after signed release: new crystal branding, 6-slot wipe, welcome greeting, original PNG launch icons.
