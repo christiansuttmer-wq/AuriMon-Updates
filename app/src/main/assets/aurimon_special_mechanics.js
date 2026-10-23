@@ -160,6 +160,27 @@
   }
   if(battle===current){renderBattle();save()}
  };
+ // Four-move + PP combat is driven by v4UseMove, not battleAttack.
+ // Bind Z crystals and 3-turn Dynamax to the action players can actually select.
+ const oldUseMove=v4UseMove;
+ v4UseMove=function(index){
+  if(!battle)return oldUseMove(index);
+  const current=battle,p=chooseAlive(),move=index===99?null:v4Moves(p)[index],beforePP=move?.pp;
+  const ready=current.auriZReady;
+  const result=oldUseMove(index);
+  const attempted=index===99||!!(move&&move.pp<beforePP);
+  if(!attempted||!p)return result;
+  if(ready&&move?.type===ready&&!current.auriZUsed){
+   current.auriZReady=null;current.auriZUsed=true;
+   if(battle===current)battle.log+=' ✨ Z-Kristall eingesetzt!';
+  }
+  if(p.auriDyna&&battle===current){
+   p.auriDyna.turns--;
+   if(p.auriDyna.turns<=0){revert(p);battle.log+=' ⌚ Dynamax beendet.'}
+  }
+  if(battle===current){renderBattle();save()}
+  return result;
+ };
  const oldSwitch=battleSwitch;
  battleSwitch=function(uid){const r=oldSwitch(uid);if(battle)renderBattle();return r};
  const oldAction=doAction;
@@ -235,7 +256,9 @@
    if(life)life.textContent='⌚ '+p.auriDyna.turns+' Runden · '+p.hp+' KP';
    if(bar)bar.style.width=Math.min(100,100*p.hp/(2*hpMax(p.id,p.level)))+'%';
   }
-  const controls=box.querySelector('.battleactions');if(!controls)return;
+  // The modern 3-column battle UI moves the original action buttons into item-grid.
+  // Never discard Mega, Tera, Z and Dynamax controls when .battleactions was removed.
+  const controls=box.querySelector('.battleactions')||box.querySelector('.auri131-item-grid');if(!controls)return;
   const available=[];
   if(!battle.auriUsed){
    if(formsFor(p.id).some(f=>f.kind==='mega')&&bagCount('mega_ring')&&bagCount('mega_stone'))available.push(['💎 Mega','mega']);

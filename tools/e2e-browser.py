@@ -53,6 +53,33 @@ with sync_playwright() as pw:
  regional=page.locator("#modal-content").inner_text()
  assert "Regionaldex" in regional and "Wildarten" not in regional[:20], "Regionaldex dialog missing"
  page.evaluate("() => closeModal()")
+ # Actual battle interaction: special controls must survive the 3-column layout.
+ page.evaluate("""() => {
+   const a=state.party[0];a.level=100;a.hp=hpMax(a.id,a.level);
+   state.bag.dynamax_band=1;
+   state.bag.tera_orb=1;
+   state.bag['z_crystal_'+POKE[a.id].types[0]]=1;
+   startBattle('wild',[newMon(143,60)],'QA Spezialkampf','qa-special',0);
+ }""")
+ layout=page.evaluate("""() => ({
+   columns:!!document.querySelector('.auri131-stage'),
+   dyna:!!document.querySelector('[data-battle="special:dyna"]'),
+   tera:!!document.querySelector('[data-battle="special:tera"]'),
+   z:!!document.querySelector('[data-battle="special:z"]')
+ })""")
+ assert all(layout.values()), "Battle mechanics missing from modern controls: "+str(layout)
+ page.evaluate("() => battleAction('special:dyna')")
+ assert page.evaluate("() => chooseAlive()?.auriDyna?.turns")==3, "Dynamax activation failed"
+ page.evaluate("() => battleAction('move:0')")
+ turns=page.evaluate("() => chooseAlive()?.auriDyna?.turns")
+ assert turns==2, "Normal move did not advance Dynamax counter: "+str(turns)
+ page.evaluate("() => battleAction('special:z')")
+ assert page.evaluate("() => battle?.auriZReady") is not None, "Z crystal not armed"
+ page.evaluate("() => battleAction('move:1')")
+ z_used=page.evaluate("() => battle?.auriZUsed")
+ assert z_used is True, "Z boost not consumed by real move"
+ page.evaluate("""() => { battle=null; document.querySelector('#battle-overlay')?.classList.add('hidden'); }""")
+ checks.append("Real 3-column combat controls, Dynamax turn countdown and single-use Z moves")
  checks.append("Version header and Regionaldex open correctly")
  # Regressions from screenshots: actual 20-character gallery and full 1,025-species progress.
  page.evaluate("() => doAction('ari04-atlas')")

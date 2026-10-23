@@ -19,6 +19,7 @@ on:
       - 'app/src/main/assets/auri_1_3_18_startscreen_update.js'
       - '.github/workflows/aurimon-quest-audit.yml'
       - 'app/src/main/assets/aurimon_world50_pilot.js'
+      - 'app/src/main/assets/aurimon_special_mechanics.js'
       - 'app/src/main/assets/pokemon_gen2_9.js'
       - 'app/src/main/assets/aurimon_2_0.js'
       - 'app/src/main/assets/game.js'
