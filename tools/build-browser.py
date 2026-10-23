@@ -43,12 +43,7 @@ get(){return desc.get.call(this)},set(v){const name=String(v).replace(/^\.\//,''
 window.AURIMON_BROWSER_TEST=true;})();
 </script>'''.replace('__ASSETS__',assetjson)
 index=index.replace('</head>',prelude+'</head>',1)
-# In old extension scripts several stale version strings still overwrite the header.
-index=re.sub(r'1\.4\.(22|23)',release,index)
-# Browser-only visual label repair: many legacy scripts overwrite the header.
-index=re.sub(r'(?:10|20) ORTE · 151 AURIMON','10 REGIONEN · 50 EBENEN · 151 AURIMON',index)
-index=re.sub(r'(?<=VERSION )1\\.\\d+\\.\\d+',release,index)
-index=index.replace("const VERSION='1.3.27'","const VERSION='1.4.28'")
+# Test the real game code: never silently rewrite old strings or versions inside JS.
 index=index.replace('</body>','<script>document.documentElement.dataset.browserTest="true";</script></body>',1)
 html=dest/('AuriMon_v'+release+'_BROWSER_OFFLINE.html');html.write_text(index,'utf-8')
 folder=dest/('AuriMon_v'+release+'_Browser_Ordner')
