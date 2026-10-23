@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Build a fully offline HTML browser preview and zip of the v1.4.26 asset tree."""
+"""Build a self-contained HTML browser test from the currently checked-out Android game assets."""
 from pathlib import Path
 import os,re,json,base64,mimetypes,hashlib,zipfile,shutil
 src=Path('app/src/main/assets');dest=Path('browser-dist');dest.mkdir(exist_ok=True)
-release=os.getenv('AURIMON_BROWSER_VERSION','1.4.28')
+release=os.getenv('AURIMON_BROWSER_VERSION','1.5.10')
 files={p.relative_to(src).as_posix():p for p in src.rglob('*') if p.is_file()}
 index=(src/'index.html').read_text('utf-8')
 images={}
@@ -54,7 +54,7 @@ html=dest/('AuriMon_v'+release+'_BROWSER_OFFLINE.html');html.write_text(index,'u
 folder=dest/('AuriMon_v'+release+'_Browser_Ordner')
 for name,p in files.items():
  target=folder/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(p,target)
-(folder/'START_HIER.txt').write_text('AuriMon '+release+' Browser-Test\nindex.html im Browser starten.\nAlle Daten bleiben lokal im Browser. Keine Verbindung zur Android-App oder ihren Spielstaenden.\n','utf-8')
+(folder/'START_HIER.txt').write_text('AuriMon '+release+' Browser-Test\nindex.html im Browser starten.\nBrowser-Spielstaende sind separat von der Android-App. Online-Artworks brauchen eine Internetverbindung.\n','utf-8')
 zpath=dest/('AuriMon_v'+release+'_BROWSER_KOMPLETT.zip')
 with zipfile.ZipFile(zpath,'w',zipfile.ZIP_DEFLATED,6) as z:
  for p in folder.rglob('*'):
