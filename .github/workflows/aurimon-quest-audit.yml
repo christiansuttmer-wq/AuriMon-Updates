@@ -57,9 +57,9 @@ jobs:
       - name: Offline-Browserfassung aus aktuellem App-Code bauen
         run: |
           set -euo pipefail
-          AURIMON_BROWSER_VERSION=1.5.8 python3 tools/build-browser.py
+          AURIMON_BROWSER_VERSION=1.5.9 python3 tools/build-browser.py
           # QA-Werkzeuge auf die aktuelle Offline-Version zeigen lassen.
-          sed -i 's/1\.4\.28/1.5.8/g' tools/e2e-browser.py tools/qa-regions-50.py tools/qa-regions-200.py
+          sed -i 's/1\.4\.28/1.5.9/g' tools/e2e-browser.py tools/qa-regions-50.py tools/qa-regions-200.py
           node tools/audit-content.mjs
       - name: Echtes Chromium / 200 Karten / 40 Regionen / 40 Questgebiete
         run: |
@@ -71,7 +71,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: AuriMon-v1.5.8-Quest-Browser-QA
+          name: AuriMon-v1.5.9-Quest-Browser-QA
           path: |
             browser-dist/PRUEFBERICHT.md
             browser-dist/PRUEFBERICHT.json

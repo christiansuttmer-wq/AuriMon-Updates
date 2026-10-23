@@ -65,5 +65,5 @@ assert(modalHtml.includes('Regionaldex')&&modalHtml.includes(areas[39].name));
 assert(modalHtml.includes('Seite 1 / '));
 assert.match(source('index.html'),/data-action="regional-dex"/);
 assert.match(source('index.html'),/aurimon_final_pass\.js/);
-assert.match(source('index.html'),/data-game-version="1\.5\.8"/);
+assert.match(source('index.html'),/data-game-version="1\.5\.9"/);
 console.log('[PASS] Complete 18-type combat table, immunities, 1,025 capturable species in 40 regions, regional guide and safe wild generation.');

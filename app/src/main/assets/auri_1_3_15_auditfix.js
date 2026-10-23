@@ -1,7 +1,7 @@
 /* AuriMon 1.3.15 — keep version label reliable despite older update listeners. */
 (() => {
  'use strict';
- const VERSION=document.querySelector('.brand span')?.dataset.gameVersion || '1.5.7';
+ const VERSION=document.querySelector('.brand span')?.dataset.gameVersion || '1.5.9';
  const label=document.querySelector('.brand span');
  function placeActions(){
    const toggle=document.querySelector('#page-world .aur-more-toggle');
