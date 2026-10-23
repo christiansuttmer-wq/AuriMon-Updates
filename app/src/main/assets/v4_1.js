@@ -33,8 +33,8 @@ function v41ApplyAvatar(){document.body.classList.toggle('profile-boy',state.pro
 function v41ProfileScreen(edit=false){
  v41SelectedGender=state.profileGender||'';
  const name=edit?escapeTrainerName():'';
- openModal(`<div class="eyebrow">DEIN EIGENES ABENTEUER · 151 AURIMON</div>
-   <h2>🌟 Erstelle deinen Trainer!</h2><p>Wie heißt du und welche Figur soll dich durch die 10 großen Regionen begleiten?</p>
+ openModal(`<div class="eyebrow">DEIN EIGENES ABENTEUER · 1.025 AURIMON</div>
+   <h2>🌟 Erstelle deinen Trainer!</h2><p>Wie heißt du und welche Figur soll dich durch 40 Regionen und 200 Ebenen begleiten?</p>
    <label class="profile-label" for="profile-name">Dein Trainername</label>
    <input class="field profile-input" id="profile-name" maxlength="18" autocomplete="nickname" placeholder="Gib deinen Namen ein" value="${name}">
    <div class="profile-label">Wähle deine Spielfigur</div>
