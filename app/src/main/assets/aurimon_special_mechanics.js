@@ -162,6 +162,7 @@
  };
  // Four-move + PP combat is driven by v4UseMove, not battleAttack.
  // Bind Z crystals and 3-turn Dynamax to the action players can actually select.
+ if(typeof v4UseMove==='function'){
  const oldUseMove=v4UseMove;
  v4UseMove=function(index){
   if(!battle)return oldUseMove(index);
@@ -181,6 +182,7 @@
   if(battle===current){renderBattle();save()}
   return result;
  };
+ }
  const oldSwitch=battleSwitch;
  battleSwitch=function(uid){const r=oldSwitch(uid);if(battle)renderBattle();return r};
  const oldAction=doAction;
