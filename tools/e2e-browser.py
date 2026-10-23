@@ -49,9 +49,9 @@ with sync_playwright() as pw:
  assert state["regions"]==200,"World does not contain 200 stages: "+str(state)
  checks.append("Profile created and first Pokémon selected")
  head=page.locator(".brand span").inner_text()
- assert "VERSION 1.5.9" in head, "Stale version header: "+head
+ assert "VERSION 1.5.10" in head, "Stale version header: "+head
  page.evaluate("() => { document.querySelector(\u0027.brand span\u0027).textContent = \u0027VERALTET\u0027; }")
- assert "VERSION 1.5.9" in page.locator(".brand span").inner_text(), "Legacy modules can overwrite release header"
+ assert "VERSION 1.5.10" in page.locator(".brand span").inner_text(), "Legacy modules can overwrite release header"
  page.evaluate("() => doAction(\u0027regional-dex\u0027)")
  regional=page.locator("#modal-content").inner_text()
  assert "Regionaldex" in regional and "Wildarten" not in regional[:20], "Regionaldex dialog missing"
