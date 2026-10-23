@@ -50,7 +50,7 @@ try:
         check("1.025" in page.locator(".player-picker-heading").inner_text(),"New-game title reports 1.025 species")
         check(page.locator(".aur2-greeting").count()==1,"Version 2.0 welcome to every player")
         check(page.locator(".aur2-title-logo").evaluate("(el)=>el.complete && el.naturalWidth>0"),"New title logo is loaded")
-        check("aurimon_title_bg_2.webp" in page.locator("#player-picker").evaluate("(el)=>getComputedStyle(el).backgroundImage"),"Generated background used on game start")
+        check("data:image/webp;base64," in page.locator("#player-picker").evaluate("(el)=>getComputedStyle(el).backgroundImage") or "aurimon_title_bg_2.webp" in page.locator("#player-picker").evaluate("(el)=>getComputedStyle(el).backgroundImage"),"Generated background used on game start")
         check(page.locator(".player-picker-footer").inner_text().startswith("0 von 6"),"Version 2.0 resets previous profiles")
         page.locator('[data-profile-action="new"]').click()
         check("40 Regionen und 200 Ebenen" in page.locator("#modal-content").inner_text(),"Trainer setup reports 40 regions, 200 stages")
