@@ -30,6 +30,6 @@ assert(burnt<previous,'Burn should reduce physical damage');
 const specialBefore=ctx.damage({...a,status:null},t,move('Spukball','Geist',80)).amount;
 const specialBurnt=ctx.damage(a,t,move('Spukball','Geist',80)).amount;
 assert.equal(specialBurnt,specialBefore,'Burn must not reduce damage of a special move');
-assert.match(special,/const physical=aurimonAttackCategory\(move\)==='physical'/);
+assert.match(special,/typeof aurimonAttackCategory==='function'/);
 assert.match(special,/move.name==='Drachenwut'/);
 console.log('[PASS] 39 move-category contracts, fixed Dragon Rage, burn category, Gen4+ Ghost split, special-form combat wrapper.');

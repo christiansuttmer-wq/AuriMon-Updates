@@ -221,7 +221,8 @@
  aurimonDamage=function(att,tgt,move,weather='Klar'){
   const af=getForm(att),df=getForm(tgt),z=!!battle?.auriZReady&&att?.uid===chooseAlive()?.uid&&battle.auriZReady===move.type;
   if(!af&&!df&&!att.battleTeraType&&!tgt.battleTeraType&&!att.auriDyna&&!tgt.auriDyna&&!z)return oldDamage(att,tgt,move,weather);
-  const physical=aurimonAttackCategory(move)==='physical';
+  const physical=typeof aurimonAttackCategory==='function'?aurimonAttackCategory(move)==='physical':
+   ['Normal','Kampf','Flug','Gift','Boden','Gestein','Käfer','Geist','Stahl'].includes(move.type);
   const ix=physical?1:3,dx=physical?2:4;
   const ast=(af?.stats||window.POKEMON_BASESTATS[att.id])[ix],dst=(df?.stats||window.POKEMON_BASESTATS[tgt.id])[dx];
   const a=Math.max(1,Math.floor((2*ast+15)*att.level/100)+5),d=Math.max(1,Math.floor((2*dst+15)*tgt.level/100)+5);
