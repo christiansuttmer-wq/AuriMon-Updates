@@ -4,7 +4,7 @@ const source=name=>fs.readFileSync('app/src/main/assets/'+name,'utf8');
 const index=source('index.html');
 assert(index.indexOf('aurimon_reset_v158.js')>=0);
 assert(index.indexOf('aurimon_reset_v158.js')<index.indexOf('pokemon_stats_151.js'));
-assert(index.includes('data-game-version="1.5.9"'));
+assert(index.includes('data-game-version="1.5.10"'));
 assert.match(source('game.js'),/content\.scrollTop=0/);
 assert.match(source('arimons_0_4.js'),/Die \$\{LEADERS\.length\} Charakterporträts/);
 assert.match(source('arimons_0_4.css'),/align-content:start/);
