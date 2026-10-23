@@ -26,7 +26,7 @@ assert.equal(ctx.damage(a,t,move('Drachenwut','Drache',40)).amount,0,'Fairy immu
 const previous=ctx.damage(a,t,move('Schlecker','Geist',80)).amount;
 a.status='burn';
 const burnt=ctx.damage(a,t,move('Schlecker','Geist',80)).amount;
-assert(burnt.amount<previous,'Burn should reduce physical damage');
+assert(burnt<previous,'Burn should reduce physical damage');
 const specialBefore=ctx.damage({...a,status:null},t,move('Spukball','Geist',80)).amount;
 const specialBurnt=ctx.damage(a,t,move('Spukball','Geist',80)).amount;
 assert(specialBurnt.amount>0,'Burn must not disable special move');
