@@ -1,0 +1,124 @@
+/* AuriMon 1.5.10 – Spezialmarkt im Querformat, unabhängig von alten Shop-Layouts. */
+body #modal-overlay #modal-content:has(> .special-market-list) {
+  width: min(98vw, 980px) !important;
+  max-width: min(98vw, 980px) !important;
+  max-height: calc(100dvh - 20px) !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 7px !important;
+  color: #f4fbff !important;
+}
+body #modal-overlay #modal-content:has(> .special-market-list) > h2,
+body #modal-overlay #modal-content:has(> .special-market-list) > p {
+  flex: 0 0 auto !important;
+  margin: 0 0 3px !important;
+  color: #f4fbff !important;
+}
+body #modal-overlay #modal-content .special-market-list {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 8px !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  width: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding: 5px 7px 6px 2px !important;
+  overscroll-behavior: contain;
+}
+body #modal-overlay #modal-content .special-market-list > .bag-entry {
+  display: grid !important;
+  position: relative !important;
+  grid-template-columns: minmax(0,1.35fr) minmax(0,.75fr) auto !important;
+  align-items: center !important;
+  align-content: center !important;
+  gap: 9px !important;
+  flex: 0 0 auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 54px !important;
+  height: auto !important;
+  padding: 9px 12px !important;
+  margin: 0 !important;
+  border: 1px solid #9fc8db !important;
+  border-radius: 12px !important;
+  background: #eef8ff !important;
+  background-image: none !important;
+  color: #153b56 !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+body #modal-overlay #modal-content .special-market-list > .bag-entry > b,
+body #modal-overlay #modal-content .special-market-list > .bag-entry > small {
+  display: block !important;
+  position: static !important;
+  transform: none !important;
+  translate: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  align-self: center !important;
+  color: #183b54 !important;
+  -webkit-text-fill-color: #183b54 !important;
+  background: transparent !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+  overflow-wrap: anywhere !important;
+}
+body #modal-overlay #modal-content .special-market-list > .bag-entry > b {
+  font-size: clamp(12px,1.4vw,16px) !important;
+  line-height: 1.3 !important;
+  font-weight: 850 !important;
+}
+body #modal-overlay #modal-content .special-market-list > .bag-entry > small {
+  font-size: clamp(11px,1.2vw,14px) !important;
+  line-height: 1.3 !important;
+  color: #32576d !important;
+  -webkit-text-fill-color: #32576d !important;
+}
+body #modal-overlay #modal-content .special-market-list > .bag-entry > button.smallbtn {
+  position: static !important;
+  transform: none !important;
+  align-self: center !important;
+  justify-self: end !important;
+  flex: none !important;
+  width: auto !important;
+  min-width: 92px !important;
+  max-width: 100% !important;
+  min-height: 40px !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 8px 12px !important;
+  border: 2px solid #af812f !important;
+  border-radius: 10px !important;
+  background: #ffcf69 !important;
+  background-image: none !important;
+  color: #283341 !important;
+  -webkit-text-fill-color: #283341 !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  text-shadow: none !important;
+}
+body #modal-overlay #modal-content:has(> .special-market-list) > button[data-action="forms-back"] {
+  flex: 0 0 auto !important;
+  align-self: flex-start !important;
+  margin: 4px 0 0 !important;
+  min-height: 40px !important;
+}
+@media(max-width:680px){
+  body #modal-overlay #modal-content .special-market-list > .bag-entry {
+    grid-template-columns: minmax(0,1fr) auto !important;
+    min-height: 0 !important;
+    gap: 4px 7px !important;
+    padding: 8px !important;
+  }
+  body #modal-overlay #modal-content .special-market-list > .bag-entry > b {grid-column:1;grid-row:1}
+  body #modal-overlay #modal-content .special-market-list > .bag-entry > small {grid-column:1;grid-row:2}
+  body #modal-overlay #modal-content .special-market-list > .bag-entry > button {grid-column:2;grid-row:1 / 3}
+}
