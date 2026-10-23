@@ -59,7 +59,10 @@ with sync_playwright() as pw:
    state.bag.dynamax_band=1;
    state.bag.tera_orb=1;
    state.bag['z_crystal_'+POKE[a.id].types[0]]=1;
-   startBattle('wild',[newMon(143,60)],'QA Spezialkampf','qa-special',0);
+   const target=newMon(143,60);
+   // Isolate special-mechanic turns from random KOs in this UI test.
+   target.hp=100000;target.status='sleep';target.sleepTurns=99;
+   startBattle('wild',[target],'QA Spezialkampf','qa-special',0);
  }""")
  layout=page.evaluate("""() => ({
    columns:!!document.querySelector('.auri131-stage'),
@@ -71,8 +74,8 @@ with sync_playwright() as pw:
  page.evaluate("() => battleAction('special:dyna')")
  assert page.evaluate("() => chooseAlive()?.auriDyna?.turns")==3, "Dynamax activation failed"
  page.evaluate("() => battleAction('move:0')")
- turns=page.evaluate("() => chooseAlive()?.auriDyna?.turns")
- assert turns==2, "Normal move did not advance Dynamax counter: "+str(turns)
+ turns=page.evaluate("() => ({turns:chooseAlive()?.auriDyna?.turns, active:chooseAlive()?.id, battle:!!battle, enemy:foe()?.hp})")
+ assert turns["turns"]==2, "Normal move did not advance Dynamax counter: "+str(turns)
  page.evaluate("() => battleAction('special:z')")
  assert page.evaluate("() => battle?.auriZReady") is not None, "Z crystal not armed"
  page.evaluate("() => battleAction('move:1')")
